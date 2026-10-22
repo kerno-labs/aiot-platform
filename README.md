@@ -57,7 +57,7 @@
        NATS :4222 · Redis :6379 · Logto :3001/:3002 · SQLite / MySQL / PostgreSQL
 ```
 
-服务通过 NATS 传递事件；业务数据库由 backend 管理，时序数据由 data-engine 内部的存储实现写入。开发环境可以使用 SQLite，完整平台通过 Helm 部署 PostgreSQL、Redis、NATS、EMQX 和 TDengine 等依赖。
+服务通过 NATS 传递事件；业务数据库由 backend 管理，时序数据由 data-engine 内部的存储实现写入。开发环境可以使用 SQLite，完整平台通过 Helm 部署 PostgreSQL、Redis、NATS、Kafka、EMQX 和 TDengine 等依赖。
 
 ## 快速开始
 

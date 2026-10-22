@@ -129,6 +129,35 @@ nats:
       cpu: 500m
       memory: 512Mi
 
+kafka:
+  enabled: true
+  image:
+    repository: apache/kafka
+    tag: 4.3.1
+    pullPolicy: IfNotPresent
+  # Keep this ID unchanged while reusing the existing Kafka data volume.
+  clusterId: gyGqtwZbThe9I3zcUvjGfw
+  heapOpts: "-Xms512m -Xmx512m"
+  service:
+    clientPort: 9092
+    controllerPort: 9093
+  config:
+    numPartitions: 3
+    logRetentionHours: 168
+  persistence:
+    enabled: true
+    storageClass: ""
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      cpu: "1"
+      memory: 2Gi
+
 emqx:
   enabled: true
   image:

@@ -7,7 +7,7 @@
 Chart 默认部署以下组件：
 
 - 应用：backend、MCP server、data-engine、transport-mqtt、AI copilot、frontend、Logto。
-- 基础设施：业务 PostgreSQL、Logto PostgreSQL、Redis、NATS JetStream、EMQX、TDengine。
+- 基础设施：业务 PostgreSQL、Logto PostgreSQL、Redis、NATS JetStream、Kafka、EMQX、TDengine。
 - 配置：服务运行配置、数据库凭据、应用凭据、镜像仓库凭据和前端 Nginx 配置。
 - 网络：内部 Service，以及可选的 frontend、gateway API/MCP、Logto 和 Logto Admin Ingress。
 
@@ -154,7 +154,7 @@ kubectl -n 0things-prod get pods,svc
 
 ## 持久化
 
-PostgreSQL、Redis、NATS、EMQX 和 TDengine 使用 StatefulSet 的 `volumeClaimTemplates`。容量在环境 values 中分别设置，例如：
+PostgreSQL、Redis、NATS、Kafka、EMQX 和 TDengine 使用 StatefulSet 的 `volumeClaimTemplates`。容量在环境 values 中分别设置，例如：
 
 ```yaml
 tdengine:
@@ -166,6 +166,42 @@ tdengine:
 
 > [!WARNING]
 > 修改 values 中的数据库密码只会更新 Kubernetes Secret，不会修改已经初始化的数据库内部账号。密码轮换必须先在数据库中完成，再更新 values。
+
+## Kafka 与 EMQX
+
+Kafka 默认启用，使用固定版本的官方 `apache/kafka` 镜像和单节点 KRaft 模式，broker 与 controller 运行在同一个 Pod，无须 ZooKeeper。默认数据卷为 10Gi，JVM 堆为 512Mi，新建主题默认 3 个分区，日志保留 168 小时。单节点不提供高可用，不能直接增加 StatefulSet 副本数来扩容；多节点部署需要同时规划 controller quorum、broker ID 和副本策略。
+
+同 namespace 的 EMQX 使用 `kafka:9092` 作为 Bootstrap Hosts。客户端 Service 为 ClusterIP，连接协议为 PLAINTEXT，无认证、无 TLS，供集群内部使用。broker 对客户端发布自己的 Pod DNS 地址 `kafka-0.kafka-headless.<namespace>.svc.cluster.local:9092`，依赖 Kubernetes 默认的 `cluster.local` 集群域名。Headless Service 会在 Pod 就绪前发布地址，以便 KRaft controller 启动时解析自身。
+
+可在环境 values 中覆盖 Kafka 配置，例如：
+
+```yaml
+kafka:
+  enabled: true
+  persistence:
+    size: 20Gi
+  config:
+    numPartitions: 3
+    logRetentionHours: 72
+```
+
+`kafka.clusterId` 必须在复用数据卷时保持不变。`kafka.persistence.enabled: false` 会使用临时卷，Pod 重建后数据丢失。日志保留时间不是整个数据卷的容量上限，应根据实际写入量设置保留时间和存储容量。
+
+部署后可检查状态并创建供 EMQX 写入的主题：
+
+```bash
+kubectl -n 0things-prod rollout status statefulset/kafka --timeout=5m
+kubectl -n 0things-prod exec kafka-0 -- \
+  /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 \
+  --create --if-not-exists --topic aiot-telemetry \
+  --partitions 3 --replication-factor 1
+kubectl -n 0things-prod exec kafka-0 -- \
+  /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --list
+```
+
+在 EMQX Dashboard 的 Integration → Connector 创建 Kafka Producer 连接器，Bootstrap Hosts 填写 `kafka:9092`，关闭认证与 TLS；再创建规则和 Kafka Sink，将选定 MQTT topic 的消息写入 `aiot-telemetry`。具体字段参考 [EMQX Kafka 集成文档](https://docs.emqx.com/en/emqx/latest/data-integration/data-bridge-kafka.html)。
+
+此 Chart 提供 Kafka 部署，EMQX 规则需要单独配置，data-engine 等业务服务的 Kafka 消费逻辑也需要另外接入；现有业务事件仍使用 NATS。
 
 ## 验证
 

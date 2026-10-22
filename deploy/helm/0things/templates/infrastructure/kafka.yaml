@@ -1,0 +1,145 @@
+{{- if .Values.kafka.enabled }}
+{{- $brokerHost := printf "kafka-0.kafka-headless.%s.svc.cluster.local" .Release.Namespace }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+  labels:
+    {{- include "0things.labels" "kafka" | nindent 4 }}
+spec:
+  # This combined broker/controller uses a single-node KRaft quorum.
+  replicas: 1
+  serviceName: kafka-headless
+  selector:
+    matchLabels:
+      {{- include "0things.labels" "kafka" | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "0things.labels" "kafka" | nindent 8 }}
+    spec:
+      {{- include "0things.imagePullSecrets" . | nindent 6 }}
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        fsGroup: 1000
+      containers:
+        - name: kafka
+          image: "{{ .Values.kafka.image.repository }}:{{ .Values.kafka.image.tag }}"
+          imagePullPolicy: {{ .Values.kafka.image.pullPolicy }}
+          env:
+            - name: CLUSTER_ID
+              value: {{ required "kafka.clusterId is required when Kafka is enabled" .Values.kafka.clusterId | quote }}
+            - name: KAFKA_HEAP_OPTS
+              value: {{ .Values.kafka.heapOpts | quote }}
+            - name: KAFKA_NODE_ID
+              value: "1"
+            - name: KAFKA_PROCESS_ROLES
+              value: "broker,controller"
+            - name: KAFKA_LISTENERS
+              value: "PLAINTEXT://:{{ .Values.kafka.service.clientPort }},CONTROLLER://:{{ .Values.kafka.service.controllerPort }}"
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: "PLAINTEXT://{{ $brokerHost }}:{{ .Values.kafka.service.clientPort }}"
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+              value: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              value: "PLAINTEXT"
+            - name: KAFKA_CONTROLLER_LISTENER_NAMES
+              value: "CONTROLLER"
+            - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+              value: "1@{{ $brokerHost }}:{{ .Values.kafka.service.controllerPort }}"
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: "1"
+            - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+              value: "1"
+            - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+              value: "1"
+            - name: KAFKA_SHARE_COORDINATOR_STATE_TOPIC_REPLICATION_FACTOR
+              value: "1"
+            - name: KAFKA_SHARE_COORDINATOR_STATE_TOPIC_MIN_ISR
+              value: "1"
+            - name: KAFKA_NUM_PARTITIONS
+              value: {{ .Values.kafka.config.numPartitions | quote }}
+            - name: KAFKA_LOG_RETENTION_HOURS
+              value: {{ .Values.kafka.config.logRetentionHours | quote }}
+            - name: KAFKA_LOG_DIRS
+              value: /var/lib/kafka/data/kraft-combined-logs
+          ports:
+            - name: client
+              containerPort: {{ .Values.kafka.service.clientPort }}
+            - name: controller
+              containerPort: {{ .Values.kafka.service.controllerPort }}
+          startupProbe:
+            tcpSocket:
+              port: client
+            periodSeconds: 10
+            failureThreshold: 30
+          readinessProbe:
+            tcpSocket:
+              port: client
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: client
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.kafka.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/kafka/data
+      {{- if not .Values.kafka.persistence.enabled }}
+      volumes:
+        - name: data
+          emptyDir: {}
+      {{- end }}
+  {{- if .Values.kafka.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          {{- toYaml .Values.kafka.persistence.accessModes | nindent 10 }}
+        {{- include "0things.storageClass" (dict "storageClass" (default .Values.global.storageClass .Values.kafka.persistence.storageClass)) | nindent 8 }}
+        resources:
+          requests:
+            storage: {{ .Values.kafka.persistence.size }}
+  {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  labels:
+    {{- include "0things.labels" "kafka" | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: client
+      port: {{ .Values.kafka.service.clientPort }}
+      targetPort: client
+  selector:
+    {{- include "0things.labels" "kafka" | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-headless
+  labels:
+    {{- include "0things.labels" "kafka" | nindent 4 }}
+spec:
+  clusterIP: None
+  # Controller discovery must work before the broker passes its readiness probe.
+  publishNotReadyAddresses: true
+  ports:
+    - name: client
+      port: {{ .Values.kafka.service.clientPort }}
+      targetPort: client
+    - name: controller
+      port: {{ .Values.kafka.service.controllerPort }}
+      targetPort: controller
+  selector:
+    {{- include "0things.labels" "kafka" | nindent 4 }}
+---
+{{- end }}
