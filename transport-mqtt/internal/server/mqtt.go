@@ -114,7 +114,7 @@ func MQTTTLSConfig(config *viper.Viper) (*tls.Config, error) {
 	return tlsConfig, nil
 }
 
-// Start connects to the broker and starts NATS consumers until context is cancelled.
+// Start connects to the broker and starts Kafka consumers until context is cancelled.
 func (s *MQTTServer) Start(ctx context.Context) error {
 	s.mu.Lock()
 	token := s.client.Connect()
@@ -131,7 +131,7 @@ func (s *MQTTServer) Start(ctx context.Context) error {
 
 	if s.consumerManager != nil {
 		if err := s.consumerManager.Start(ctx); err != nil {
-			s.logger.Error("failed to start NATS consumer manager", zap.Error(err))
+			s.logger.Error("failed to start Kafka consumer manager", zap.Error(err))
 			return err
 		}
 	}

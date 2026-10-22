@@ -9,7 +9,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// Manager coordinates all NATS event subscriptions for transport-mqtt.
+// Manager coordinates all Kafka event subscriptions for transport-mqtt.
 type Manager struct {
 	consumer           event.Consumer
 	otaCommandConsumer *OTACommandConsumer
@@ -27,7 +27,7 @@ func NewManager(consumer event.Consumer, otaCommandConsumer *OTACommandConsumer,
 // Start registers all topic subscriptions for transport-mqtt.
 func (m *Manager) Start(ctx context.Context) error {
 	if m.consumer == nil {
-		m.logger.Warn("event consumer not configured; skipping NATS topic subscriptions")
+		m.logger.Warn("event consumer not configured; skipping Kafka topic subscriptions")
 		return nil
 	}
 

@@ -13,7 +13,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// OTACommandConsumer consumes OTA upgrade command events from NATS and pushes them to EMQX via MQTT.
+// OTACommandConsumer consumes OTA upgrade command events from Kafka and pushes them to EMQX via MQTT.
 type OTACommandConsumer struct {
 	client mqtt.Client
 	logger *log.Logger

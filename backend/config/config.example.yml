@@ -46,9 +46,11 @@ data:
 # ==============================================================================
 tsdb:
 event:
-  driver: "nats"
-  nats:
-    url: "nats://127.0.0.1:4222"
+  driver: kafka
+  kafka:
+    brokers:
+      - "127.0.0.1:9092"
+    consumer_group: "aiot-backend"
 
 device_gateway:
   mqtt:

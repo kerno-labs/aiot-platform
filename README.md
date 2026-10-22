@@ -54,10 +54,10 @@
 │ MQTT 设备网关   │    │                  │
 └────────────────┘    └──────────────────┘
 
-       NATS :4222 · Redis :6379 · Logto :3001/:3002 · SQLite / MySQL / PostgreSQL
+       Kafka :9092 · Redis :6379 · Logto :3001/:3002 · SQLite / MySQL / PostgreSQL
 ```
 
-服务通过 NATS 传递事件；业务数据库由 backend 管理，时序数据由 data-engine 内部的存储实现写入。开发环境可以使用 SQLite，完整平台通过 Helm 部署 PostgreSQL、Redis、NATS、Kafka、EMQX 和 TDengine 等依赖。
+服务通过 Kafka 传递事件；业务数据库由 backend 管理，时序数据由 data-engine 内部的存储实现写入。开发环境可以使用 SQLite，完整平台通过 Helm 部署 PostgreSQL、Redis、Kafka、EMQX 和 TDengine 等依赖。
 
 ## 快速开始
 
@@ -78,8 +78,8 @@ helm upgrade --install 0things-test deploy/helm/0things \
   --create-namespace \
   -f deploy/helm/0things/values-test.yaml
 
-helm upgrade --install 0things-prod deploy/helm/0things \
-  --namespace 0things-prod \
+helm upgrade --install aiot-prod deploy/helm/0things \
+  --namespace aiot-prod \
   --create-namespace \
   -f deploy/helm/0things/values-prod.yaml \
   --atomic --wait
@@ -94,7 +94,38 @@ helm upgrade --install 0things-prod deploy/helm/0things \
 
 ### 准备依赖服务
 
-本地进程可以连接测试命名空间中的 Helm 服务，也可以连接自行准备的 PostgreSQL、Redis、NATS、EMQX、TDengine 和 Logto。各服务通过自己的 `config/local.yml` 指定依赖地址。
+本地进程可以连接测试命名空间中的 Helm 服务，也可以连接自行准备的 PostgreSQL、Redis、Kafka、EMQX、TDengine 和 Logto。各服务通过自己的 `config/local.yml` 指定依赖地址。
+
+### 启动本地 Kafka
+
+使用 Docker 启动单节点 Kafka，并将数据保存到命名卷：
+
+```bash
+docker run -d --name aiot-kafka-local \
+  -p 127.0.0.1:9092:9092 \
+  -v aiot-kafka-data:/var/lib/kafka/data \
+  -e CLUSTER_ID=gyGqtwZbThe9I3zcUvjGfw \
+  -e KAFKA_NODE_ID=1 \
+  -e KAFKA_PROCESS_ROLES=broker,controller \
+  -e KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093 \
+  -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092 \
+  -e KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER \
+  -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT \
+  -e KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT \
+  -e KAFKA_CONTROLLER_QUORUM_VOTERS=1@localhost:9093 \
+  -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
+  -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 \
+  -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 \
+  -e KAFKA_SHARE_COORDINATOR_STATE_TOPIC_REPLICATION_FACTOR=1 \
+  -e KAFKA_SHARE_COORDINATOR_STATE_TOPIC_MIN_ISR=1 \
+  -e KAFKA_NUM_PARTITIONS=3 \
+  -e KAFKA_LOG_RETENTION_HOURS=168 \
+  -e KAFKA_LOG_DIRS=/var/lib/kafka/data/kraft-combined-logs \
+  -e KAFKA_HEAP_OPTS='-Xms512m -Xmx512m' \
+  apache/kafka:4.3.1
+```
+
+已有该容器时执行 `docker start aiot-kafka-local`。本地进程使用 `event.kafka.brokers: ["127.0.0.1:9092"]`；Kubernetes 内使用 `kafka:9092`。容器对外发布的是宿主机地址，此本地命令供宿主机进程连接，不能用于其他容器的 Kafka 服务发现。
 
 ### 配置并执行数据库迁移
 

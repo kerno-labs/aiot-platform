@@ -1,5 +1,5 @@
-{{- if and (or .Values.backend.enabled .Values.mcpServer.enabled) (or (not .Values.postgres.enabled) (not .Values.redis.enabled) (not .Values.tdengine.enabled) (not .Values.nats.enabled) (not .Values.logto.enabled)) }}
-{{- fail "backend or mcpServer requires postgres, redis, tdengine, nats, and logto to be enabled" }}
+{{- if and (or .Values.backend.enabled .Values.mcpServer.enabled) (or (not .Values.postgres.enabled) (not .Values.redis.enabled) (not .Values.tdengine.enabled) (not .Values.kafka.enabled) (not .Values.logto.enabled)) }}
+{{- fail "backend or mcpServer requires postgres, redis, tdengine, kafka, and logto to be enabled" }}
 {{- end }}
 {{- if or .Values.backend.enabled .Values.mcpServer.enabled }}
 apiVersion: v1
@@ -57,9 +57,11 @@ data:
         database: {{ .Values.tdengine.auth.database | quote }}
         table: device_properties
     event:
-      driver: nats
-      nats:
-        url: {{ if .Values.nats.auth.enabled }}{{ printf "nats://%s:%s@nats:%d" .Values.nats.auth.username .Values.nats.auth.password (int .Values.nats.service.clientPort) | quote }}{{ else }}{{ printf "nats://nats:%d" (int .Values.nats.service.clientPort) | quote }}{{ end }}
+      driver: kafka
+      kafka:
+        brokers:
+          - {{ printf "kafka:%d" (int .Values.kafka.service.clientPort) | quote }}
+        consumer_group: "aiot-backend"
     device_gateway:
       mqtt:
         host: {{ .Values.backend.config.deviceGateway.mqttHost | quote }}
@@ -98,6 +100,8 @@ spec:
       {{- include "0things.labels" "backend" | nindent 6 }}
   template:
     metadata:
+      annotations:
+        checksum/event-config: {{ printf "kafka:%d:aiot-backend" (int .Values.kafka.service.clientPort) | sha256sum }}
       labels:
         {{- include "0things.labels" "backend" | nindent 8 }}
     spec:
@@ -168,6 +172,8 @@ spec:
       {{- include "0things.labels" "mcp-server" | nindent 6 }}
   template:
     metadata:
+      annotations:
+        checksum/event-config: {{ printf "kafka:%d:aiot-backend" (int .Values.kafka.service.clientPort) | sha256sum }}
       labels:
         {{- include "0things.labels" "mcp-server" | nindent 8 }}
     spec:

@@ -7,7 +7,7 @@
 Chart 默认部署以下组件：
 
 - 应用：backend、MCP server、data-engine、transport-mqtt、AI copilot、frontend、Logto。
-- 基础设施：业务 PostgreSQL、Logto PostgreSQL、Redis、NATS JetStream、Kafka、EMQX、TDengine。
+- 基础设施：业务 PostgreSQL、Logto PostgreSQL、Redis、Kafka、EMQX、TDengine。
 - 配置：服务运行配置、数据库凭据、应用凭据、镜像仓库凭据和前端 Nginx 配置。
 - 网络：内部 Service，以及可选的 frontend、gateway API/MCP、Logto 和 Logto Admin Ingress。
 
@@ -100,8 +100,8 @@ rg 'change-me-|REPLACE_WITH_' deploy/helm/0things/values-prod.yaml
 确认数据库结构已经准备完毕后执行：
 
 ```bash
-helm upgrade --install 0things-prod deploy/helm/0things \
-  --namespace 0things-prod \
+helm upgrade --install aiot-prod deploy/helm/0things \
+  --namespace aiot-prod \
   --create-namespace \
   -f deploy/helm/0things/values-prod.yaml \
   --atomic \
@@ -140,21 +140,21 @@ helm upgrade --install 0things-prod deploy/helm/0things \
 生产部署后确认：
 
 ```bash
-kubectl -n 0things-prod get certificate,ingress
-kubectl -n 0things-prod rollout status deployment/0things-prod-alidns-webhook --timeout=10m
+kubectl -n aiot-prod get certificate,ingress
+kubectl -n aiot-prod rollout status deployment/aiot-prod-alidns-webhook --timeout=10m
 kubectl wait --for=condition=Ready clusterissuer/letsencrypt-alidns --timeout=120s
-kubectl -n 0things-prod wait --for=condition=Ready certificate/zghub-com --timeout=10m
-kubectl -n 0things-prod get secret aiot-platform-tls
-kubectl -n 0things-prod get pods,svc
+kubectl -n aiot-prod wait --for=condition=Ready certificate/zghub-com --timeout=10m
+kubectl -n aiot-prod get secret aiot-platform-tls
+kubectl -n aiot-prod get pods,svc
 ```
 
-再由你确认四个域名的 A 记录及 HTTPS 路由，并在 Cloudflare R2 为 `file.zghub.com` 完成 partial CNAME setup、自定义域名关联与验证；该域名不经过 k3s Ingress，也不使用 `aiot-platform-tls`。不要在新地址可访问前移除旧的 `file.0thing.com`。若证书未就绪，查看 `kubectl -n 0things-prod describe certificate zghub-com` 和同 namespace 的 `order,challenge`。回滚应用使用上文 `helm rollback`；独立安装的 cert-manager 不会随应用 release 回滚或删除。
+再由你确认四个域名的 A 记录及 HTTPS 路由，并在 Cloudflare R2 为 `file.zghub.com` 完成 partial CNAME setup、自定义域名关联与验证；该域名不经过 k3s Ingress，也不使用 `aiot-platform-tls`。不要在新地址可访问前移除旧的 `file.0thing.com`。若证书未就绪，查看 `kubectl -n aiot-prod describe certificate zghub-com` 和同 namespace 的 `order,challenge`。回滚应用使用上文 `helm rollback`；独立安装的 cert-manager 不会随应用 release 回滚或删除。
 
 没有域名或 Ingress Controller 时，可以将对应 Service 的 `type` 设置为 `LoadBalancer`。当前生产 values 通过 Traefik 暴露 HTTP 服务，EMQX 仍保留独立 LoadBalancer（MQTT 不经过这些 HTTP Ingress）。
 
 ## 持久化
 
-PostgreSQL、Redis、NATS、Kafka、EMQX 和 TDengine 使用 StatefulSet 的 `volumeClaimTemplates`。容量在环境 values 中分别设置，例如：
+PostgreSQL、Redis、Kafka、EMQX 和 TDengine 使用 StatefulSet 的 `volumeClaimTemplates`。容量在环境 values 中分别设置，例如：
 
 ```yaml
 tdengine:
@@ -190,18 +190,22 @@ kafka:
 部署后可检查状态并创建供 EMQX 写入的主题：
 
 ```bash
-kubectl -n 0things-prod rollout status statefulset/kafka --timeout=5m
-kubectl -n 0things-prod exec kafka-0 -- \
+kubectl -n aiot-prod rollout status statefulset/kafka --timeout=5m
+kubectl -n aiot-prod exec kafka-0 -- \
   /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 \
-  --create --if-not-exists --topic aiot-telemetry \
+  --create --if-not-exists --topic device-telemetry-report \
   --partitions 3 --replication-factor 1
-kubectl -n 0things-prod exec kafka-0 -- \
+kubectl -n aiot-prod exec kafka-0 -- \
   /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --list
 ```
 
-在 EMQX Dashboard 的 Integration → Connector 创建 Kafka Producer 连接器，Bootstrap Hosts 填写 `kafka:9092`，关闭认证与 TLS；再创建规则和 Kafka Sink，将选定 MQTT topic 的消息写入 `aiot-telemetry`。具体字段参考 [EMQX Kafka 集成文档](https://docs.emqx.com/en/emqx/latest/data-integration/data-bridge-kafka.html)。
+在 EMQX Dashboard 的 Integration → Connector 创建 Kafka Producer 连接器，Bootstrap Hosts 填写 `kafka:9092`，关闭认证与 TLS；再创建规则和 Kafka Sink，将选定 MQTT topic 的消息写入 `device-telemetry-report`。具体字段参考 [EMQX Kafka 集成文档](https://docs.emqx.com/en/emqx/latest/data-integration/data-bridge-kafka.html)。
 
-此 Chart 提供 Kafka 部署，EMQX 规则需要单独配置，data-engine 等业务服务的 Kafka 消费逻辑也需要另外接入；现有业务事件仍使用 NATS。
+backend、data-engine、transport-mqtt 的事件发布和消费统一使用 Kafka。Helm 为三个服务分别配置 `aiot-backend`、`aiot-data-engine`、`aiot-transport-mqtt` 消费组；同一服务的副本共享消费组，不同服务独立消费。新消费组从最早保留的消息开始读取，已有消费组从已提交的 offset 继续处理。事件配置变化会触发应用 Pod 滚动更新，避免 `subPath` 挂载的 ConfigMap 仍使用旧配置。
+
+平台沿用 `device-telemetry-report`、`device-event-report`、`ota-upgrade-command-mqtt`、`ota-progress-report` 等业务主题。EMQX 直接写入时，必须将 MQTT 消息转换成对应的事件 JSON（设备上行使用 `DeviceMessage`，包含 `device_key`、`transport`、`message_type`、`payload` 和 `timestamp`），并写入正确的业务主题；任意原始 MQTT JSON 不会自动成为平台事件。
+
+从原 NATS 部署升级时，应先处理剩余待消费事件，再重新构建并推送 backend、data-engine、transport-mqtt 镜像，以及使用 backend 镜像的 MCP 服务。随后用 `aiot-prod` release 和 namespace 执行 Helm upgrade。Kafka 不会自动导入旧 JetStream 消息；Chart 已移除 NATS 工作负载，其原数据卷不在此次应用迁移中主动删除。
 
 ## 验证
 
@@ -214,16 +218,16 @@ helm template 0things-test deploy/helm/0things \
   -n 0things-test \
   -f deploy/helm/0things/values-test.yaml
 
-helm template 0things-prod deploy/helm/0things \
-  -n 0things-prod \
+helm template aiot-prod deploy/helm/0things \
+  -n aiot-prod \
   -f deploy/helm/0things/values-prod.yaml
 ```
 
 安装后检查：
 
 ```bash
-kubectl -n 0things-prod get pods,svc,ingress,pvc
-helm status 0things-prod -n 0things-prod
+kubectl -n aiot-prod get pods,svc,ingress,pvc
+helm status aiot-prod -n aiot-prod
 ```
 
 ## 升级与回滚
@@ -231,8 +235,8 @@ helm status 0things-prod -n 0things-prod
 升级继续使用对应环境文件：
 
 ```bash
-helm upgrade 0things-prod deploy/helm/0things \
-  -n 0things-prod \
+helm upgrade aiot-prod deploy/helm/0things \
+  -n aiot-prod \
   -f deploy/helm/0things/values-prod.yaml \
   --atomic --wait --timeout 15m
 ```
@@ -240,8 +244,8 @@ helm upgrade 0things-prod deploy/helm/0things \
 查看历史并回滚：
 
 ```bash
-helm history 0things-prod -n 0things-prod
-helm rollback 0things-prod <REVISION> -n 0things-prod --wait
+helm history aiot-prod -n aiot-prod
+helm rollback aiot-prod <REVISION> -n aiot-prod --wait
 ```
 
 回滚 Chart 不会自动回滚数据库结构或 PVC 数据。

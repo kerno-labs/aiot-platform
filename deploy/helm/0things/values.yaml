@@ -101,34 +101,6 @@ redis:
       cpu: 500m
       memory: 512Mi
 
-nats:
-  enabled: true
-  image:
-    repository: nats
-    tag: 2.10-alpine
-    pullPolicy: IfNotPresent
-  auth:
-    enabled: false
-    username: nats
-    # Example: set a generated password when auth.enabled is true.
-    password: ""
-  service:
-    clientPort: 4222
-    monitorPort: 8222
-  persistence:
-    enabled: true
-    storageClass: ""
-    accessModes:
-      - ReadWriteOnce
-    size: 5Gi
-  resources:
-    requests:
-      cpu: 50m
-      memory: 128Mi
-    limits:
-      cpu: 500m
-      memory: 512Mi
-
 kafka:
   enabled: true
   image:
