@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { keepPreviousData } from '@tanstack/react-query'
+import { keepPreviousData, useQueries } from '@tanstack/react-query'
 import {
+  getDevicesDeviceKeyTelemetryHistory,
   getGetDevicesDeviceKeyTelemetryHistoryQueryKey,
   getGetDevicesDeviceKeyThingModelPropertiesQueryKey,
-  useGetDevicesDeviceKeyTelemetryHistory,
   useGetDevicesDeviceKeyThingModelProperties,
 } from '@/api/generated'
 import type {
@@ -14,9 +14,9 @@ import type {
 
 export type { TelemetryPoint }
 
-export interface TelemetryHistoryQueryParams {
+export interface TelemetryHistorySeriesQueryParams {
   deviceKey: string
-  property: string
+  properties: string[]
   durationMs?: number
   startTime?: number
   endTime?: number
@@ -46,34 +46,38 @@ export function useThingModelProperties(deviceKey: string, enabled = true) {
   })
 }
 
-/**
- * Query telemetry history through the generated API client.
- */
-export function useTelemetryHistory(
-  params: TelemetryHistoryQueryParams,
+/** Query telemetry history for multiple properties in parallel. */
+export function useTelemetryHistorySeries(
+  params: TelemetryHistorySeriesQueryParams,
   enabled = true
 ) {
   const [initialEndTime] = useState(() => Date.now())
-  let startTime = params.startTime
-  let endTime = params.endTime
-  if (params.durationMs) {
-    endTime = params.endTime ?? initialEndTime
-    startTime = endTime - params.durationMs
-  }
+  const endTime = params.endTime ?? initialEndTime
+  const startTime = params.durationMs
+    ? endTime - params.durationMs
+    : params.startTime
 
-  const queryParams: GetDevicesDeviceKeyTelemetryHistoryParams = {
-    property: params.property,
-    limit: params.limit || 100,
-    ...(startTime ? { start_time: startTime } : {}),
-    ...(endTime ? { end_time: endTime } : {}),
-  }
+  return useQueries({
+    queries: params.properties.map((property) => {
+      const queryParams: GetDevicesDeviceKeyTelemetryHistoryParams = {
+        property,
+        limit: params.limit || 100,
+        ...(startTime ? { start_time: startTime } : {}),
+        ...(endTime ? { end_time: endTime } : {}),
+      }
 
-  return useGetDevicesDeviceKeyTelemetryHistory(params.deviceKey, queryParams, {
-    query: {
-      select: (res) => (res?.data as unknown as TelemetryPoint[]) || [],
-      enabled: Boolean(params.deviceKey && params.property) && enabled,
-      placeholderData: keepPreviousData,
-      staleTime: 5000,
-    },
+      return {
+        queryKey: telemetryKeys.history(params.deviceKey, queryParams),
+        queryFn: ({ signal }: { signal: AbortSignal }) =>
+          getDevicesDeviceKeyTelemetryHistory(
+            params.deviceKey,
+            queryParams,
+            signal
+          ),
+        enabled: Boolean(params.deviceKey && property) && enabled,
+        select: (res: { data?: TelemetryPoint[] }) => res.data || [],
+        staleTime: 5000,
+      }
+    }),
   })
 }
