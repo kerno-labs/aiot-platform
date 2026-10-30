@@ -44,15 +44,6 @@ func (t Transport) String() string {
 	return string(t)
 }
 
-// DevicePropertyPostPayload represents ThingsBoard-standard telemetry/property uplink payload.
-// Supports:
-// 1. Timestamped format: {"ts": 1451649600512, "values": {"temperature": 42.2, "humidity": 70}}
-// 2. Flat format: {"temperature": 42.2, "humidity": 70}
-type DevicePropertyPostPayload struct {
-	Timestamp int64                  `json:"ts,omitempty"`     // Unix millisecond timestamp (optional)
-	Values    map[string]interface{} `json:"values,omitempty"` // Property key-value pairs
-}
-
 // DeviceEventPayload defines the standard device event report payload structure.
 type DeviceEventPayload struct {
 	Identifier string          `json:"identifier" validate:"required"`                  // Standard thing model event identifier

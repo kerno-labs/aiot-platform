@@ -4,7 +4,6 @@
 package wire
 
 import (
-	"transport-mqtt/internal/adaptor"
 	"transport-mqtt/internal/consumer"
 	"transport-mqtt/internal/handler"
 	"transport-mqtt/internal/server"
@@ -46,8 +45,6 @@ func provideEventConsumer(holder *eventBusHolder) event.Consumer {
 }
 
 var serverSet = wire.NewSet(
-	adaptor.NewJsonMqttAdaptor,
-	service.NewTelemetryService,
 	service.NewDeviceEventService,
 	service.NewOTAService,
 	handler.NewIngressHandler,
@@ -56,7 +53,6 @@ var serverSet = wire.NewSet(
 	server.NewMQTTClient,
 	server.NewMQTTServer,
 )
-
 
 func newApp(
 	mqttServer *server.MQTTServer,

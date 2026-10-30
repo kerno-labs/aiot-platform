@@ -5,9 +5,6 @@ package enum
 const (
 	// --- 上行订阅通配符主题 (Uplink Wildcard Topics) ---
 
-	// MQTTSubPropertyPost 物模型属性/遥测上报订阅主题: /sys/thing/property/post/{productKey}/{deviceKey}
-	MQTTSubPropertyPost = "/sys/thing/property/post/+/+"
-
 	// MQTTSubEvent 自定义业务事件上报订阅主题: /sys/thing/event/post/{productKey}/{deviceKey}
 	MQTTSubEvent = "/sys/thing/event/post/+/+"
 

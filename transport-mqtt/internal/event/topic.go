@@ -17,7 +17,6 @@ const (
 	TopicOTADeviceInfo         Topic = "ota-device-info"
 
 	// Device uplink & lifecycle domain events
-	TopicDeviceTelemetryReport Topic = "device-telemetry-report"
 	TopicDeviceEventReport     Topic = "device-event-report"
 	TopicDeviceOnlineStatus    Topic = "device-online-status"
 )

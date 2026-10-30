@@ -9,7 +9,6 @@ package wire
 import (
 	"github.com/google/wire"
 	"github.com/spf13/viper"
-	"transport-mqtt/internal/adaptor"
 	"transport-mqtt/internal/consumer"
 	"transport-mqtt/internal/event"
 	"transport-mqtt/internal/handler"
@@ -22,16 +21,14 @@ import (
 // Injectors from wire.go:
 
 func NewWire(viperViper *viper.Viper, logger *log.Logger) (*app.App, func(), error) {
-	jsonMqttAdaptor := adaptor.NewJsonMqttAdaptor()
 	wireEventBusHolder, cleanup, err := provideEventBus(viperViper, logger)
 	if err != nil {
 		return nil, nil, err
 	}
 	producer := provideEventProducer(wireEventBusHolder)
-	telemetryService := service.NewTelemetryService(jsonMqttAdaptor, producer, logger)
 	deviceEventService := service.NewDeviceEventService(producer, logger)
 	otaService := service.NewOTAService(producer, logger)
-	ingressHandler := handler.NewIngressHandler(telemetryService, deviceEventService, otaService)
+	ingressHandler := handler.NewIngressHandler(deviceEventService, otaService)
 	client, err := server.NewMQTTClient(viperViper, logger, ingressHandler)
 	if err != nil {
 		cleanup()
@@ -76,7 +73,7 @@ func provideEventConsumer(holder *eventBusHolder) event.Consumer {
 	return holder.consumer
 }
 
-var serverSet = wire.NewSet(adaptor.NewJsonMqttAdaptor, service.NewTelemetryService, service.NewDeviceEventService, service.NewOTAService, handler.NewIngressHandler, consumer.NewOTACommandConsumer, consumer.NewManager, server.NewMQTTClient, server.NewMQTTServer)
+var serverSet = wire.NewSet(service.NewDeviceEventService, service.NewOTAService, handler.NewIngressHandler, consumer.NewOTACommandConsumer, consumer.NewManager, server.NewMQTTClient, server.NewMQTTServer)
 
 func newApp(
 	mqttServer *server.MQTTServer,

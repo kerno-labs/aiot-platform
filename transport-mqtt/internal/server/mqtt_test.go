@@ -6,7 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"transport-mqtt/internal/adaptor"
 	"transport-mqtt/internal/consumer"
 	"transport-mqtt/internal/enum"
 	"transport-mqtt/internal/handler"
@@ -94,11 +93,9 @@ func TestRegisterSubscriptions(t *testing.T) {
 
 	mockClient := &mockClientForServer{}
 	ingressHandler := handler.NewIngressHandler(
-		service.NewTelemetryService(adaptor.NewJsonMqttAdaptor(), nil, logger),
 		service.NewDeviceEventService(nil, logger),
 		service.NewOTAService(nil, logger),
 	)
-
 
 	// 1. Nil handler does nothing
 	RegisterSubscriptions(mockClient, nil, logger)
@@ -106,10 +103,24 @@ func TestRegisterSubscriptions(t *testing.T) {
 		t.Fatalf("expected 0 subscriptions for nil handler, got %d", len(mockClient.subscribedTopics))
 	}
 
-	// 2. Valid handler registers all expected topics
+	// 2. Telemetry goes directly from EMQX to Kafka; transport only handles events and OTA.
 	RegisterSubscriptions(mockClient, ingressHandler, logger)
-	if len(mockClient.subscribedTopics) != 4 {
-		t.Errorf("expected 4 subscriptions, got %d", len(mockClient.subscribedTopics))
+	expected := map[string]bool{
+		enum.MQTTSubEvent:       true,
+		enum.MQTTSubOTAProgress: true,
+		enum.MQTTSubOTAInform:   true,
+	}
+	if len(mockClient.subscribedTopics) != len(expected) {
+		t.Fatalf("expected %d subscriptions, got %v", len(expected), mockClient.subscribedTopics)
+	}
+	for _, topic := range mockClient.subscribedTopics {
+		if !expected[topic] {
+			t.Errorf("unexpected subscription: %s", topic)
+		}
+		delete(expected, topic)
+	}
+	if len(expected) != 0 {
+		t.Errorf("missing subscriptions: %v", expected)
 	}
 }
 
