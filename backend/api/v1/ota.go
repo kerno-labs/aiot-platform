@@ -42,6 +42,10 @@ type ListOTAPackagesRequest struct {
 	PageRequest
 } //@name OtaListOTAPackagesRequest
 
+type OTAStatisticsRequest struct {
+	BatchID string `form:"batchId"`
+}
+
 type ListDeviceDeploymentsRequest struct {
 	PageRequest
 	Status  string `form:"status"`

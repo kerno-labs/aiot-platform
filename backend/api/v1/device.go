@@ -189,6 +189,10 @@ type GetPushRecordResponse struct {
 	Record PushRecord `json:"record"`
 } //@name DeviceGetPushRecordResponse
 
+type ClearPushRecordsRequest struct {
+	BeforeTimestamp *int64 `form:"beforeTimestamp" binding:"omitempty,gt=0"`
+}
+
 type ClearPushRecordsResponse struct {
 	DeletedCount int64 `json:"deletedCount"`
 	Success      bool  `json:"success"`

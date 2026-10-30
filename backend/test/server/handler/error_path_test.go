@@ -682,11 +682,10 @@ func TestDeviceHandler_ClearPushRecords_InvalidBeforeTimestamp(t *testing.T) {
 	deviceHandler := handler.NewDeviceHandler(h, mockService, config)
 	router.DELETE("/devices/:deviceKey/push-records", deviceHandler.ClearPushRecords)
 
-	mockService.EXPECT().ClearPushRecords(gomock.Any(), "D001", gomock.Any()).Return(int64(0), nil)
 	req, _ := http.NewRequest("DELETE", "/devices/D001/push-records?beforeTimestamp=abc", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
-	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
 
 func TestDeviceHandler_ClearPushRecords_NegativeBeforeTimestamp(t *testing.T) {
@@ -700,11 +699,10 @@ func TestDeviceHandler_ClearPushRecords_NegativeBeforeTimestamp(t *testing.T) {
 	deviceHandler := handler.NewDeviceHandler(h, mockService, config)
 	router.DELETE("/devices/:deviceKey/push-records", deviceHandler.ClearPushRecords)
 
-	mockService.EXPECT().ClearPushRecords(gomock.Any(), "D001", gomock.Any()).Return(int64(0), nil)
 	req, _ := http.NewRequest("DELETE", "/devices/D001/push-records?beforeTimestamp=-1", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
-	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
 
 func TestDeviceHandler_BatchUpload_NoFile(t *testing.T) {

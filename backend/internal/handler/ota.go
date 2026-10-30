@@ -353,10 +353,16 @@ func (h *OTAHandler) ReportOTAStatus(c *gin.Context) {
 // @Success 200 {object} v1.ApiResponse[v1.GetUpgradeStatisticsResponse] "Successful response"
 // @Router /ota-packages/{uuid}/upgrade-statistics [get]
 func (h *OTAHandler) OTAStats(c *gin.Context) {
+	var req v1.OTAStatisticsRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		v1.HandleError(c, http.StatusBadRequest, err, nil)
+		return
+	}
+
 	var stats service.UpgradeStatistics
 	var err error
-	if batchID := c.Query("batchId"); batchID != "" {
-		stats, err = h.svc.Statistics(c, c.Param("uuid"), batchID)
+	if req.BatchID != "" {
+		stats, err = h.svc.Statistics(c, c.Param("uuid"), req.BatchID)
 	} else {
 		stats, err = h.svc.Statistics(c, c.Param("uuid"))
 	}

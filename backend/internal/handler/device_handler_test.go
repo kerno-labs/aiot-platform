@@ -375,3 +375,29 @@ func TestDeviceHandler_ServiceError(t *testing.T) {
 		t.Fatalf("expected error")
 	}
 }
+
+func TestDeviceHandler_ClearPushRecords_RejectsInvalidQuery(t *testing.T) {
+	for _, value := range []string{"abc", "-1", "0", "9223372036854775808"} {
+		t.Run(value, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			h, _ := newTestDeviceHandler(t, ctrl, viper.New())
+			w := doDeviceReq(h, http.MethodDelete, "/devices/1/push-records?beforeTimestamp="+value, nil, nil)
+			if w.Code != http.StatusBadRequest {
+				t.Fatalf("expected 400, got %d: %s", w.Code, w.Body.String())
+			}
+		})
+	}
+}
+
+func TestDeviceHandler_ClearDesired_RejectsInvalidBody(t *testing.T) {
+	for _, body := range []string{`{bad`, `{"version":"bad"}`} {
+		t.Run(body, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			h, _ := newTestDeviceHandler(t, ctrl, viper.New())
+			w := doDeviceReq(h, http.MethodDelete, "/devices/1/shadow/desired", []byte(body), nil)
+			if w.Code != http.StatusBadRequest {
+				t.Fatalf("expected 400, got %d: %s", w.Code, w.Body.String())
+			}
+		})
+	}
+}

@@ -8,6 +8,11 @@ type CreateOrganizationInvitationReq struct {
 	Invitee string `json:"invitee" binding:"required,email" example:"user@example.com"`
 }
 
+type ListOrganizationMembersRequest struct {
+	PageRequest
+	Query string `form:"q"`
+}
+
 type OrganizationInvitationResp struct {
 	ID                  string   `json:"id" example:"inv-123"`
 	InviterID           string   `json:"inviterId" example:"user-abc"`

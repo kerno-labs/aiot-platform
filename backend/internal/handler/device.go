@@ -511,7 +511,10 @@ func (h *DeviceHandler) Desired(c *gin.Context) {
 // @Router /devices/{deviceKey}/shadow/desired [delete]
 func (h *DeviceHandler) ClearDesired(c *gin.Context) {
 	var req v1.ClearDesiredShadowRequest
-	_ = c.ShouldBindJSON(&req)
+	if err := c.ShouldBindJSON(&req); err != nil {
+		v1.HandleError(c, http.StatusBadRequest, err, nil)
+		return
+	}
 	x, e := h.svc.MutateShadow(c, c.Param("deviceKey"), req.Version, "app", nil, nil, true)
 	if e != nil {
 		v1.HandleError(c, http.StatusInternalServerError, e, nil)
@@ -638,12 +641,16 @@ func (h *DeviceHandler) PushRecord(c *gin.Context) {
 // @Success 200 {object} v1.ApiResponse[v1.ClearPushRecordsResponse] "Successful response"
 // @Router /devices/{deviceKey}/push-records [delete]
 func (h *DeviceHandler) ClearPushRecords(c *gin.Context) {
+	var req v1.ClearPushRecordsRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		v1.HandleError(c, http.StatusBadRequest, err, nil)
+		return
+	}
+
 	var before *time.Time
-	if v := c.Query("beforeTimestamp"); v != "" {
-		if milliseconds, _ := strconv.ParseInt(v, 10, 64); milliseconds > 0 {
-			value := time.UnixMilli(milliseconds)
-			before = &value
-		}
+	if req.BeforeTimestamp != nil {
+		value := time.UnixMilli(*req.BeforeTimestamp)
+		before = &value
 	}
 	deletedCount, err := h.svc.ClearPushRecords(c, c.Param("deviceKey"), before)
 	if err != nil {

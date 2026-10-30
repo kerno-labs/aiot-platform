@@ -246,18 +246,18 @@ func (h *OrganizationHandler) ListMembers(c *gin.Context) {
 		return
 	}
 
-	var pageReq v1.PageRequest
-	if err := c.ShouldBindQuery(&pageReq); err != nil {
+	var req v1.ListOrganizationMembersRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
 		v1.HandleError(c, http.StatusBadRequest, err, nil)
 		return
 	}
-	members, hasNext, err := h.svc.ListMembers(c.Request.Context(), orgID, c.Query("q"), pageReq.Page, pageReq.PageSize)
+	members, hasNext, err := h.svc.ListMembers(c.Request.Context(), orgID, req.Query, req.Page, req.PageSize)
 	if err != nil {
 		v1.HandleError(c, http.StatusBadGateway, err, nil)
 		return
 	}
 
-	v1.HandleSuccess(c, v1.ListOrganizationMembersResp{Items: toMemberRespList(members), Page: pageReq.Page, PageSize: pageReq.PageSize, HasNext: hasNext})
+	v1.HandleSuccess(c, v1.ListOrganizationMembersResp{Items: toMemberRespList(members), Page: req.Page, PageSize: req.PageSize, HasNext: hasNext})
 }
 
 // RemoveMember godoc
