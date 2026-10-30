@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { endOfDay, format, startOfDay, subDays } from 'date-fns'
+import { Cross2Icon } from '@radix-ui/react-icons'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   type ColumnDef,
@@ -99,6 +100,14 @@ export function DeviceEvents({ deviceKey }: { deviceKey?: string }) {
     setDraft(defaultDraft)
     setFilters(buildFilters(defaultDraft, deviceKey))
   }, [deviceKey])
+  const isFiltered = Boolean(
+    draft.keyword ||
+    draft.eventType ||
+    draft.dateRange?.from?.toDateString() !==
+      defaultDraft.dateRange?.from?.toDateString() ||
+    draft.dateRange?.to?.toDateString() !==
+      defaultDraft.dateRange?.to?.toDateString()
+  )
   const [selectedEvent, setSelectedEvent] = useState<DeviceEvent | null>(null)
   const { data, isLoading, isError, refetch } = useDeviceEvents(filters)
   const queryClient = useQueryClient()
@@ -287,19 +296,22 @@ export function DeviceEvents({ deviceKey }: { deviceKey?: string }) {
             <Search className='size-4' />
             {t('common:search')}
           </Button>
+          {isFiltered && (
+            <Button
+              variant='ghost'
+              className='h-8 px-2 lg:px-3'
+              onClick={() => {
+                setDraft(defaultDraft)
+                setFilters(buildFilters(defaultDraft, deviceKey))
+              }}
+            >
+              {t('common:reset')}
+              <Cross2Icon className='ms-2 h-4 w-4' />
+            </Button>
+          )}
           <Button variant='outline' size='sm' onClick={handleRefresh}>
             <RefreshCw className='size-4' />
             {t('common:refresh')}
-          </Button>
-          <Button
-            variant='ghost'
-            size='sm'
-            onClick={() => {
-              setDraft(defaultDraft)
-              setFilters(buildFilters(defaultDraft, deviceKey))
-            }}
-          >
-            {t('common:reset')}
           </Button>
         </div>
         <DataTableViewOptions
