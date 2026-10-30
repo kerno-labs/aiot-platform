@@ -12,7 +12,7 @@ data:
   local.yml: |
     env: {{ .Values.global.environment }}
     mqtt:
-      broker: {{ printf "tcp://%s:%d" "emqx" (int .Values.emqx.service.mqttPort) | quote }}
+      broker: {{ printf "tcp://emqx:%d" (int .Values.emqx.service.mqtt) | quote }}
       client_id: {{ .Values.transportMqtt.config.clientId | quote }}
       username: {{ .Values.transportMqtt.config.username | quote }}
       password: {{ .Values.transportMqtt.config.password | quote }}
@@ -48,6 +48,7 @@ spec:
   template:
     metadata:
       annotations:
+        checksum/mqtt-config: {{ printf "%s:%d" (toJson .Values.transportMqtt.config) (int .Values.emqx.service.mqtt) | sha256sum }}
         checksum/event-config: {{ printf "kafka:%d:aiot-transport-mqtt" (int .Values.kafka.service.clientPort) | sha256sum }}
       labels:
         {{- include "0things.labels" "transport-mqtt" | nindent 8 }}

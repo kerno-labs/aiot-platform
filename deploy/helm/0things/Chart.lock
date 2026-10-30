@@ -1,0 +1,9 @@
+dependencies:
+- name: emqx-enterprise
+  repository: https://repos.emqx.io/charts
+  version: 6.3.1
+- name: cert-manager-alidns-webhook
+  repository: oci://ghcr.io/crazygit/charts
+  version: 0.1.5
+digest: sha256:d3ede31c847cd1ac1c721c163d9f5a6f01e16780046f0c22909f4d09eb924190
+generated: "2026-10-30T20:40:51.914542+08:00"

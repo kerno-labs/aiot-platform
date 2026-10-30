@@ -26,6 +26,7 @@ templates/
 - Kubernetes 1.24 或更高版本。
 - Helm 3。
 - 已安装可用的 StorageClass；如果集群没有默认 StorageClass，需要设置 `global.storageClass`。
+- EMQX 使用官方子 Chart，和业务在同一个 namespace；其存储类型单独设置为 `emqx.persistence.storageClassName`。
 - 已构建并推送 values 中配置的业务镜像。
 - 已在目标数据库中准备应用所需表结构。该 Chart 不执行数据库 migration。
 - 生产公网入口依赖 k3s Traefik 的 `traefik.io/v1alpha1` Middleware CRD 和 cert-manager；先按下文安装集群级组件。
@@ -77,6 +78,14 @@ imagePullSecrets:
 
 ## 安装
 
+EMQX 使用未修改的官方 `emqx-enterprise` Chart 6.3.1，以子 Chart 方式由本 Chart 管理。EMQX、Kafka 和业务服务共用同一个 Helm release 和 namespace；无需单独安装 EMQX，也无需 `namespaceOverride`。依赖包随仓库提供，`Chart.lock` 固定版本。需要恢复依赖时运行：
+
+```bash
+helm dependency build deploy/helm/0things
+```
+
+已有手写 EMQX 部署切换前，先阅读 [EMQX 迁移说明](EMQX-MIGRATION.md)，备份并处理 StatefulSet 和数据卷差异。
+
 ### Test
 
 ```bash
@@ -109,7 +118,7 @@ helm upgrade --install aiot-prod deploy/helm/0things \
   --timeout 15m
 ```
 
-资源使用固定组件名；test 和 prod 必须部署到不同 namespace。Helm release 名称可以区分版本记录，但不会改变资源名。
+资源使用固定组件名；test 和 prod 必须部署到不同 namespace。EMQX 随各自业务 release 安装在对应 namespace，不共用生产 Broker。
 
 ## 外部访问
 
@@ -150,11 +159,11 @@ kubectl -n aiot-prod get pods,svc
 
 再由你确认四个域名的 A 记录及 HTTPS 路由，并在 Cloudflare R2 为 `file.zghub.com` 完成 partial CNAME setup、自定义域名关联与验证；该域名不经过 k3s Ingress，也不使用 `aiot-platform-tls`。不要在新地址可访问前移除旧的 `file.0thing.com`。若证书未就绪，查看 `kubectl -n aiot-prod describe certificate zghub-com` 和同 namespace 的 `order,challenge`。回滚应用使用上文 `helm rollback`；独立安装的 cert-manager 不会随应用 release 回滚或删除。
 
-没有域名或 Ingress Controller 时，可以将对应 Service 的 `type` 设置为 `LoadBalancer`。当前生产 values 通过 Traefik 暴露 HTTP 服务，EMQX 仍保留独立 LoadBalancer（MQTT 不经过这些 HTTP Ingress）。
+没有域名或 Ingress Controller 时，可以将对应 Service 的 `type` 设置为 `LoadBalancer`。生产 values 通过 Traefik 暴露 HTTP 服务，EMQX 可通过 `emqx.service.type: LoadBalancer` 暴露 MQTT（MQTT 不经过这些 HTTP Ingress）。
 
 ## 持久化
 
-PostgreSQL、Redis、Kafka、EMQX 和 TDengine 使用 StatefulSet 的 `volumeClaimTemplates`。容量在环境 values 中分别设置，例如：
+PostgreSQL、Redis、Kafka、EMQX 和 TDengine 使用 StatefulSet 的 `volumeClaimTemplates`。官方 EMQX 子 Chart 默认创建 `emqx-data-emqx-0`，挂载到 `/opt/emqx/data`；原手写模板的卷通常为 `data-emqx-0`，升级不会自动沿用。迁移见 [EMQX 迁移说明](EMQX-MIGRATION.md)。容量在环境 values 中分别设置，例如：
 
 ```yaml
 tdengine:
@@ -169,9 +178,13 @@ tdengine:
 
 ## Kafka 与 EMQX
 
+EMQX 配置集中在业务环境 values 的 `emqx:` 下：副本为 `replicaCount`，端口为 `service.mqtt`、`service.ws`、`service.dashboard`，持久化为 `persistence.storageClassName`、`persistence.accessMode`、`persistence.size`。Dashboard 初始凭据仍通过 `emqx.dashboard.username/password` 创建 Secret，子 Chart 通过 `envFromSecret: emqx` 引用，密码不写入 EMQX ConfigMap。已初始化账号的密码需通过 Dashboard 修改；单改初始密码变量不会轮换现有账号。
+
+EMQX Service 名固定为 `emqx`，MQTT Transport 使用同 namespace 地址 `tcp://emqx:1883`，端口由 `emqx.service.mqtt` 决定。端口或 MQTT 凭据变更会通过配置校验和触发 Transport 滚动更新。EMQX 的升级、回滚和卸载随业务 release 一起管理。
+
 Kafka 默认启用，使用固定版本的官方 `apache/kafka` 镜像和单节点 KRaft 模式，broker 与 controller 运行在同一个 Pod，无须 ZooKeeper。默认数据卷为 10Gi，JVM 堆为 512Mi，新建主题默认 3 个分区，日志保留 168 小时。单节点不提供高可用，不能直接增加 StatefulSet 副本数来扩容；多节点部署需要同时规划 controller quorum、broker ID 和副本策略。
 
-同 namespace 的 EMQX 使用 `kafka:9092` 作为 Bootstrap Hosts。客户端 Service 为 ClusterIP，连接协议为 PLAINTEXT，无认证、无 TLS，供集群内部使用。broker 对客户端发布自己的 Pod DNS 地址 `kafka-0.kafka-headless.<namespace>.svc.cluster.local:9092`，依赖 Kubernetes 默认的 `cluster.local` 集群域名。Headless Service 会在 Pod 就绪前发布地址，以便 KRaft controller 启动时解析自身。
+同 namespace 的 EMQX 使用 `kafka:9092` 作为 Kafka 的 Bootstrap Hosts。客户端 Service 为 ClusterIP，连接协议为 PLAINTEXT，无认证、无 TLS，供集群内部使用。broker 对客户端发布自己的 Pod DNS 地址 `kafka-0.kafka-headless.<namespace>.svc.cluster.local:9092`，依赖 Kubernetes 默认的 `cluster.local` 集群域名。Headless Service 会在 Pod 就绪前发布地址，以便 KRaft controller 启动时解析自身。
 
 可在环境 values 中覆盖 Kafka 配置，例如：
 

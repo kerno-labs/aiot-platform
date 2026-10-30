@@ -15,6 +15,11 @@ sources:
 maintainers:
   - name: 0things
 dependencies:
+  - name: emqx-enterprise
+    alias: emqx
+    version: 6.3.1
+    repository: https://repos.emqx.io/charts
+    condition: emqx.enabled
   - name: cert-manager-alidns-webhook
     alias: alidns-webhook
     version: 0.1.5

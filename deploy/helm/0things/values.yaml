@@ -132,24 +132,33 @@ kafka:
 
 emqx:
   enabled: true
+  fullnameOverride: emqx
+  replicaCount: 1
   image:
     repository: emqx/emqx-enterprise
-    tag: 6.3.1
+    tag: "6.3.1"
     pullPolicy: IfNotPresent
+  clusterDomain: cluster.local
   dashboard:
     username: admin
     password: public
+  envFromSecret: emqx
+  emqxConfig:
+    EMQX_CLUSTER__DISCOVERY_STRATEGY: dns
+    # Read dashboard credentials from the Secret instead of the ConfigMap.
+    EMQX_DASHBOARD__DEFAULT_USERNAME: ""
+    EMQX_DASHBOARD__DEFAULT_PASSWORD: ""
   service:
     type: ClusterIP
-    mqttPort: 1883
-    websocketPort: 8083
-    dashboardPort: 18083
+    mqtt: 1883
+    ws: 8083
+    dashboard: 18083
   persistence:
     enabled: true
-    storageClass: ""
-    accessModes:
-      - ReadWriteOnce
+    storageClassName: ""
+    accessMode: ReadWriteOnce
     size: 5Gi
+    existingClaim: ""
   resources:
     requests:
       cpu: 200m

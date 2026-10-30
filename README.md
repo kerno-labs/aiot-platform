@@ -70,6 +70,8 @@
 
 ### 使用 Helm 部署完整环境
 
+EMQX 使用官方子 Chart，与业务共用一个 Helm release 和 namespace，无需单独安装。已有部署切换到子 Chart 前，请先阅读 [EMQX 迁移说明](deploy/helm/0things/EMQX-MIGRATION.md)。
+
 测试环境和生产环境分别使用独立的 values 文件：
 
 ```bash
