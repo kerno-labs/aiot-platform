@@ -8,11 +8,14 @@
 
 export type GetOrganizationsMembersParams = {
   /**
-   * Page number
+   * Page number (1-based, default 1)
+   * @minimum 1
    */
   page?: number
   /**
-   * Entries per page
+   * Page size (1-100, default 10)
+   * @minimum 1
+   * @maximum 100
    */
   pageSize?: number
   /**

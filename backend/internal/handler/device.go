@@ -637,7 +637,7 @@ func (h *DeviceHandler) PushRecord(c *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param deviceKey path string true "Device key"
-// @Param beforeTimestamp query int false "Cutoff timestamp"
+// @Param request query v1.ClearPushRecordsRequest false "Query parameters"
 // @Success 200 {object} v1.ApiResponse[v1.ClearPushRecordsResponse] "Successful response"
 // @Router /devices/{deviceKey}/push-records [delete]
 func (h *DeviceHandler) ClearPushRecords(c *gin.Context) {

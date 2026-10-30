@@ -43,8 +43,8 @@ type ListOTAPackagesRequest struct {
 } //@name OtaListOTAPackagesRequest
 
 type OTAStatisticsRequest struct {
-	BatchID string `form:"batchId"`
-}
+	BatchID string `form:"batchId"` // Upgrade batch ID
+} //@name OtaOTAStatisticsRequest
 
 type ListDeviceDeploymentsRequest struct {
 	PageRequest

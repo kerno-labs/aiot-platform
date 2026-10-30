@@ -234,9 +234,7 @@ func (h *OrganizationHandler) AcceptInvitation(c *gin.Context) {
 // @Tags Organizations
 // @Produce json
 // @Security Bearer
-// @Param page query int false "Page number" default(1)
-// @Param pageSize query int false "Entries per page" default(10)
-// @Param q query string false "Search users"
+// @Param request query v1.ListOrganizationMembersRequest false "Query parameters"
 // @Success 200 {object} v1.ApiResponse[v1.ListOrganizationMembersResp]
 // @Router /organizations/members [get]
 func (h *OrganizationHandler) ListMembers(c *gin.Context) {

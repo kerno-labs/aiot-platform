@@ -190,8 +190,8 @@ type GetPushRecordResponse struct {
 } //@name DeviceGetPushRecordResponse
 
 type ClearPushRecordsRequest struct {
-	BeforeTimestamp *int64 `form:"beforeTimestamp" binding:"omitempty,gt=0"`
-}
+	BeforeTimestamp *int64 `form:"beforeTimestamp" binding:"omitempty,gt=0" minimum:"1"` // Cutoff timestamp in Unix milliseconds
+} //@name DeviceClearPushRecordsRequest
 
 type ClearPushRecordsResponse struct {
 	DeletedCount int64 `json:"deletedCount"`

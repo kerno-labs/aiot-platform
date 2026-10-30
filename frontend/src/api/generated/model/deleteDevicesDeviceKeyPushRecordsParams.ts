@@ -8,7 +8,8 @@
 
 export type DeleteDevicesDeviceKeyPushRecordsParams = {
   /**
-   * Cutoff timestamp
+   * Cutoff timestamp in Unix milliseconds
+   * @minimum 1
    */
   beforeTimestamp?: number
 }

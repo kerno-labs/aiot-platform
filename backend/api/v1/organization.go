@@ -10,8 +10,8 @@ type CreateOrganizationInvitationReq struct {
 
 type ListOrganizationMembersRequest struct {
 	PageRequest
-	Query string `form:"q"`
-}
+	Query string `form:"q"` // Search users
+} //@name OrganizationListOrganizationMembersRequest
 
 type OrganizationInvitationResp struct {
 	ID                  string   `json:"id" example:"inv-123"`
