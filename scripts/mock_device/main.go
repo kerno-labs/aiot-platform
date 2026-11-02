@@ -30,6 +30,7 @@ const (
 
 func main() {
 	var (
+		productKey   = flag.String("product", "mock_product_01", "Product unique key")
 		deviceKey    = flag.String("device", "mock_sensor_01", "Device unique key")
 		mqttBroker   = flag.String("broker", "tcp://127.0.0.1:1883", "MQTT Broker URI")
 		httpGateway  = flag.String("http", "http://127.0.0.1:8081", "HTTP Transport Gateway URL")
@@ -47,7 +48,7 @@ func main() {
 	defer cancel()
 
 	if *mode == "mqtt" {
-		runMQTTSimulator(ctx, *mqttBroker, *deviceKey, *interval, *triggerAlarm)
+		runMQTTSimulator(ctx, *mqttBroker, *productKey, *deviceKey, *interval, *triggerAlarm)
 	} else {
 		runHTTPSimulator(ctx, *httpGateway, *deviceKey, *interval, *triggerAlarm)
 	}
@@ -63,7 +64,7 @@ func main() {
 }
 
 // runMQTTSimulator 运行基于 MQTT 的全双工设备模拟器（支持遥测上报 + OTA 升级监听）
-func runMQTTSimulator(ctx context.Context, broker, deviceKey string, interval int, triggerAlarm bool) {
+func runMQTTSimulator(ctx context.Context, broker, productKey, deviceKey string, interval int, triggerAlarm bool) {
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker(broker)
 	opts.SetClientID(fmt.Sprintf("mock_%s_%d", deviceKey, time.Now().Unix()))
@@ -79,20 +80,35 @@ func runMQTTSimulator(ctx context.Context, broker, deviceKey string, interval in
 	fmt.Println(ColorGreen + "✓ MQTT 连接成功！" + ColorReset)
 
 	// 1. 订阅 OTA 升级下发主题
-	otaUpgradeTopic := fmt.Sprintf("/sys/%s/ota/device/upgrade", deviceKey)
-	otaProgressTopic := fmt.Sprintf("/sys/%s/ota/device/progress", deviceKey)
+	// EMQX republishes commands to /ota/device/upgrade/{product_key}/{device_name}, and this
+	// simulator does not know its own device_name, so it filters the command payload instead.
+	otaUpgradeTopic := fmt.Sprintf("/ota/device/upgrade/%s/+", productKey)
+	otaProgressTopic := fmt.Sprintf("/sys/ota/device/progress/%s/%s", productKey, deviceKey)
 
 	client.Subscribe(otaUpgradeTopic, 1, func(c mqtt.Client, m mqtt.Message) {
+		var command struct {
+			BatchID    string `json:"batch_id"`
+			DeviceKey  string `json:"device_key"`
+			DeviceName string `json:"device_name"`
+		}
+		if err := json.Unmarshal(m.Payload(), &command); err != nil {
+			fmt.Printf(ColorRed+"✗ [OTA 指令解析失败] %v\n"+ColorReset, err)
+			return
+		}
+		if command.DeviceKey != deviceKey && command.DeviceName != deviceKey {
+			return
+		}
+
 		fmt.Println("\n" + ColorBold + ColorYellow + "📦 [OTA 指令到来] 收到云端下发的固件升级包！" + ColorReset)
 		fmt.Printf(ColorYellow+"  载荷内容: %s\n"+ColorReset, string(m.Payload()))
 
 		// 模拟异步固件升级进度条流转 (10% -> 40% -> 75% -> 100%)
-		go simulateOTAProgress(c, otaProgressTopic)
+		go simulateOTAProgress(c, otaProgressTopic, command.BatchID)
 	})
 	fmt.Printf(ColorGreen+"✓ 已监听 OTA 升级指令主题: %s\n"+ColorReset, otaUpgradeTopic)
 
 	// 2. 定时上报遥测数据
-	telemetryTopic := fmt.Sprintf("/sys/%s/thing/event/property/post", deviceKey)
+	telemetryTopic := fmt.Sprintf("/sys/thing/property/post/%s/%s", productKey, deviceKey)
 	fmt.Printf(ColorGreen+"✓ 遥测上报目标主题: %s (每 %d 秒上报一次)\n\n"+ColorReset, telemetryTopic, interval)
 
 	ticker := time.NewTicker(time.Duration(interval) * time.Second)
@@ -110,11 +126,17 @@ func runMQTTSimulator(ctx context.Context, broker, deviceKey string, interval in
 				humidity := 45.0 + rand.Float64()*25.0
 				voltage := 220.0 + (rand.Float64()-0.5)*5.0
 
+				now := time.Now().UnixMilli()
 				payload := map[string]interface{}{
-					"temperature": float64(int(temp*10)) / 10.0,
-					"humidity":    float64(int(humidity*10)) / 10.0,
-					"voltage":     float64(int(voltage*10)) / 10.0,
-					"timestamp":   time.Now().UnixMilli(),
+					"id":      fmt.Sprintf("%d", now),
+					"version": "1.0",
+					"sys":     map[string]interface{}{"ack": 0},
+					"params": map[string]interface{}{
+						"temperature": map[string]interface{}{"value": float64(int(temp*10)) / 10.0, "time": now},
+						"humidity":    map[string]interface{}{"value": float64(int(humidity*10)) / 10.0, "time": now},
+						"voltage":     map[string]interface{}{"value": float64(int(voltage*10)) / 10.0, "time": now},
+					},
+					"method": "thing.event.property.post",
 				}
 				bytesData, _ := json.Marshal(payload)
 
@@ -132,7 +154,7 @@ func runMQTTSimulator(ctx context.Context, broker, deviceKey string, interval in
 }
 
 // simulateOTAProgress 模拟设备收到固件后的烧录进度回报
-func simulateOTAProgress(client mqtt.Client, progressTopic string) {
+func simulateOTAProgress(client mqtt.Client, progressTopic, batchID string) {
 	steps := []struct {
 		step int
 		desc string
@@ -146,9 +168,10 @@ func simulateOTAProgress(client mqtt.Client, progressTopic string) {
 	for _, s := range steps {
 		time.Sleep(1500 * time.Millisecond)
 		progressPayload, _ := json.Marshal(map[string]interface{}{
-			"step":   s.step,
-			"desc":   s.desc,
-			"module": "default",
+			"batch_id": batchID,
+			"step":     s.step,
+			"desc":     s.desc,
+			"module":   "default",
 		})
 		client.Publish(progressTopic, 1, false, progressPayload)
 		fmt.Printf(ColorGreen+"  🚀 [OTA 进度回报] %d%% - %s\n"+ColorReset, s.step, s.desc)
