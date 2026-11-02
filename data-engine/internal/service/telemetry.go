@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"encoding/json"
+	"fmt"
 
 	"data-engine/internal/event"
 	"data-engine/internal/tsdb"
@@ -34,29 +34,23 @@ func (s *telemetryService) ProcessPropertyPost(ctx context.Context, msg event.De
 		return nil
 	}
 
-	var payloads []event.DevicePropertyPostPayload
-	if err := json.Unmarshal(msg.Payload, &payloads); err != nil {
-		s.logger.Warn("failed to unmarshal normalized telemetry payload",
+	payload, err := decodeAndValidatePropertyPost(msg)
+	if err != nil {
+		s.logger.Warn("failed to decode telemetry payload",
 			zap.String("device_key", msg.DeviceKey),
 			zap.Error(err),
 		)
 		return nil
 	}
 
-	if len(payloads) == 0 {
-		return nil
-	}
-
-	records := make([]tsdb.Record, 0)
-	for _, p := range payloads {
-		for metric, val := range p.Values {
-			records = append(records, tsdb.Record{
-				DeviceKey: msg.DeviceKey,
-				Metric:    metric,
-				Value:     val,
-				Timestamp: p.Timestamp,
-			})
-		}
+	records := make([]tsdb.Record, 0, len(payload.Params))
+	for metric, property := range payload.Params {
+		records = append(records, tsdb.Record{
+			DeviceKey: msg.DeviceKey,
+			Metric:    metric,
+			Value:     property.Value,
+			Timestamp: *property.Time,
+		})
 	}
 
 	if len(records) > 0 {
@@ -68,4 +62,28 @@ func (s *telemetryService) ProcessPropertyPost(ctx context.Context, msg event.De
 
 	s.logger.Debug("extracted & stored telemetry metrics via tsdb.Client", zap.String("device_key", msg.DeviceKey), zap.Int("count", len(records)))
 	return nil
+}
+
+// Validate the entire report before writing any property to storage.
+func decodeAndValidatePropertyPost(msg event.DeviceMessage) (*event.DevicePropertyPostPayload, error) {
+	var payload event.DevicePropertyPostPayload
+	if err := msg.DecodePayload(&payload); err != nil {
+		return nil, err
+	}
+	if len(payload.Params) == 0 {
+		return nil, fmt.Errorf("property report requires non-empty params")
+	}
+	for identifier, property := range payload.Params {
+		if identifier == "" || property.Value == nil {
+			return nil, fmt.Errorf("property %q requires an identifier and non-null value", identifier)
+		}
+		if property.Time == nil {
+			property.Time = &msg.Timestamp
+		}
+		if *property.Time <= 0 {
+			return nil, fmt.Errorf("property %q requires a positive millisecond time", identifier)
+		}
+		payload.Params[identifier] = property
+	}
+	return &payload, nil
 }

@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 
 	"data-engine/internal/event"
 	"data-engine/internal/repository"
@@ -43,7 +42,7 @@ func (s *otaService) HandleProgressReport(ctx context.Context, msg event.DeviceM
 	}
 
 	var payload event.OTAProgressPayload
-	if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+	if err := msg.DecodePayload(&payload); err != nil {
 		s.logger.Warn("failed to unmarshal OTA progress payload",
 			zap.String("device_key", msg.DeviceKey),
 			zap.Error(err),
@@ -83,7 +82,7 @@ func (s *otaService) HandleDeviceInfo(ctx context.Context, msg event.DeviceMessa
 	}
 
 	var payload event.OTAInformPayload
-	if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+	if err := msg.DecodePayload(&payload); err != nil {
 		s.logger.Warn("failed to unmarshal OTA device info payload",
 			zap.String("device_key", msg.DeviceKey),
 			zap.Error(err),

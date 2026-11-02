@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"data-engine/internal/event"
@@ -49,7 +48,7 @@ func (s *eventService) HandleEvent(ctx context.Context, msg event.DeviceMessage)
 	}
 
 	var payload event.DeviceEventPayload
-	if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+	if err := msg.DecodePayload(&payload); err != nil {
 		s.logger.Warn("failed to unmarshal device event payload",
 			zap.String("device_key", msg.DeviceKey),
 			zap.Error(err),

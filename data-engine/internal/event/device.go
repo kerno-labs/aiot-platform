@@ -1,6 +1,9 @@
 package event
 
-import "encoding/json"
+import (
+	"bytes"
+	"encoding/json"
+)
 
 // MessageType represents the classification of device uplink messages.
 type MessageType string
@@ -44,13 +47,17 @@ func (t Transport) String() string {
 	return string(t)
 }
 
-// DevicePropertyPostPayload represents ThingsBoard-standard telemetry/property uplink payload.
-// Supports:
-// 1. Timestamped format: {"ts": 1451649600512, "values": {"temperature": 42.2, "humidity": 70}}
-// 2. Flat format: {"temperature": 42.2, "humidity": 70}
+// DevicePropertyPostPayload is an Alink property report. Each property owns its value and sample time.
 type DevicePropertyPostPayload struct {
-	Timestamp int64                  `json:"ts,omitempty"`     // Unix millisecond timestamp (optional)
-	Values    map[string]interface{} `json:"values,omitempty"` // Property key-value pairs
+	ID      string                         `json:"id"`
+	Version string                         `json:"version"`
+	Params  map[string]DevicePropertyValue `json:"params"`
+	Method  string                         `json:"method"`
+}
+
+type DevicePropertyValue struct {
+	Value interface{} `json:"value"`
+	Time  *int64      `json:"time,omitempty"` // Omitted sample time uses the envelope receive time.
 }
 
 // DeviceEventPayload defines the standard device event report payload structure.
@@ -70,4 +77,18 @@ type DeviceMessage struct {
 	Payload     json.RawMessage   `json:"payload" validate:"required"`
 	Timestamp   int64             `json:"timestamp" validate:"required,gt=0"` // Unix millisecond timestamp
 	Headers     map[string]string `json:"headers,omitempty"`
+}
+
+// DecodePayload accepts both native EMQX payload strings and existing JSON bodies.
+// Keep the original payload intact so downstream consumers can inspect its wire form.
+func (m DeviceMessage) DecodePayload(target any) error {
+	data := bytes.TrimSpace(m.Payload)
+	if len(data) > 0 && data[0] == '"' {
+		var text string
+		if err := json.Unmarshal(data, &text); err != nil {
+			return err
+		}
+		data = []byte(text)
+	}
+	return json.Unmarshal(data, target)
 }

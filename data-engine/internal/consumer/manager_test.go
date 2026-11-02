@@ -5,14 +5,26 @@ import (
 	"testing"
 
 	"data-engine/internal/event"
-	"data-engine/internal/tsdb"
 	"data-engine/internal/handler"
 	"data-engine/internal/service"
+	"data-engine/internal/tsdb"
 
 	"github.com/ThreeDotsLabs/watermill"
+	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/ThreeDotsLabs/watermill/pubsub/gochannel"
+	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 )
+
+type topicRecordingSubscriber struct {
+	message.Subscriber
+	topics []string
+}
+
+func (s *topicRecordingSubscriber) Subscribe(ctx context.Context, topic string) (<-chan *message.Message, error) {
+	s.topics = append(s.topics, topic)
+	return s.Subscriber.Subscribe(ctx, topic)
+}
 
 func TestManager_Start(t *testing.T) {
 	logger := zap.NewNop()
@@ -25,7 +37,8 @@ func TestManager_Start(t *testing.T) {
 	pubSub := gochannel.NewGoChannel(gochannel.Config{}, watermill.NopLogger{})
 	defer pubSub.Close()
 
-	eventConsumer := event.NewConsumer(pubSub, logger)
+	subscriber := &topicRecordingSubscriber{Subscriber: pubSub}
+	eventConsumer := event.NewConsumer(subscriber, logger)
 	telemetryConsumer := NewTelemetryConsumer(handler.NewTelemetryHandler(telemetryService, logger))
 	eventConsumerHandler := NewEventConsumer(handler.NewEventHandler(eventService, logger))
 	otaHandler := handler.NewOTAHandler(otaService, logger)
@@ -38,4 +51,7 @@ func TestManager_Start(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error starting manager: %v", err)
 	}
+	require.ElementsMatch(t, []string{
+		"device-telemetry-report", "device-event-report", "ota-progress-report", "ota-device-info",
+	}, subscriber.topics)
 }

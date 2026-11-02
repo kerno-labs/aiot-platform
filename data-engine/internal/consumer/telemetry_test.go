@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"data-engine/internal/event"
-	"data-engine/internal/tsdb"
 	"data-engine/internal/handler"
 	"data-engine/internal/service"
+	"data-engine/internal/tsdb"
 
 	"go.uber.org/zap"
 )
@@ -21,12 +21,7 @@ func TestTelemetryConsumer_HandlePropertyPost(t *testing.T) {
 
 	consumer := NewTelemetryConsumer(handler.NewTelemetryHandler(telemetryService, logger))
 
-	rawPayload, _ := json.Marshal([]event.DevicePropertyPostPayload{
-		{
-			Timestamp: time.Now().UnixMilli(),
-			Values:    map[string]interface{}{"temperature": 26.5, "humidity": 65},
-		},
-	})
+	rawPayload := json.RawMessage(`{"id":"1","version":"1.0","sys":{"ack":0},"params":{"temperature":{"value":26.5,"time":1730000000000},"humidity":{"value":65,"time":1730000000000}},"method":"thing.event.property.post"}`)
 	msg := &event.DeviceMessage{
 		DeviceKey:   "dev_telemetry_01",
 		ProductKey:  "prod_01",
