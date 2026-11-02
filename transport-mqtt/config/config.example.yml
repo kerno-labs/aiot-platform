@@ -10,13 +10,6 @@ mqtt:
     cert_file: ""
     key_file: ""
 
-event:
-  driver: kafka
-  kafka:
-    brokers:
-      - "127.0.0.1:9092"
-    consumer_group: "aiot-transport-mqtt"
-
 log:
   log_level: debug
   mode: console

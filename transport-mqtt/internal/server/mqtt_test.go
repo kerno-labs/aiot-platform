@@ -2,34 +2,14 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"testing"
 	"time"
 
-	"transport-mqtt/internal/consumer"
-	"transport-mqtt/internal/enum"
-	"transport-mqtt/internal/handler"
-	"transport-mqtt/internal/service"
 	"transport-mqtt/pkg/log"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/spf13/viper"
 )
-
-func TestDownlinkTopicFormatting(t *testing.T) {
-	productKey := "prod_xyz"
-	deviceKey := "test_dev_01"
-
-	propertyTopic := fmt.Sprintf(enum.MQTTTplPropertySet, productKey, deviceKey)
-	if propertyTopic != "/sys/thing/property/set/prod_xyz/test_dev_01" {
-		t.Errorf("unexpected property downlink topic: %s", propertyTopic)
-	}
-
-	otaTopic := fmt.Sprintf(enum.MQTTTplOTAUpgrade, productKey, deviceKey)
-	if otaTopic != "/sys/ota/device/upgrade/prod_xyz/test_dev_01" {
-		t.Errorf("unexpected ota downlink topic: %s", otaTopic)
-	}
-}
 
 func TestMQTTTLSConfig(t *testing.T) {
 	// 1. No TLS configured
@@ -85,42 +65,19 @@ func (m *mockClientForServer) Subscribe(topic string, qos byte, callback mqtt.Me
 	return &mockToken{}
 }
 
-func TestRegisterSubscriptions(t *testing.T) {
+func TestMQTTServerStartDoesNotRegisterForwardingSubscriptions(t *testing.T) {
 	v := viper.New()
 	v.Set("log.mode", "console")
 	v.Set("log.log_level", "error")
 	logger := log.NewLog(v)
-
 	mockClient := &mockClientForServer{}
-	ingressHandler := handler.NewIngressHandler(
-		service.NewDeviceEventService(nil, logger),
-		service.NewOTAService(nil, logger),
-	)
-
-	// 1. Nil handler does nothing
-	RegisterSubscriptions(mockClient, nil, logger)
-	if len(mockClient.subscribedTopics) != 0 {
-		t.Fatalf("expected 0 subscriptions for nil handler, got %d", len(mockClient.subscribedTopics))
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	if err := NewMQTTServer(mockClient, logger).Start(ctx); err != nil {
+		t.Fatal(err)
 	}
-
-	// 2. Telemetry goes directly from EMQX to Kafka; transport only handles events and OTA.
-	RegisterSubscriptions(mockClient, ingressHandler, logger)
-	expected := map[string]bool{
-		enum.MQTTSubEvent:       true,
-		enum.MQTTSubOTAProgress: true,
-		enum.MQTTSubOTAInform:   true,
-	}
-	if len(mockClient.subscribedTopics) != len(expected) {
-		t.Fatalf("expected %d subscriptions, got %v", len(expected), mockClient.subscribedTopics)
-	}
-	for _, topic := range mockClient.subscribedTopics {
-		if !expected[topic] {
-			t.Errorf("unexpected subscription: %s", topic)
-		}
-		delete(expected, topic)
-	}
-	if len(expected) != 0 {
-		t.Errorf("missing subscriptions: %v", expected)
+	if !mockClient.connected || len(mockClient.subscribedTopics) != 0 {
+		t.Fatal("service must connect without registering forwarding subscriptions")
 	}
 }
 
@@ -131,9 +88,8 @@ func TestNewMQTTServer_And_Stop(t *testing.T) {
 	logger := log.NewLog(v)
 
 	mockClient := &mockClientForServer{connected: true}
-	consumerMgr := consumer.NewManager(nil, nil, logger)
 
-	server := NewMQTTServer(mockClient, logger, consumerMgr)
+	server := NewMQTTServer(mockClient, logger)
 	if server == nil {
 		t.Fatalf("expected non-nil server")
 	}
@@ -157,7 +113,7 @@ func TestNewMQTTClient_Configuration(t *testing.T) {
 	v.Set("log.log_level", "error")
 	logger := log.NewLog(v)
 
-	client, err := NewMQTTClient(v, logger, nil)
+	client, err := NewMQTTClient(v, logger)
 	if err != nil {
 		t.Fatalf("unexpected error creating mqtt client: %v", err)
 	}

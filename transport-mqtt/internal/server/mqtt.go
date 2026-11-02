@@ -9,9 +9,6 @@ import (
 	"sync"
 	"time"
 
-	"transport-mqtt/internal/consumer"
-	"transport-mqtt/internal/enum"
-	"transport-mqtt/internal/handler"
 	"transport-mqtt/pkg/log"
 	"transport-mqtt/pkg/server"
 
@@ -21,18 +18,17 @@ import (
 	"go.uber.org/zap"
 )
 
-// MQTTServer manages MQTT broker connections, subscriptions and background event consumers.
+// MQTTServer manages the transport service MQTT connection lifecycle.
 type MQTTServer struct {
-	client          mqtt.Client
-	logger          *log.Logger
-	consumerManager *consumer.Manager
-	mu              sync.Mutex
+	client mqtt.Client
+	logger *log.Logger
+	mu     sync.Mutex
 }
 
 var _ server.Server = (*MQTTServer)(nil)
 
 // NewMQTTClient creates a configured Eclipse Paho MQTT client instance.
-func NewMQTTClient(config *viper.Viper, logger *log.Logger, ingressHandler *handler.IngressHandler) (mqtt.Client, error) {
+func NewMQTTClient(config *viper.Viper, logger *log.Logger) (mqtt.Client, error) {
 	broker := config.GetString("mqtt.broker")
 	if broker == "" {
 		broker = "tcp://127.0.0.1:1883"
@@ -49,9 +45,9 @@ func NewMQTTClient(config *viper.Viper, logger *log.Logger, ingressHandler *hand
 		SetAutoReconnect(true).
 		SetConnectRetry(true).
 		SetKeepAlive(60 * time.Second).
-		SetOnConnectHandler(func(c mqtt.Client) {
-			logger.Info("connected/reconnected to MQTT broker, registering subscriptions...")
-			RegisterSubscriptions(c, ingressHandler, logger)
+		SetOnConnectHandler(func(_ mqtt.Client) {
+			// EMQX owns MQTT/Kafka forwarding; this service must not subscribe here.
+			logger.Info("connected/reconnected to MQTT broker")
 		}).
 		SetConnectionLostHandler(func(_ mqtt.Client, err error) {
 			logger.Warn("MQTT connection lost, waiting for auto-reconnect", zap.Error(err))
@@ -76,11 +72,10 @@ func NewMQTTClient(config *viper.Viper, logger *log.Logger, ingressHandler *hand
 }
 
 // NewMQTTServer initializes the MQTT transport server.
-func NewMQTTServer(client mqtt.Client, logger *log.Logger, consumerManager *consumer.Manager) *MQTTServer {
+func NewMQTTServer(client mqtt.Client, logger *log.Logger) *MQTTServer {
 	return &MQTTServer{
-		client:          client,
-		logger:          logger,
-		consumerManager: consumerManager,
+		client: client,
+		logger: logger,
 	}
 }
 
@@ -114,7 +109,7 @@ func MQTTTLSConfig(config *viper.Viper) (*tls.Config, error) {
 	return tlsConfig, nil
 }
 
-// Start connects to the broker and starts Kafka consumers until context is cancelled.
+// Start keeps the MQTT connection alive until the service is stopped.
 func (s *MQTTServer) Start(ctx context.Context) error {
 	s.mu.Lock()
 	token := s.client.Connect()
@@ -127,14 +122,7 @@ func (s *MQTTServer) Start(ctx context.Context) error {
 		return fmt.Errorf("mqtt broker connect failed: %w", err)
 	}
 
-	s.logger.Info("MQTT server connected and listening...")
-
-	if s.consumerManager != nil {
-		if err := s.consumerManager.Start(ctx); err != nil {
-			s.logger.Error("failed to start Kafka consumer manager", zap.Error(err))
-			return err
-		}
-	}
+	s.logger.Info("MQTT transport service connected")
 
 	<-ctx.Done()
 	return nil
@@ -149,24 +137,4 @@ func (s *MQTTServer) Stop(ctx context.Context) error {
 	}
 	s.logger.Info("MQTT server stopped")
 	return nil
-}
-
-// RegisterSubscriptions registers handlers for incoming device MQTT topics.
-func RegisterSubscriptions(c mqtt.Client, h *handler.IngressHandler, logger *log.Logger) {
-	if h == nil {
-		return
-	}
-	// EMQX forwards telemetry directly to Kafka to avoid duplicate ingestion.
-	subscribeTopicWithClient(c, enum.MQTTSubOTAProgress, h.HandleOTAProgress, logger)
-	subscribeTopicWithClient(c, enum.MQTTSubOTAInform, h.HandleOTAInform, logger)
-	subscribeTopicWithClient(c, enum.MQTTSubEvent, h.HandleDeviceEvent, logger)
-}
-
-func subscribeTopicWithClient(c mqtt.Client, topic string, msgHandler mqtt.MessageHandler, logger *log.Logger) {
-	subToken := c.Subscribe(topic, 0, msgHandler)
-	if subToken.Wait() && subToken.Error() != nil {
-		logger.Error("failed to subscribe to topic", zap.String("topic", topic), zap.Error(subToken.Error()))
-	} else {
-		logger.Info("registered dedicated handler for MQTT topic", zap.String("topic", topic))
-	}
 }
