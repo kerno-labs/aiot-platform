@@ -190,14 +190,14 @@ func (c *TDengineClient) QueryPoints(ctx context.Context, filter QueryFilter) ([
 		startTime = endTime - 24*3600*1000
 	}
 
-	tableName := SanitizeTableName(filter.DeviceKey)
+	escapedDevice := strings.ReplaceAll(filter.DeviceKey, "'", "''")
 	escapedMetric := strings.ReplaceAll(filter.Metric, "'", "''")
 	order := "ASC"
 	if filter.Descending {
 		order = "DESC"
 	}
-	sqlStr := fmt.Sprintf("SELECT ts, property_id, num_value, str_value, bool_value, json_value FROM %s.%s WHERE property_id = '%s' AND ts >= %d AND ts <= %d ORDER BY ts %s LIMIT %d;",
-		c.dbName, tableName, escapedMetric, startTime, endTime, order, limit)
+	sqlStr := fmt.Sprintf("SELECT ts, property_id, num_value, str_value, bool_value, json_value FROM %s.device_properties WHERE device_key = '%s' AND property_id = '%s' AND ts >= %d AND ts <= %d ORDER BY ts %s LIMIT %d;",
+		c.dbName, escapedDevice, escapedMetric, startTime, endTime, order, limit)
 
 	if c.enabled && c.db != nil {
 		rows, err := c.db.QueryContext(ctx, sqlStr)

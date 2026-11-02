@@ -2,8 +2,10 @@ package tsdb
 
 import (
 	"context"
+	"crypto/sha256"
 	"database/sql"
 	"fmt"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -190,14 +192,14 @@ func (c *TDengineClient) QueryPoints(ctx context.Context, filter QueryFilter) ([
 		startTime = endTime - 24*3600*1000
 	}
 
-	tableName := SanitizeTableName(filter.DeviceKey)
+	escapedDevice := strings.ReplaceAll(filter.DeviceKey, "'", "''")
 	escapedMetric := strings.ReplaceAll(filter.Metric, "'", "''")
 	order := "ASC"
 	if filter.Descending {
 		order = "DESC"
 	}
-	sqlStr := fmt.Sprintf("SELECT ts, property_id, num_value, str_value, bool_value, json_value FROM %s.%s WHERE property_id = '%s' AND ts >= %d AND ts <= %d ORDER BY ts %s LIMIT %d;",
-		c.dbName, tableName, escapedMetric, startTime, endTime, order, limit)
+	sqlStr := fmt.Sprintf("SELECT ts, property_id, num_value, str_value, bool_value, json_value FROM %s.device_properties WHERE device_key = '%s' AND property_id = '%s' AND ts >= %d AND ts <= %d ORDER BY ts %s LIMIT %d;",
+		c.dbName, escapedDevice, escapedMetric, startTime, endTime, order, limit)
 
 	if c.enabled && c.db != nil {
 		rows, err := c.db.QueryContext(ctx, sqlStr)
@@ -266,6 +268,11 @@ func (c *TDengineClient) batchFlushLoop() {
 	}
 }
 
+// A subtable represents one device/property time series so simultaneous attributes cannot overwrite each other.
+func propertyTableName(deviceKey, metric string) string {
+	return fmt.Sprintf("p_%x", sha256.Sum256([]byte(deviceKey+"\x00"+metric)))
+}
+
 // flushBatch 通过官方 taosWS 连接池执行批量 SQL 插入
 func (c *TDengineClient) flushBatch(batch []Record) {
 	if len(batch) == 0 {
@@ -276,13 +283,13 @@ func (c *TDengineClient) flushBatch(batch []Record) {
 	sqlBuilder.WriteString("INSERT INTO ")
 
 	for _, rec := range batch {
-		tableName := SanitizeTableName(rec.DeviceKey)
+		tableName := propertyTableName(rec.DeviceKey, rec.Metric)
 		ts := rec.Timestamp
 		numVal, strVal, boolVal, jsonVal := ToTypedValue(rec.Value)
 
 		numStr := "NULL"
 		if numVal != nil {
-			numStr = fmt.Sprintf("%.4f", *numVal)
+			numStr = strconv.FormatFloat(*numVal, 'g', -1, 64)
 		}
 		strStr := "NULL"
 		if strVal != nil {
