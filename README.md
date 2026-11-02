@@ -51,7 +51,7 @@
         │             │ MQTT Broker      │
 ┌───────▼────────┐    │ EMQX :1883       │
 │ transport-mqtt │────▶│                  │
-│ MQTT 设备网关   │    │                  │
+│ MQTT 连接服务   │    │                  │
 └────────────────┘    └──────────────────┘
 
        Kafka :9092 · Redis :6379 · Logto :3001/:3002 · SQLite / MySQL / PostgreSQL
@@ -164,7 +164,7 @@ make mock-device
 make mock-alarm
 ```
 
-设备网关和 Broker 的地址分别通过 `transport-mqtt/config/` 与 backend 的 `device_gateway.mqtt` 配置。默认设备端点 MQTT Host 为 `mqtt.0things.com`，本地 Broker 示例为 `tcp://127.0.0.1:1883`。
+MQTT 连接与设备端点分别通过 `transport-mqtt/config/` 与 backend 的 `device_gateway.mqtt` 配置；MQTT/Kafka 转发见 [EMQX 配置](deploy/helm/0things/emqx/README.md)。默认设备端点 MQTT Host 为 `mqtt.0things.com`，本地 Broker 示例为 `tcp://127.0.0.1:1883`。
 
 ## 常用命令
 
@@ -190,7 +190,7 @@ make mock-alarm
 | [`frontend/`](./frontend) | React 管理控制台，包含设备、产品、规则、告警、组织和 AI Copilot 页面 |
 | [`backend/`](./backend) | Gin REST API、认证、业务服务、数据库迁移和 MCP Server |
 | [`data-engine/`](./data-engine) | 遥测时序数据、设备影子、任务和数据计算服务 |
-| [`transport-mqtt/`](./transport-mqtt) | MQTT 设备接入、事件和 OTA 消息处理 |
+| [`transport-mqtt/`](./transport-mqtt) | MQTT 连接与服务生命周期；消息转发由 EMQX 规则处理 |
 | [`ai-copilot/`](./ai-copilot) | 基于 OpenAI-compatible 模型和 MCP 的 AI Gateway |
 | [`logto/`](./logto) | Logto 身份服务镜像与认证配置说明 |
 | [`deploy/helm/0things/`](./deploy/helm/0things) | 测试与生产环境的 Kubernetes Helm 部署包 |

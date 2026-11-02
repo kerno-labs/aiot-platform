@@ -1,5 +1,5 @@
-{{- if and .Values.transportMqtt.enabled (or (not .Values.emqx.enabled) (not .Values.kafka.enabled)) }}
-{{- fail "transportMqtt.enabled requires emqx and kafka to be enabled" }}
+{{- if and .Values.transportMqtt.enabled (not .Values.emqx.enabled) }}
+{{- fail "transportMqtt.enabled requires emqx to be enabled" }}
 {{- end }}
 {{- if .Values.transportMqtt.enabled }}
 apiVersion: v1
@@ -20,12 +20,6 @@ data:
         ca_file: ""
         cert_file: ""
         key_file: ""
-    event:
-      driver: kafka
-      kafka:
-        brokers:
-          - {{ printf "kafka:%d" (int .Values.kafka.service.clientPort) | quote }}
-        consumer_group: "aiot-transport-mqtt"
     log:
       log_level: {{ ternary "debug" "info" (ne .Values.global.environment "prod") }}
       mode: console
@@ -49,7 +43,6 @@ spec:
     metadata:
       annotations:
         checksum/mqtt-config: {{ printf "%s:%d" (toJson .Values.transportMqtt.config) (int .Values.emqx.service.mqtt) | sha256sum }}
-        checksum/event-config: {{ printf "kafka:%d:aiot-transport-mqtt" (int .Values.kafka.service.clientPort) | sha256sum }}
       labels:
         {{- include "0things.labels" "transport-mqtt" | nindent 8 }}
     spec:

@@ -212,9 +212,9 @@ kubectl -n aiot-prod exec kafka-0 -- \
   /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --list
 ```
 
-在 EMQX Dashboard 的 Integration → Connector 创建 Kafka Producer 连接器，Bootstrap Hosts 填写 `kafka:9092`，关闭认证与 TLS；再创建规则和 Kafka Sink，将选定 MQTT topic 的消息写入 `device-telemetry-report`。具体字段参考 [EMQX Kafka 集成文档](https://docs.emqx.com/en/emqx/latest/data-integration/data-bridge-kafka.html)。
+MQTT 与 Kafka 的双向转发全部由 EMQX 原生规则处理，配置步骤、SQL 和 topic 对照见 [EMQX 转发配置](emqx/README.md)。保留 transport-mqtt 服务、Deployment、ConfigMap 和 MQTT 连接生命周期，仅删除其 MQTT/Kafka 消息转发逻辑。部署新 transport-mqtt 镜像后，再解除旧客户端的临时禁用；不要让仍包含转发代码的旧镜像重连。
 
-backend、data-engine、transport-mqtt 的事件发布和消费统一使用 Kafka。Helm 为三个服务分别配置 `aiot-backend`、`aiot-data-engine`、`aiot-transport-mqtt` 消费组；同一服务的副本共享消费组，不同服务独立消费。新消费组从最早保留的消息开始读取，已有消费组从已提交的 offset 继续处理。事件配置变化会触发应用 Pod 滚动更新，避免 `subPath` 挂载的 ConfigMap 仍使用旧配置。
+backend、data-engine 的事件发布和消费统一使用 Kafka。Helm 为两个服务分别配置 `aiot-backend`、`aiot-data-engine` 消费组；同一服务的副本共享消费组，不同服务独立消费。新消费组从最早保留的消息开始读取，已有消费组从已提交的 offset 继续处理。事件配置变化会触发应用 Pod 滚动更新，避免 `subPath` 挂载的 ConfigMap 仍使用旧配置。
 
 平台沿用 `device-telemetry-report`、`device-event-report`、`ota-upgrade-command-mqtt`、`ota-progress-report` 等业务主题。EMQX 直接写入时，必须将 MQTT 消息转换成对应的事件 JSON（设备上行使用 `DeviceMessage`，包含 `device_key`、`transport`、`message_type`、`payload` 和 `timestamp`），并写入正确的业务主题；任意原始 MQTT JSON 不会自动成为平台事件。
 
