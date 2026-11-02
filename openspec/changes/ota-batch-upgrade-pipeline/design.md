@@ -25,11 +25,13 @@ backend 已有 OTA 批次和设备升级记录，但定时任务只修改数据�
 
 ### 2. 事务提交后由 backend 发布 Kafka 命令
 
-批次和任务在同一事务中写入；成功提交后，backend 向 `ota.upgrade.command.v1` 为每台设备发布命令。backend 不消费任何 OTA Kafka topic；data-engine 完成 MQTT QoS 1 下发后直接写入任务状态。本 MVP 接受数据库提交与 Kafka 发布之间的短暂不一致，不引入 outbox 或自动补发。
+批次和任务在同一事务中写入；成功提交后，backend 向 `ota-upgrade-command-mqtt` 为每台设备发布命令。backend 不消费任何 OTA Kafka topic，只按 Kafka 发布结果写入任务发送状态。本 MVP 接受数据库提交与 Kafka 发布之间的短暂不一致，不引入 outbox 或自动补发。
 
-### 3. data-engine 隔离 Kafka、MQTT 与状态写入
+### 3. EMQX 规则承担 MQTT↔Kafka 双向转发
 
-data-engine 分别消费两个 topic，且消费组互不复用：`ota.upgrade.command.v1` 负责以 QoS 1 向 `/ota/device/upgrade/{productKey}/{deviceName}` 发布并直接记录下发结果；`ota.upgrade.report.v1` 只处理设备 progress/inform。mqtt-transport 只订阅设备 MQTT 上报并生产 Kafka 消息，不消费 Kafka、不下发 MQTT。data-engine 直接连接 backend 共享的 OTA 关系数据库更新设备任务和批次聚合状态。
+MQTT 与 Kafka 之间的转发全部由 EMQX 原生规则完成：Kafka Source 规则以独立消费组消费 `ota-upgrade-command-mqtt`，以 QoS 1 向 `/ota/device/upgrade/{productKey}/{deviceName}` 重发布命令原文；四条上行规则把设备报文封装成 `DeviceMessage` 后写入 `device-telemetry-report`、`device-event-report`、`ota-progress-report` 和 `ota-device-info`。data-engine 只用独立消费组消费 `ota-progress-report` 与 `ota-device-info`，处理设备 progress/inform，并直接连接 backend 共享的 OTA 关系数据库更新设备任务和批次聚合状态；它不持有 MQTT 客户端，也不下发命令。transport-mqtt 只保留 MQTT 连接与启停生命周期，不订阅业务 topic、不消费 Kafka。
+
+**Trade-off：** EMQX 规则不回传单设备的 MQTT 投递结果，因此任务发送状态只反映 backend 的 Kafka 发布结果；设备是否真正收到命令由其 progress/inform 上报确认。规则目前只能在 Dashboard 手工创建（SQL 保存于 `deploy/helm/0things/emqx/`），不随 Helm 部署。
 
 ### 4. `batch_id` 与版本确认构成闭环
 
@@ -42,6 +44,7 @@ progress 和 inform 都必须携带 `batch_id`，并按批次及设备关联任�
 ## Risks / Trade-offs
 
 - [Kafka 发布失败] → 记录失败任务并在 API 中可见；MVP 不自动重试，运维可创建新批次。
+- [EMQX 规则未部署或配置漂移] → 规则不在 Helm 中管理，必须按 `deploy/helm/0things/emqx/README.md` 手工创建并用 Dashboard SQL 模拟验证；缺失时命令与上报都会静默中断。
 - [设备不上报 `batch_id`] → 不能关联新批次，不更新任务，联调前必须冻结协议。
 - [设备离线] → 本期记录未发送/发送失败结果，不做上线补发。
 - [测试环境安全不足] → EMQX 必须启用 TLS、设备认证和 topic ACL，并以未授权客户端验证隔离。
