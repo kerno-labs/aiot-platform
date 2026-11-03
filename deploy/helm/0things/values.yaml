@@ -204,7 +204,7 @@ backend:
   image:
     repository: ccr.ccs.tencentyun.com/0thing-prod/backend
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   service:
     type: ClusterIP
     port: 8000
@@ -249,7 +249,7 @@ mcpServer:
   image:
     repository: ccr.ccs.tencentyun.com/0thing-prod/mcp-server
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   service:
     type: ClusterIP
     port: 8009
@@ -267,7 +267,7 @@ dataEngine:
   image:
     repository: ccr.ccs.tencentyun.com/0thing-prod/data-engine
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   resources:
     requests:
       cpu: 100m
@@ -282,7 +282,7 @@ transportMqtt:
   image:
     repository: ccr.ccs.tencentyun.com/0thing-prod/transport-mqtt
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   config:
     clientId: 0things-transport-mqtt
     # Example: an MQTT username configured in the broker.
@@ -303,7 +303,7 @@ aiCopilot:
   image:
     repository: ccr.ccs.tencentyun.com/0thing-prod/ai-copilot
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   config:
     modelBaseUrl: https://api.openai.com/v1
     modelApiKey: change-me-ai-model-api-key
@@ -325,7 +325,7 @@ frontend:
   image:
     repository: ccr.ccs.tencentyun.com/0thing-prod/frontend
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   service:
     type: ClusterIP
     port: 80
@@ -343,7 +343,7 @@ logto:
   image:
     repository: svhd/logto
     tag: 1.43.0
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   service:
     type: ClusterIP
     appPort: 3001
