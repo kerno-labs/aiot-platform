@@ -10,13 +10,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { CartesianGrid, Legend, Line, LineChart, XAxis, YAxis } from 'recharts'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   type ChartConfig,
   ChartContainer,
@@ -200,9 +194,6 @@ export function PropertyHistoryChart({
                 {t('deviceDetail.propertyTab.historyTitle')}
               </CardTitle>
             </div>
-            <CardDescription className='mt-1'>
-              {t('deviceDetail.propertyTab.historyDescription')}
-            </CardDescription>
           </div>
 
           {/* Chart controls. */}

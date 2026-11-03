@@ -49,16 +49,16 @@ export function PropertyTab() {
 
             <div className='flex items-center gap-3'>
               <Button
-                size='sm'
+                size='icon'
                 variant='outline'
                 onClick={() => refetch()}
                 disabled={isPropertiesLoading || isRefetching}
-                className='h-8 text-xs'
+                className='size-8'
+                aria-label={t('deviceDetail.propertyTab.refresh')}
               >
                 <RotateCw
-                  className={`mr-1.5 size-3.5 ${isRefetching ? 'animate-spin' : ''}`}
+                  className={`size-3.5 ${isRefetching ? 'animate-spin' : ''}`}
                 />
-                {t('deviceDetail.propertyTab.refresh')}
               </Button>
             </div>
           </div>
