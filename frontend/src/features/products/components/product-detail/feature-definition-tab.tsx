@@ -18,6 +18,7 @@ import {
   getProductsProductKeyTsl,
   postProductsProductKeyTsl,
 } from '@/api/generated'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import {
@@ -82,10 +83,10 @@ export function FeatureDefinitionTab({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['product-tsl', productKey] })
-      toast.success(t('productDetail.featureDefinition.status.saveSuccess'))
+      toast.success(t('common:updateSuccess'))
     },
-    onError: () => {
-      toast.error(t('productDetail.featureDefinition.status.saveFailed'))
+    onError: (err) => {
+      toast.error(getApiErrorMessage(err, t('common:updateError')))
     },
   })
 
@@ -96,10 +97,10 @@ export function FeatureDefinitionTab({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['product-tsl', productKey] })
-      toast.success(t('productDetail.featureDefinition.status.deleteSuccess'))
+      toast.success(t('common:deleteSuccess'))
     },
-    onError: () => {
-      toast.error(t('productDetail.featureDefinition.status.deleteFailed'))
+    onError: (err) => {
+      toast.error(getApiErrorMessage(err, t('common:deleteError')))
     },
   })
 
@@ -616,7 +617,7 @@ export function FeatureDefinitionTab({
             <div className='flex items-center gap-2 rounded-md border border-destructive/50 bg-destructive/10 p-3'>
               <AlertCircle className='h-4 w-4 text-destructive' />
               <span className='text-sm text-destructive'>
-                {t('productDetail.featureDefinition.errors.loadFailed')}
+                {t('common:loadError')}
               </span>
             </div>
           )}

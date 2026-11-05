@@ -12,7 +12,7 @@ interface ProductHeaderProps {
 }
 
 export function ProductHeader({ product, onBack }: ProductHeaderProps) {
-  const { t } = useTranslation('deviceManagement')
+  const { t } = useTranslation(['deviceManagement', 'common'])
   const [secretVisible, setSecretVisible] = useState(false)
 
   const toggleSecretVisibility = () => {
@@ -29,13 +29,11 @@ export function ProductHeader({ product, onBack }: ProductHeaderProps) {
           variant='ghost'
           size='icon'
           onClick={onBack}
-          aria-label='Back to product list'
+          aria-label={t('common:back')}
         >
           <ArrowLeft className='h-4 w-4' />
         </Button>
-        <h1 className='text-3xl font-bold'>
-          {product.name || 'Unnamed Product'}
-        </h1>
+        <h1 className='text-3xl font-bold'>{product.name || '-'}</h1>
         <Badge variant={statusVariant}>
           {t(`productDetail.status.${product.status || 'unknown'}`)}
         </Badge>

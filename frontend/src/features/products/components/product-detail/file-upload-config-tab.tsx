@@ -1,8 +1,14 @@
+import { useTranslation } from 'react-i18next'
+
 export function FileUploadConfigTab() {
+  const { t } = useTranslation(['deviceManagement', 'common'])
+
   return (
     <div className='flex h-64 flex-col items-center justify-center space-y-4'>
-      <p className='text-lg text-muted-foreground'>此功能正在开发中</p>
-      <p className='text-sm text-muted-foreground'>文件上传配置</p>
+      <p className='text-lg text-muted-foreground'>{t('common:comingSoon')}</p>
+      <p className='text-sm text-muted-foreground'>
+        {t('productDetail.tabs.upload')}
+      </p>
     </div>
   )
 }

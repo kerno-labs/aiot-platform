@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { AxiosError } from 'axios'
 import { useQueryClient } from '@tanstack/react-query'
 import { javascript } from '@codemirror/lang-javascript'
 import CodeMirror from '@uiw/react-codemirror'
@@ -13,6 +12,7 @@ import {
   usePutProductsKeyProductKeyMessageParser,
 } from '@/api/generated'
 import type { MessageParserExecuteProductMessageParserRequest } from '@/api/generated/model'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -33,14 +33,6 @@ type Panel = 'input' | 'result'
 const javascriptExtensions = [javascript()]
 
 type MessageParsingTabProps = { productKey: string }
-
-function errorMessage(error: unknown) {
-  if (error instanceof AxiosError) {
-    const message = error.response?.data?.message
-    if (typeof message === 'string' && message) return message
-  }
-  return error instanceof Error ? error.message : String(error)
-}
 
 export function MessageParsingTab({ productKey }: MessageParsingTabProps) {
   const { t } = useTranslation(['deviceManagement', 'common'])
@@ -68,11 +60,11 @@ export function MessageParsingTab({ productKey }: MessageParsingTabProps) {
       await queryClient.invalidateQueries({
         queryKey: getGetProductsKeyProductKeyMessageParserQueryKey(productKey),
       })
-      toast.success(t('productDetail.messageParsing.saveSuccess'))
+      toast.success(t('common:updateSuccess'))
     } catch (error) {
       toast.error(
         t('productDetail.messageParsing.saveError', {
-          error: errorMessage(error),
+          error: getApiErrorMessage(error, t('common:updateError')),
         })
       )
     }
@@ -91,7 +83,7 @@ export function MessageParsingTab({ productKey }: MessageParsingTabProps) {
       const output = response.data
       setResult(output?.jsonOutput || output?.rawData || '')
     } catch (error) {
-      setExecutionError(errorMessage(error))
+      setExecutionError(getApiErrorMessage(error, t('common:error')))
     } finally {
       setActivePanel('result')
     }
@@ -106,7 +98,9 @@ export function MessageParsingTab({ productKey }: MessageParsingTabProps) {
         <AlertTitle>
           {t('productDetail.messageParsing.loadErrorTitle')}
         </AlertTitle>
-        <AlertDescription>{errorMessage(parserQuery.error)}</AlertDescription>
+        <AlertDescription>
+          {getApiErrorMessage(parserQuery.error, t('common:loadError'))}
+        </AlertDescription>
       </Alert>
     )
   }
@@ -182,9 +176,7 @@ export function MessageParsingTab({ productKey }: MessageParsingTabProps) {
                   <SelectItem value='device_receive'>
                     {t('productDetail.messageParsing.modes.deviceReceive')}
                   </SelectItem>
-                  <SelectItem value='custom'>
-                    {t('productDetail.messageParsing.modes.custom')}
-                  </SelectItem>
+                  <SelectItem value='custom'>{t('common:custom')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>

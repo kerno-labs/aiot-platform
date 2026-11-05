@@ -58,11 +58,14 @@ export function TopicListTab() {
         </TabsList>
 
         <TabsContent value='basic' className='mt-4'>
-          <BasicTopicsTable topics={processedBasicTopics} />
+          <TopicsTable topics={processedBasicTopics} descPrefix='basicTopics' />
         </TabsContent>
 
         <TabsContent value='thing-model' className='mt-4'>
-          <ThingModelTopicsTable topics={processedThingModelTopics} />
+          <TopicsTable
+            topics={processedThingModelTopics}
+            descPrefix='thingModelTopics'
+          />
         </TabsContent>
 
         <TabsContent value='custom' className='mt-4'>
@@ -73,13 +76,18 @@ export function TopicListTab() {
   )
 }
 
-// 基础通信 Topic 表格
-function BasicTopicsTable({ topics }: { topics: BasicTopic[] }) {
-  const { t } = useTranslation('deviceManagement')
+function TopicsTable({
+  topics,
+  descPrefix,
+}: {
+  topics: Array<BasicTopic | ThingModelTopic>
+  descPrefix: 'basicTopics' | 'thingModelTopics'
+}) {
+  const { t } = useTranslation(['deviceManagement', 'common'])
 
   // 按分类分组
   const groupedTopics = useMemo(() => {
-    const groups: Record<string, BasicTopic[]> = {}
+    const groups: Record<string, Array<BasicTopic | ThingModelTopic>> = {}
     topics.forEach((topic) => {
       if (!groups[topic.category]) {
         groups[topic.category] = []
@@ -101,7 +109,7 @@ function BasicTopicsTable({ topics }: { topics: BasicTopic[] }) {
             <TableHead className='w-32'>
               {t('productDetail.topics.table.permission')}
             </TableHead>
-            <TableHead>{t('productDetail.topics.table.description')}</TableHead>
+            <TableHead>{t('common:description')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -123,70 +131,7 @@ function BasicTopicsTable({ topics }: { topics: BasicTopic[] }) {
                   {t(`productDetail.topics.permissions.${topic.permission}`)}
                 </TableCell>
                 <TableCell className='text-muted-foreground'>
-                  {t(`productDetail.topics.basicTopics.${topic.description}`)}
-                </TableCell>
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-    </div>
-  )
-}
-
-// 物模型通信 Topic 表格
-function ThingModelTopicsTable({ topics }: { topics: ThingModelTopic[] }) {
-  const { t } = useTranslation('deviceManagement')
-
-  // 按分类分组
-  const groupedTopics = useMemo(() => {
-    const groups: Record<string, ThingModelTopic[]> = {}
-    topics.forEach((topic) => {
-      if (!groups[topic.category]) {
-        groups[topic.category] = []
-      }
-      groups[topic.category].push(topic)
-    })
-    return groups
-  }, [topics])
-
-  return (
-    <div className='rounded-md border'>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className='w-32'>
-              {t('productDetail.topics.table.function')}
-            </TableHead>
-            <TableHead>{t('productDetail.topics.table.topicClass')}</TableHead>
-            <TableHead className='w-32'>
-              {t('productDetail.topics.table.permission')}
-            </TableHead>
-            <TableHead>{t('productDetail.topics.table.description')}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Object.entries(groupedTopics).map(([category, categoryTopics]) =>
-            categoryTopics.map((topic, index) => (
-              <TableRow key={`${category}-${index}`}>
-                {index === 0 && (
-                  <TableCell
-                    rowSpan={categoryTopics.length}
-                    className='align-top font-medium'
-                  >
-                    {t(`productDetail.topics.categories.${category}`)}
-                  </TableCell>
-                )}
-                <TableCell className='font-mono text-xs'>
-                  {topic.topic}
-                </TableCell>
-                <TableCell>
-                  {t(`productDetail.topics.permissions.${topic.permission}`)}
-                </TableCell>
-                <TableCell className='text-muted-foreground'>
-                  {t(
-                    `productDetail.topics.thingModelTopics.${topic.description}`
-                  )}
+                  {t(`productDetail.topics.${descPrefix}.${topic.description}`)}
                 </TableCell>
               </TableRow>
             ))
@@ -199,13 +144,11 @@ function ThingModelTopicsTable({ topics }: { topics: ThingModelTopic[] }) {
 
 // 自定义 Topic 表格（待实现）
 function CustomTopicsTable() {
-  const { t } = useTranslation('deviceManagement')
+  const { t } = useTranslation(['deviceManagement', 'common'])
 
   return (
     <div className='flex h-64 flex-col items-center justify-center space-y-4 rounded-md border'>
-      <p className='text-lg text-muted-foreground'>
-        {t('productDetail.topics.custom.placeholder')}
-      </p>
+      <p className='text-lg text-muted-foreground'>{t('common:comingSoon')}</p>
       <p className='text-sm text-muted-foreground'>
         {t('productDetail.topics.custom.description')}
       </p>

@@ -15,7 +15,7 @@ import { ServerSubscriptionTab } from './server-subscription-tab'
 import { TopicListTab } from './topic-list-tab'
 
 export function ProductDetailPage() {
-  const { t } = useTranslation('deviceManagement')
+  const { t } = useTranslation(['deviceManagement', 'common'])
   const { productKey } = Route.useParams()
   const navigate = useNavigate()
   const { data: productResponse, isLoading, error } = useProduct(productKey)
@@ -45,7 +45,7 @@ export function ProductDetailPage() {
           <p className='text-lg text-muted-foreground'>
             {t('productDetail.notFound')}
           </p>
-          <Button onClick={handleBack}>{t('productDetail.backButton')}</Button>
+          <Button onClick={handleBack}>{t('common:back')}</Button>
         </div>
       </Main>
     )
