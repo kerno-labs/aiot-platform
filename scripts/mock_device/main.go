@@ -67,7 +67,7 @@ func main() {
 func runMQTTSimulator(ctx context.Context, broker, productKey, deviceKey string, interval int, triggerAlarm bool) {
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker(broker)
-	opts.SetClientID(fmt.Sprintf("mock_%s_%d", deviceKey, time.Now().Unix()))
+	opts.SetClientID(deviceKey)
 	opts.SetAutoReconnect(true)
 
 	client := mqtt.NewClient(opts)
@@ -107,7 +107,39 @@ func runMQTTSimulator(ctx context.Context, broker, productKey, deviceKey string,
 	})
 	fmt.Printf(ColorGreen+"✓ 已监听 OTA 升级指令主题: %s\n"+ColorReset, otaUpgradeTopic)
 
-	// 2. 定时上报遥测数据
+	// 2. 订阅物模型服务调用下发主题
+	serviceInvokeTopic := fmt.Sprintf("/sys/thing/service/invoke/%s/%s", productKey, deviceKey)
+	serviceReplyTopic := fmt.Sprintf("/sys/thing/service/reply/%s/%s", productKey, deviceKey)
+	client.Subscribe(serviceInvokeTopic, 1, func(c mqtt.Client, m mqtt.Message) {
+		var command struct {
+			ID                string          `json:"id"`
+			ServiceIdentifier string          `json:"service_identifier"`
+			Params            json.RawMessage `json:"params"`
+		}
+		if err := json.Unmarshal(m.Payload(), &command); err != nil {
+			fmt.Printf(ColorRed+"✗ [服务调用解析失败] %v\n"+ColorReset, err)
+			return
+		}
+		fmt.Printf(ColorYellow+"\n⚙️ [服务调用到来] identifier=%s id=%s params=%s\n"+ColorReset, command.ServiceIdentifier, command.ID, string(command.Params))
+
+		var receivedParams any
+		_ = json.Unmarshal(command.Params, &receivedParams)
+		replyBytes, _ := json.Marshal(map[string]any{
+			"id":   command.ID,
+			"code": 200,
+			"data": map[string]any{
+				"executed":       command.ServiceIdentifier,
+				"receivedParams": receivedParams,
+				"repliedAt":      time.Now().UnixMilli(),
+			},
+		})
+		token := c.Publish(serviceReplyTopic, 1, false, replyBytes)
+		token.Wait()
+		fmt.Printf(ColorGreen+"  ✓ [服务调用回执已上报] %s -> %s\n"+ColorReset, serviceReplyTopic, string(replyBytes))
+	})
+	fmt.Printf(ColorGreen+"✓ 已监听服务调用下发主题: %s\n"+ColorReset, serviceInvokeTopic)
+
+	// 3. 定时上报遥测数据
 	telemetryTopic := fmt.Sprintf("/sys/thing/property/post/%s/%s", productKey, deviceKey)
 	fmt.Printf(ColorGreen+"✓ 遥测上报目标主题: %s (每 %d 秒上报一次)\n\n"+ColorReset, telemetryTopic, interval)
 
