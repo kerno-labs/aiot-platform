@@ -1,7 +1,6 @@
 {
   "title": "新建规则链",
   "draft": "未保存草稿",
-  "description": "拖入节点并从输出端连接到下一个节点。",
   "save": "保存规则链",
   "saving": "保存中…",
   "saved": "已保存",
@@ -34,8 +33,6 @@
   "back": "返回",
   "list": {
     "title": "规则链",
-    "description": "管理当前组织的规则链。",
-    "create": "新建规则链",
     "search": "搜索规则链...",
     "empty": "暂无规则链。",
     "loadError": "规则链加载失败。",

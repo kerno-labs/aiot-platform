@@ -43,7 +43,6 @@
       "archived": "Archived"
     },
     "actions": {
-      "create": "Create Package",
       "deploy": "Deploy",
       "cancel": "Cancel Deployment",
       "viewDetails": "View Details",
@@ -52,19 +51,10 @@
     },
     "emptyState": {
       "title": "No upgrade packages",
-      "description": "Get started by creating your first upgrade package.",
-      "action": "Create Package"
+      "description": "Get started by creating your first upgrade package."
     }
   },
   "packageForm": {
-    "create": {
-      "title": "Create Upgrade Package",
-      "description": "Upload a new firmware or software upgrade package."
-    },
-    "edit": {
-      "title": "Edit Upgrade Package",
-      "description": "Update upgrade package details."
-    },
     "fields": {
       "packageName": "Package Name",
       "packageNamePlaceholder": "e.g., firmware-v2.0.0",
@@ -94,13 +84,10 @@
       "fileTooLarge": "File size must be less than 100MB",
       "invalidFileType": "Only .bin, .dav, .tar, .gz, .zip, .gzip, .apk, .tar.gz, .tar.xz, and .pack files are supported",
       "invalidUrl": "Please provide a valid URL"
-    },
-    "submit": "Create Package",
-    "update": "Update Package"
+    }
   },
   "deployForm": {
     "title": "Deploy Upgrade Package",
-    "description": "Configure and deploy upgrade to target devices.",
     "fields": {
       "targetDevices": "Target Devices",
       "allDevices": "All Devices",
@@ -213,7 +200,6 @@
     "emptyDevices": "No devices found",
     "batchUpgrade": {
       "title": "Select Devices to Upgrade",
-      "description": "Select target devices to upgrade for package \"{{packageName}}\".",
       "searchDevices": "Search by device name or key",
       "selectAll": "Select all",
       "selected": "Selected {{count}}",

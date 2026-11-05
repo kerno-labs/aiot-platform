@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslation } from 'react-i18next'
 import { showSubmittedData } from '@/lib/show-submitted-data'
 import { Button } from '@/components/ui/button'
 import {
@@ -17,7 +18,6 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -44,6 +44,7 @@ export function TasksMutateDrawer({
   onOpenChange,
   currentRow,
 }: TaskMutateDrawerProps) {
+  const { t } = useTranslation('common')
   const isUpdate = !!currentRow
 
   const form = useForm<TaskForm>({
@@ -73,13 +74,7 @@ export function TasksMutateDrawer({
     >
       <SheetContent className='flex flex-col'>
         <SheetHeader className='text-start'>
-          <SheetTitle>{isUpdate ? 'Update' : 'Create'} Task</SheetTitle>
-          <SheetDescription>
-            {isUpdate
-              ? 'Update the task by providing necessary info.'
-              : 'Add a new task by providing necessary info.'}
-            Click save when you&apos;re done.
-          </SheetDescription>
+          <SheetTitle>{isUpdate ? t('edit') : t('create')}</SheetTitle>
         </SheetHeader>
         <Form {...form}>
           <form

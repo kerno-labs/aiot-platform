@@ -76,9 +76,7 @@ export function PropertyDialog({
       <DialogContent className='max-h-[90vh] max-w-lg overflow-y-auto p-5'>
         <DialogHeader className='pb-1'>
           <DialogTitle className='text-base font-semibold'>
-            {isEdit
-              ? t('productDetail.featureDefinition.dialog.editTitle')
-              : t('productDetail.featureDefinition.dialog.addTitle')}
+            {isEdit ? t('common:edit') : t('common:create')}
           </DialogTitle>
         </DialogHeader>
 

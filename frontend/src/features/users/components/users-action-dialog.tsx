@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -143,10 +142,9 @@ export function UsersActionDialog({
     >
       <DialogContent className='sm:max-w-lg'>
         <DialogHeader className='text-start'>
-          <DialogTitle>{isEdit ? t('editUser') : t('addUser')}</DialogTitle>
-          <DialogDescription>
-            {isEdit ? t('editUserDesc') : t('addUserDesc')}
-          </DialogDescription>
+          <DialogTitle>
+            {isEdit ? t('common:edit') : t('common:create')}
+          </DialogTitle>
         </DialogHeader>
         <div className='h-105 w-[calc(100%+0.75rem)] overflow-y-auto py-1 pe-3'>
           <Form {...form}>

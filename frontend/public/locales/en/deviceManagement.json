@@ -4,10 +4,6 @@
     "devices": "Devices"
   },
   "productDetail": {
-    "actions": {
-      "create": "Create Product",
-      "edit": "Edit Product"
-    },
     "protocols": {
       "application": "Application protocol"
     },
@@ -266,8 +262,6 @@
         "productKeyRequired": "productKey cannot be empty"
       },
       "dialog": {
-        "addTitle": "Add Custom Feature",
-        "editTitle": "Edit Custom Feature",
         "featureType": "Feature Type",
         "featureTypeTooltip": "Select the feature type to define: Property, Service, or Event",
         "name": "Feature Name",
@@ -401,7 +395,6 @@
       "invoke": {
         "button": "Invoke Service",
         "title": "Invoke Thing Model Service",
-        "description": "Send a thing-model RPC service invocation command to this device.",
         "serviceIdentifierPlaceholder": "e.g. reboot",
         "inputParams": "Input Parameters (JSON)",
         "inputParamsPlaceholder": "{\"delay\": 5}",
@@ -512,8 +505,7 @@
   },
   "devices": {
     "buttons": {
-      "batchUpload": "Batch Upload",
-      "createDevice": "Create Device"
+      "batchUpload": "Batch Upload"
     },
     "columns": {
       "deviceKey": "Device Key",
@@ -531,14 +523,6 @@
     "never": "Never"
   },
   "dialog": {
-    "create": {
-      "title": "Create New Device",
-      "description": "Register a new device. Click save when you're done."
-    },
-    "edit": {
-      "title": "Edit Device",
-      "description": "Update the device details here. Click save when you're done."
-    },
     "form": {
       "placeholder": {
         "name": "My Device #1"
@@ -546,7 +530,6 @@
     },
     "batchUpload": {
       "title": "Batch Upload Devices",
-      "description": "Upload multiple devices from a CSV or Excel file. Download the template to see the required format.",
       "downloadTemplate": "Download Template",
       "fileLabel": "File (CSV, Excel)",
       "uploading": "Uploading...",

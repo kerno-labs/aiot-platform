@@ -203,9 +203,7 @@ export function ProductsActionDialog({
       <SheetContent className='flex flex-col'>
         <SheetHeader className='text-start'>
           <SheetTitle>
-            {isEdit
-              ? t('productDetail.actions.edit')
-              : t('productDetail.actions.create')}
+            {isEdit ? t('common:edit') : t('common:create')}
           </SheetTitle>
         </SheetHeader>
         <Form {...form}>

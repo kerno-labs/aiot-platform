@@ -9,9 +9,8 @@ export function GroupsPrimaryButtons() {
 
   return (
     <div className='flex gap-2'>
-      <Button className='gap-2' onClick={() => setOpen('create')}>
-        <Plus className='h-4 w-4' />
-        <span>{t('create')}</span>
+      <Button className='space-x-1' onClick={() => setOpen('create')}>
+        <span>{t('create')}</span> <Plus size={18} />
       </Button>
     </div>
   )

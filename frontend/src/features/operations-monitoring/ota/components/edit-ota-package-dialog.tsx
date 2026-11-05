@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -38,6 +38,7 @@ export function EditOTAPackageDialog({
   description: initialDescription,
   onSubmit,
 }: EditOTAPackageDialogProps) {
+  const { t } = useTranslation('common')
   const [packageName, setPackageName] = useState(initialPackageName)
   const [description, setDescription] = useState(initialDescription)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -81,10 +82,7 @@ export function EditOTAPackageDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className='sm:max-w-[500px]'>
         <DialogHeader>
-          <DialogTitle>Edit OTA Package</DialogTitle>
-          <DialogDescription>
-            Update package name and description. Click save when you are done.
-          </DialogDescription>
+          <DialogTitle>{t('edit')}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className='space-y-4'>

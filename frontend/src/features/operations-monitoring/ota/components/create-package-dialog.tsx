@@ -20,7 +20,6 @@ import {
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
@@ -38,7 +37,7 @@ import { useOTAPackagesContext } from '../hooks/use-ota-packages-context'
 import { OTAFormMessage as FormMessage } from './ota-form-message'
 
 export function CreatePackageDialog() {
-  const { t } = useTranslation('ota')
+  const { t } = useTranslation(['ota', 'common'])
   const { openDialog, setOpenDialog } = useOTAPackagesContext()
   const createMutation = useCreateOTAPackage()
   const uploadMutation = useUploadOTAFile()
@@ -97,10 +96,7 @@ export function CreatePackageDialog() {
     >
       <SheetContent className='flex w-full flex-col gap-0 p-0 sm:max-w-[480px] lg:max-w-[560px]'>
         <SheetHeader className='px-6 pt-6'>
-          <SheetTitle>{t('packageForm.create.title')}</SheetTitle>
-          <SheetDescription>
-            {t('packageForm.create.description')}
-          </SheetDescription>
+          <SheetTitle>{t('common:create')}</SheetTitle>
         </SheetHeader>
         <div className='flex-1 overflow-y-auto px-6 pb-6'>
           <Form {...form}>
@@ -325,7 +321,7 @@ export function CreatePackageDialog() {
                 >
                   {createMutation.isPending || uploadMutation.isPending
                     ? t('common:saving', { defaultValue: 'Saving...' })
-                    : t('packageForm.submit')}
+                    : t('common:save')}
                 </Button>
               </div>
             </form>

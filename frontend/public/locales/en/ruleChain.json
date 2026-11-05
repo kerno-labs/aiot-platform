@@ -1,7 +1,6 @@
 {
   "title": "New rule chain",
   "draft": "Unsaved draft",
-  "description": "Drag nodes in and connect an output to the next node.",
   "save": "Save rule chain",
   "saving": "Saving…",
   "saved": "Saved",
@@ -34,8 +33,6 @@
   "back": "Back",
   "list": {
     "title": "Rule chains",
-    "description": "Manage rule chains for your organization.",
-    "create": "Create rule chain",
     "search": "Search rule chains...",
     "empty": "No rule chains found.",
     "loadError": "Failed to load rule chains.",

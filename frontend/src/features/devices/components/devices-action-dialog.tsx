@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -125,13 +124,8 @@ export function DevicesActionDialog({
       <DialogContent className='sm:max-w-lg'>
         <DialogHeader className='text-start'>
           <DialogTitle>
-            {isEdit ? t('dialog.edit.title') : t('dialog.create.title')}
+            {isEdit ? t('common:edit') : t('common:create')}
           </DialogTitle>
-          <DialogDescription>
-            {isEdit
-              ? t('dialog.edit.description')
-              : t('dialog.create.description')}
-          </DialogDescription>
         </DialogHeader>
         <div className='w-[calc(100%+0.75rem)] py-1 pe-3'>
           <Form {...form}>

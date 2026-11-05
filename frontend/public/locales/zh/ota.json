@@ -43,7 +43,6 @@
       "archived": "已归档"
     },
     "actions": {
-      "create": "创建包",
       "deploy": "验证",
       "cancel": "取消部署",
       "viewDetails": "查看详情",
@@ -52,19 +51,10 @@
     },
     "emptyState": {
       "title": "暂无升级包",
-      "description": "创建您的第一个升级包开始使用。",
-      "action": "创建升级包"
+      "description": "创建您的第一个升级包开始使用。"
     }
   },
   "packageForm": {
-    "create": {
-      "title": "创建升级包",
-      "description": "上传新的固件或软件升级包。"
-    },
-    "edit": {
-      "title": "编辑升级包",
-      "description": "更新升级包详细信息。"
-    },
     "fields": {
       "packageName": "升级包名称",
       "packageNamePlaceholder": "例如：firmware-v2.0.0",
@@ -94,13 +84,10 @@
       "fileTooLarge": "文件大小必须小于 100MB",
       "invalidFileType": "仅支持 .bin、.dav、.tar、.gz、.zip、.gzip、.apk、.tar.gz、.tar.xz、.pack 格式的文件",
       "invalidUrl": "请提供有效的URL"
-    },
-    "submit": "创建升级包",
-    "update": "更新升级包"
+    }
   },
   "deployForm": {
     "title": "部署升级包",
-    "description": "配置并部署升级到目标设备。",
     "fields": {
       "targetDevices": "目标设备",
       "allDevices": "全部设备",
@@ -213,7 +200,6 @@
     "emptyDevices": "暂无设备",
     "batchUpgrade": {
       "title": "选择升级设备",
-      "description": "为升级包「{{packageName}}」选择需要升级的目标设备。",
       "searchDevices": "搜索设备名称或 Key",
       "selectAll": "全选",
       "selected": "已选 {{count}} 台",

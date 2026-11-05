@@ -4,10 +4,6 @@
     "devices": "设备"
   },
   "productDetail": {
-    "actions": {
-      "create": "新建产品",
-      "edit": "编辑产品"
-    },
     "protocols": {
       "application": "应用协议"
     },
@@ -266,8 +262,6 @@
         "productKeyRequired": "productKey 不能为空"
       },
       "dialog": {
-        "addTitle": "添加自定义功能",
-        "editTitle": "编辑自定义功能",
         "featureType": "功能类型",
         "featureTypeTooltip": "选择要定义的功能类型：属性、服务或事件",
         "name": "功能名称",
@@ -401,7 +395,6 @@
       "invoke": {
         "button": "调用服务",
         "title": "调用物模型服务",
-        "description": "向设备下发物模型服务调用指令（RPC）。",
         "serviceIdentifierPlaceholder": "例如：reboot",
         "inputParams": "输入参数 (JSON)",
         "inputParamsPlaceholder": "{\"delay\": 5}",
@@ -512,8 +505,7 @@
   },
   "devices": {
     "buttons": {
-      "batchUpload": "批量上传",
-      "createDevice": "创建设备"
+      "batchUpload": "批量上传"
     },
     "columns": {
       "deviceKey": "设备标识",
@@ -531,14 +523,6 @@
     "never": "从未"
   },
   "dialog": {
-    "create": {
-      "title": "创建新设备",
-      "description": "注册一个新设备。完成后点击保存。"
-    },
-    "edit": {
-      "title": "编辑设备",
-      "description": "在此更新设备详情。完成后点击保存。"
-    },
     "form": {
       "placeholder": {
         "name": "我的设备 #1"
@@ -546,7 +530,6 @@
     },
     "batchUpload": {
       "title": "批量上传设备",
-      "description": "从 CSV 或 Excel 文件批量上传设备。下载模板查看所需格式。",
       "downloadTemplate": "下载模板",
       "fileLabel": "文件 (CSV, Excel)",
       "uploading": "上传中...",
