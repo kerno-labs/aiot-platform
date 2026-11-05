@@ -12,6 +12,7 @@ import (
 	"aiot-backend/internal/service"
 	mock_service "aiot-backend/test/mocks/service"
 
+	"github.com/dromara/carbon/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"github.com/spf13/viper"
@@ -65,7 +66,17 @@ func TestDeviceHandler_GetDevice(t *testing.T) {
 	mockService := mock_service.NewMockDeviceServiceInterface(ctrl)
 	router := setupDeviceRouter(mockService)
 
-	device := &model.Device{ID: 1, Name: "Test Device"}
+	onlineTs := int64(1791600628000) // 2026-10-10 10:50:28 UTC+8
+	offlineTs := int64(1791604228000) // 2026-10-10 11:50:28 UTC+8
+	device := &model.Device{
+		ID:   1,
+		Name: "Test Device",
+		State: model.DeviceState{
+			State:           model.DeviceStateOffline,
+			LastOnlineTime:  &onlineTs,
+			LastOfflineTime: &offlineTs,
+		},
+	}
 	mockService.EXPECT().DeviceByKey(gomock.Any(), "1").Return(device, nil)
 
 	req, _ := http.NewRequest("GET", "/devices/1", nil)
@@ -73,6 +84,8 @@ func TestDeviceHandler_GetDevice(t *testing.T) {
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Contains(t, w.Body.String(), `"lastOnlineTime":"`+carbon.CreateFromTimestampMilli(onlineTs).ToDateTimeString()+`"`)
+	assert.Contains(t, w.Body.String(), `"lastOfflineTime":"`+carbon.CreateFromTimestampMilli(offlineTs).ToDateTimeString()+`"`)
 }
 
 func TestDeviceHandler_ListDevices(t *testing.T) {

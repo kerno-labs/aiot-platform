@@ -7,6 +7,7 @@ import (
 	"aiot-backend/internal/dto"
 	"aiot-backend/internal/model"
 
+	"github.com/dromara/carbon/v2"
 	"github.com/stretchr/testify/require"
 )
 
@@ -26,5 +27,5 @@ func TestOTAResponseMapping(t *testing.T) {
 	require.EqualValues(t, 4, deployment.DeviceID)
 	require.Equal(t, "P001", deployment.ProductKey)
 	require.Equal(t, "2026-08-25 08:58:57", deployment.CreatedAt)
-	require.Equal(t, "1970-01-01 00:01:40", deployment.LastStatusChangeTime)
+	require.Equal(t, carbon.CreateFromTimestamp(100).ToDateTimeString(), deployment.LastStatusChangeTime)
 }

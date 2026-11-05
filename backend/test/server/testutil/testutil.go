@@ -51,7 +51,7 @@ func SeedTestData(t *testing.T, db *gorm.DB) {
 	device := &model.Device{ID: 1, DeviceKey: "D001", Name: "Test Device", ProductID: 1, OrganizationID: "org-1", Enabled: true}
 	db.Create(device)
 
-	db.Create(&model.DeviceState{ID: 1, DeviceKey: "D001", State: "online"})
+	db.Create(&model.DeviceState{ID: 1, DeviceKey: "D001", State: model.DeviceStateOnline})
 }
 
 func NewTestRepositories(db *gorm.DB) (*repository.DeviceRepository, *repository.ProductRepository, *repository.DeviceTagRepository, *repository.DeviceShadowRepository, *repository.PushRecordRepository) {
@@ -92,7 +92,7 @@ func NewTestThingModelDataService(db *gorm.DB) *service.ThingModelDataService {
 	invocations := repository.NewDeviceServiceInvocationRepository(db)
 	deviceRepo := repository.NewDeviceRepository(db, nil)
 	tslRepo := repository.NewProductTSLRepository(db)
-	return service.NewThingModelDataService(invocations, deviceRepo, tslRepo, nil)
+	return service.NewThingModelDataService(invocations, deviceRepo, tslRepo, nil, nil)
 }
 
 func NewTestProductTSLService(db *gorm.DB) *service.ProductTSLService {

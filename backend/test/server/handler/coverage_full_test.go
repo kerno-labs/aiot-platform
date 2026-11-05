@@ -160,7 +160,7 @@ func TestCoverage_Device_CreateDevice_Error(t *testing.T) {
 func TestCoverage_Device_ListDevices_SearchAndStates(t *testing.T) {
 	cr := newCoverageRouters(t)
 	cr.device.EXPECT().ListDevices(gomock.Any(), gomock.Any()).Return([]model.Device{}, int64(0), nil)
-	w := cr.do("GET", "/devices?searchText=test&states=online", nil)
+	w := cr.do("GET", "/devices?searchText=test&states=1", nil)
 	assert.Equal(t, http.StatusOK, w.Code)
 }
 

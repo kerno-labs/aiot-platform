@@ -26,8 +26,8 @@ type DeviceServiceInterface interface {
 	Device(ctx context.Context, id int64) (*model.Device, error)
 	DeviceByKey(ctx context.Context, key string) (*model.Device, error)
 	ListDevices(ctx context.Context, query dto.ListDevicesQuery) ([]model.Device, int64, error)
-	UpdateDevice(ctx context.Context, id int64, name, state string) (*model.Device, error)
-	UpdateDeviceByKey(ctx context.Context, deviceKey string, name, state string) (*model.Device, error)
+	UpdateDevice(ctx context.Context, id int64, name string, state *int) (*model.Device, error)
+	UpdateDeviceByKey(ctx context.Context, deviceKey string, name string, state *int) (*model.Device, error)
 	Activate(ctx context.Context, id int64) (*model.Device, error)
 	ActivateByKey(ctx context.Context, deviceKey string) (*model.Device, error)
 	SetEnabled(ctx context.Context, id int64, v bool) (*model.Device, error)
@@ -145,7 +145,7 @@ func (s *DeviceService) DeviceByKey(ctx context.Context, key string) (*model.Dev
 func (s *DeviceService) ListDevices(ctx context.Context, query dto.ListDevicesQuery) ([]model.Device, int64, error) {
 	return s.repo.List(ctx, query)
 }
-func (s *DeviceService) UpdateDevice(ctx context.Context, id int64, name, state string) (*model.Device, error) {
+func (s *DeviceService) UpdateDevice(ctx context.Context, id int64, name string, state *int) (*model.Device, error) {
 	d, err := s.Device(ctx, id)
 	if err != nil {
 		return nil, err
@@ -153,18 +153,22 @@ func (s *DeviceService) UpdateDevice(ctx context.Context, id int64, name, state 
 	if name != "" {
 		d.Name = name
 	}
-	if state != "" && state != d.State.State {
-		valid := map[string][]string{"inactive": {"offline"}, "offline": {"online"}, "online": {"offline"}}
+	if state != nil && *state != d.State.State {
+		valid := map[int][]int{
+			model.DeviceStateInactive: {model.DeviceStateOffline},
+			model.DeviceStateOffline:  {model.DeviceStateOnline},
+			model.DeviceStateOnline:   {model.DeviceStateOffline},
+		}
 		ok := false
 		for _, v := range valid[d.State.State] {
-			if v == state {
+			if v == *state {
 				ok = true
 			}
 		}
 		if !ok {
 			return nil, errors.New("invalid status transition")
 		}
-		d.State.State = state
+		d.State.State = *state
 	}
 	err = s.repo.Save(ctx, d)
 	if err != nil {
@@ -172,7 +176,7 @@ func (s *DeviceService) UpdateDevice(ctx context.Context, id int64, name, state 
 	}
 	return s.Device(ctx, id)
 }
-func (s *DeviceService) UpdateDeviceByKey(ctx context.Context, deviceKey string, name, state string) (*model.Device, error) {
+func (s *DeviceService) UpdateDeviceByKey(ctx context.Context, deviceKey string, name string, state *int) (*model.Device, error) {
 	d, err := s.DeviceByKey(ctx, deviceKey)
 	if err != nil {
 		return nil, err
@@ -184,10 +188,11 @@ func (s *DeviceService) Activate(ctx context.Context, id int64) (*model.Device, 
 	if err != nil {
 		return nil, err
 	}
-	if d.State.State != "inactive" {
+	if d.State.State != model.DeviceStateInactive {
 		return nil, errors.New("device already activated")
 	}
-	return s.UpdateDevice(ctx, id, "", "offline")
+	offline := model.DeviceStateOffline
+	return s.UpdateDevice(ctx, id, "", &offline)
 }
 func (s *DeviceService) ActivateByKey(ctx context.Context, deviceKey string) (*model.Device, error) {
 	d, err := s.DeviceByKey(ctx, deviceKey)

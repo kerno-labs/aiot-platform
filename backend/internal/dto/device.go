@@ -5,8 +5,7 @@ type ListDevicesQuery struct {
 	Page      int
 	PageSize  int
 	ProductID int64
-	States    []string
+	States    []int
 	Enabled   *bool
 	Search    string
 }
-

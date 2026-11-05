@@ -399,7 +399,7 @@ func (mr *MockDeviceServiceInterfaceMockRecorder) Telemetry(ctx, key interface{}
 }
 
 // UpdateDevice mocks base method.
-func (m *MockDeviceServiceInterface) UpdateDevice(ctx context.Context, id int64, name, state string) (*model.Device, error) {
+func (m *MockDeviceServiceInterface) UpdateDevice(ctx context.Context, id int64, name string, state *int) (*model.Device, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateDevice", ctx, id, name, state)
 	ret0, _ := ret[0].(*model.Device)
@@ -414,7 +414,7 @@ func (mr *MockDeviceServiceInterfaceMockRecorder) UpdateDevice(ctx, id, name, st
 }
 
 // UpdateDeviceByKey mocks base method.
-func (m *MockDeviceServiceInterface) UpdateDeviceByKey(ctx context.Context, deviceKey, name, state string) (*model.Device, error) {
+func (m *MockDeviceServiceInterface) UpdateDeviceByKey(ctx context.Context, deviceKey, name string, state *int) (*model.Device, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateDeviceByKey", ctx, deviceKey, name, state)
 	ret0, _ := ret[0].(*model.Device)

@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/dromara/carbon/v2"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -25,9 +26,24 @@ func raw(value string) any {
 	return value
 }
 
-func deletedAt(value gorm.DeletedAt) *time.Time {
+func formatStdTime(value time.Time) string {
+	if value.IsZero() {
+		return ""
+	}
+	return carbon.CreateFromStdTime(value.Local()).ToDateTimeString()
+}
+
+func formatStdTimePtr(value *time.Time) *string {
+	if value == nil || value.IsZero() {
+		return nil
+	}
+	formatted := carbon.CreateFromStdTime(value.Local()).ToDateTimeString()
+	return &formatted
+}
+
+func deletedAt(value gorm.DeletedAt) *string {
 	if value.Valid {
-		return &value.Time
+		return formatStdTimePtr(&value.Time)
 	}
 	return nil
 }

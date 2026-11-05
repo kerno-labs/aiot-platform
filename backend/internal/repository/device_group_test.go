@@ -105,8 +105,8 @@ func TestDeviceGroupRepositoryDevices_DynamicRuleWithJSON(t *testing.T) {
 	}
 	require.NoError(t, db.Create(&devices).Error)
 	require.NoError(t, db.Create(&[]model.DeviceState{
-		{ID: 1, DeviceKey: "device-1", State: "online"},
-		{ID: 2, DeviceKey: "device-2", State: "offline"},
+		{ID: 1, DeviceKey: "device-1", State: model.DeviceStateOnline},
+		{ID: 2, DeviceKey: "device-2", State: model.DeviceStateOffline},
 	}).Error)
 	require.NoError(t, db.Create(&[]model.DeviceTag{
 		{DeviceID: 1, Key: "location", Value: "floor1"},
@@ -120,7 +120,7 @@ func TestDeviceGroupRepositoryDevices_DynamicRuleWithJSON(t *testing.T) {
 		ID:             1,
 		OrganizationID: "org-1",
 		Type:           "dynamic",
-		Rule:           `{"state":"online"}`,
+		Rule:           `{"state":1}`,
 	}
 	list, total, err := repo.Devices(tenant.WithOrganization(context.Background(), "org-1"), dto.ListDeviceGroupDevicesQuery{
 		GroupID:   group.ID,
@@ -154,7 +154,7 @@ func TestDeviceGroupRepositoryDevices_DynamicRuleWithJSON(t *testing.T) {
 		ID:             3,
 		OrganizationID: "org-1",
 		Type:           "dynamic",
-		Rule:           `{"state":["online","offline"]}`,
+		Rule:           `{"state":[1,0]}`,
 	}
 	listArr, totalArr, err := repo.Devices(tenant.WithOrganization(context.Background(), "org-1"), dto.ListDeviceGroupDevicesQuery{
 		GroupID:   groupArray.ID,

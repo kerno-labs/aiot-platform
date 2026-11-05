@@ -34,7 +34,7 @@ func newThingModelDataSvc(t *testing.T) (*ThingModelDataService, *gorm.DB, conte
 	invocations := repository.NewDeviceServiceInvocationRepository(db)
 	devices := repository.NewDeviceRepository(db, nil)
 	tsls := repository.NewProductTSLRepository(db)
-	svc := NewThingModelDataService(invocations, devices, tsls, nil)
+	svc := NewThingModelDataService(invocations, devices, tsls, nil, nil)
 
 	ctx := tenant.WithOrganization(context.Background(), "org-1")
 	return svc, db, ctx

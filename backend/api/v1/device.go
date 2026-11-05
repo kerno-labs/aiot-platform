@@ -11,7 +11,7 @@ type CreateDeviceRequest struct {
 
 type UpdateDeviceRequest struct {
 	Name  string `json:"name"`
-	State string `json:"state"`
+	State *int   `json:"state"`
 } //@name DeviceUpdateDeviceRequest
 
 type SetDeviceEnabledRequest struct {
@@ -41,10 +41,10 @@ type SimulatePushRequest struct {
 
 type ListDevicesRequest struct {
 	PageRequest
-	ProductID  int64    `form:"productId"`
-	States     []string `form:"states"`
-	Enabled    *bool    `form:"enabled"`
-	SearchText string   `form:"searchText"`
+	ProductID  int64  `form:"productId"`
+	States     []int  `form:"states"`
+	Enabled    *bool  `form:"enabled"`
+	SearchText string `form:"searchText"`
 } //@name DeviceListDevicesRequest
 
 type ListPushRecordsRequest struct {
@@ -60,13 +60,13 @@ type Device struct {
 	ProductID       int64      `json:"productId"`
 	ProductKey      string     `json:"productKey"`
 	ProductName     string     `json:"productName"`
-	State           string     `json:"state"`
+	State           int        `json:"state"`
 	Enabled         bool       `json:"enabled"`
-	LastOnlineTime  *int64     `json:"lastOnlineTime"`
-	LastOfflineTime *int64     `json:"lastOfflineTime"`
-	CreatedAt       time.Time  `json:"createdAt"`
-	UpdatedAt       time.Time  `json:"updatedAt"`
-	DeletedAt       *time.Time `json:"deletedAt,omitempty"`
+	LastOnlineTime  *string    `json:"lastOnlineTime"`
+	LastOfflineTime *string    `json:"lastOfflineTime"`
+	CreatedAt       string     `json:"createdAt"`
+	UpdatedAt       string     `json:"updatedAt"`
+	DeletedAt       *string    `json:"deletedAt,omitempty"`
 } //@name Device
 
 type CreateDeviceResponse struct {
@@ -130,14 +130,14 @@ type Shadow struct {
 } //@name DeviceShadow
 
 type DeviceTag struct {
-	ID        int64      `json:"id"`
-	DeviceID  int64      `json:"deviceId"`
-	Key       string     `json:"key"`
-	Value     string     `json:"value"`
-	Source    string     `json:"source"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
-	DeletedAt *time.Time `json:"deletedAt,omitempty"`
+	ID        int64     `json:"id"`
+	DeviceID  int64     `json:"deviceId"`
+	Key       string    `json:"key"`
+	Value     string    `json:"value"`
+	Source    string    `json:"source"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	DeletedAt *string   `json:"deletedAt,omitempty"`
 } //@name DeviceTag
 
 type ListDeviceTagsResponse struct {

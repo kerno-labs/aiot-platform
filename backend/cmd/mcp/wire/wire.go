@@ -30,9 +30,18 @@ var repositorySet = wire.NewSet(
 	repository.NewTelemetryRepository,
 )
 
+func provideThingModelDataService(
+	invocations *repository.DeviceServiceInvocationRepository,
+	devices *repository.DeviceRepository,
+	tsls *repository.ProductTSLRepository,
+	telemetry *repository.TelemetryRepository,
+) *service.ThingModelDataService {
+	return service.NewThingModelDataService(invocations, devices, tsls, telemetry, nil)
+}
+
 var serviceSet = wire.NewSet(
 	service.NewDeviceService,
-	service.NewThingModelDataService,
+	provideThingModelDataService,
 	service.NewTelemetryService,
 	wire.Bind(new(handler.MCPDeviceService), new(*service.DeviceService)),
 	wire.Bind(new(handler.MCPThingModelService), new(*service.ThingModelDataService)),

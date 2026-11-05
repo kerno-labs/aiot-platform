@@ -64,8 +64,9 @@ func TestIntegrationDeviceService_UpdateDevice_InvalidTransition(t *testing.T) {
 	testutil.SeedTestData(t, db)
 	svc := testutil.NewTestDeviceService(db)
 
-	// Device is "online", trying to go to "inactive" should fail
-	_, err := svc.UpdateDevice(ctx2(), 1, "", "inactive")
+	// Device is online (1), trying to go to inactive (2) should fail
+	inactive := model.DeviceStateInactive
+	_, err := svc.UpdateDevice(ctx2(), 1, "", &inactive)
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "invalid status transition")
 }
@@ -75,10 +76,11 @@ func TestIntegrationDeviceService_UpdateDevice_ValidTransition(t *testing.T) {
 	testutil.SeedTestData(t, db)
 	svc := testutil.NewTestDeviceService(db)
 
-	// Device is "online", can go to "offline"
-	device, err := svc.UpdateDevice(ctx2(), 1, "", "offline")
+	// Device is online (1), can go to offline (0)
+	offline := model.DeviceStateOffline
+	device, err := svc.UpdateDevice(ctx2(), 1, "", &offline)
 	require.NoError(t, err)
-	assert.Equal(t, "offline", device.State.State)
+	assert.Equal(t, model.DeviceStateOffline, device.State.State)
 }
 
 func TestIntegrationDeviceService_ListDevices_NotFound(t *testing.T) {
@@ -406,10 +408,11 @@ func TestIntegrationDeviceService_UpdateDevice_SameState(t *testing.T) {
 	testutil.SeedTestData(t, db)
 	svc := testutil.NewTestDeviceService(db)
 
-	// Device is "online", updating to "online" (same state) should be a no-op
-	device, err := svc.UpdateDevice(ctx2(), 1, "", "online")
+	// Device is online (1), updating to online (same state) should be a no-op
+	online := model.DeviceStateOnline
+	device, err := svc.UpdateDevice(ctx2(), 1, "", &online)
 	require.NoError(t, err)
-	assert.Equal(t, "online", device.State.State)
+	assert.Equal(t, model.DeviceStateOnline, device.State.State)
 }
 
 func TestIntegrationDeviceService_UpdateDevice_OfflineToOnline(t *testing.T) {
@@ -417,13 +420,14 @@ func TestIntegrationDeviceService_UpdateDevice_OfflineToOnline(t *testing.T) {
 	testutil.SeedTestData(t, db)
 	svc := testutil.NewTestDeviceService(db)
 
-	// First set to offline
-	db.Model(&model.DeviceState{}).Where("device_key = ?", "D001").Update("state", "offline")
+	// First set to offline (0)
+	db.Model(&model.DeviceState{}).Where("device_key = ?", "D001").Update("state", model.DeviceStateOffline)
 
-	// Then transition to online
-	device, err := svc.UpdateDevice(ctx2(), 1, "", "online")
+	// Then transition to online (1)
+	online := model.DeviceStateOnline
+	device, err := svc.UpdateDevice(ctx2(), 1, "", &online)
 	require.NoError(t, err)
-	assert.Equal(t, "online", device.State.State)
+	assert.Equal(t, model.DeviceStateOnline, device.State.State)
 }
 
 func TestIntegrationDeviceService_UpdateDevice_InactiveToOnline(t *testing.T) {
@@ -431,11 +435,12 @@ func TestIntegrationDeviceService_UpdateDevice_InactiveToOnline(t *testing.T) {
 	testutil.SeedTestData(t, db)
 	svc := testutil.NewTestDeviceService(db)
 
-	// Set to inactive
-	db.Model(&model.DeviceState{}).Where("device_key = ?", "D001").Update("state", "inactive")
+	// Set to inactive (2)
+	db.Model(&model.DeviceState{}).Where("device_key = ?", "D001").Update("state", model.DeviceStateInactive)
 
 	// Try to go directly to online (invalid: must go through offline)
-	_, err := svc.UpdateDevice(ctx2(), 1, "", "online")
+	online := model.DeviceStateOnline
+	_, err := svc.UpdateDevice(ctx2(), 1, "", &online)
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "invalid status transition")
 }

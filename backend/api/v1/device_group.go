@@ -1,7 +1,5 @@
 package v1
 
-import "time"
-
 type CreateDeviceGroupRequest struct {
 	Name        string `json:"name" binding:"required"`
 	Type        string `json:"type" binding:"required"`
@@ -28,14 +26,14 @@ type ListDeviceGroupDevicesRequest struct {
 }
 
 type DeviceGroup struct {
-	GroupUUID   string     `json:"groupUuid"`
-	Name        string     `json:"name"`
-	Type        string     `json:"type"`
-	Description string     `json:"description"`
-	Rule        string     `json:"rule,omitempty"`
-	DeletedAt   *time.Time `json:"deletedAt,omitempty"`
-	CreatedAt   time.Time  `json:"createdAt"`
-	UpdatedAt   time.Time  `json:"updatedAt"`
+	GroupUUID   string  `json:"groupUuid"`
+	Name        string  `json:"name"`
+	Type        string  `json:"type"`
+	Description string  `json:"description"`
+	Rule        string  `json:"rule,omitempty"`
+	DeletedAt   *string `json:"deletedAt,omitempty"`
+	CreatedAt   string  `json:"createdAt"`
+	UpdatedAt   string  `json:"updatedAt"`
 }
 
 type ListDeviceGroupsResponse struct {

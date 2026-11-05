@@ -30,8 +30,8 @@ func productJSON(product model.Product, count int64) v1.Product {
 			return items
 		}(),
 		OrganizationID: product.OrganizationID,
-		CreatedAt:      product.CreatedAt,
-		UpdatedAt:      product.UpdatedAt,
+		CreatedAt:      formatStdTime(product.CreatedAt),
+		UpdatedAt:      formatStdTime(product.UpdatedAt),
 		DeletedAt:      deletedAt(product.DeletedAt),
 	}
 }

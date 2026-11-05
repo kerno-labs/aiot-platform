@@ -13,6 +13,7 @@ import (
 	"aiot-backend/internal/model"
 	"aiot-backend/internal/service"
 
+	"github.com/dromara/carbon/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
@@ -27,6 +28,14 @@ func NewDeviceHandler(h *Handler, svc service.DeviceServiceInterface, config *vi
 	return &DeviceHandler{Handler: h, svc: svc, config: config}
 }
 
+func formatDeviceTimestampMilli(ts *int64) *string {
+	if ts == nil || *ts <= 0 {
+		return nil
+	}
+	formatted := carbon.CreateFromTimestampMilli(*ts).ToDateTimeString()
+	return &formatted
+}
+
 func deviceJSON(device model.Device) v1.Device {
 	return v1.Device{
 		ID:              device.ID,
@@ -37,10 +46,10 @@ func deviceJSON(device model.Device) v1.Device {
 		ProductName:     device.Product.Name,
 		State:           device.State.State,
 		Enabled:         device.Enabled,
-		LastOnlineTime:  device.State.LastOnlineTime,
-		LastOfflineTime: device.State.LastOfflineTime,
-		CreatedAt:       device.CreatedAt,
-		UpdatedAt:       device.UpdatedAt,
+		LastOnlineTime:  formatDeviceTimestampMilli(device.State.LastOnlineTime),
+		LastOfflineTime: formatDeviceTimestampMilli(device.State.LastOfflineTime),
+		CreatedAt:       formatStdTime(device.CreatedAt),
+		UpdatedAt:       formatStdTime(device.UpdatedAt),
 		DeletedAt:       deletedAt(device.DeletedAt),
 	}
 }

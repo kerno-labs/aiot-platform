@@ -31,7 +31,7 @@ func newDeviceSvc(t *testing.T) (*DeviceService, *gorm.DB, context.Context) {
 	))
 	require.NoError(t, db.Create(&model.Product{ID: 1, ProductKey: "P001", Name: "Test", OrganizationID: "org-1"}).Error)
 	require.NoError(t, db.Create(&model.Device{ID: 1, DeviceKey: "D001", Name: "Test Device", ProductID: 1, OrganizationID: "org-1", Enabled: true}).Error)
-	require.NoError(t, db.Create(&model.DeviceState{ID: 1, DeviceKey: "D001", State: "online"}).Error)
+	require.NoError(t, db.Create(&model.DeviceState{ID: 1, DeviceKey: "D001", State: model.DeviceStateOnline}).Error)
 
 	svc := NewDeviceService(
 		repository.NewDeviceRepository(db, nil),
@@ -119,31 +119,33 @@ func TestDeviceService_ListDevices(t *testing.T) {
 
 func TestDeviceService_UpdateDevice(t *testing.T) {
 	svc, _, ctx := newDeviceSvc(t)
-	d, err := svc.UpdateDevice(ctx, 1, "renamed", "")
+	d, err := svc.UpdateDevice(ctx, 1, "renamed", nil)
 	require.NoError(t, err)
 	require.Equal(t, "renamed", d.Name)
 }
 
 func TestDeviceService_UpdateDevice_StateTransition(t *testing.T) {
 	svc, _, ctx := newDeviceSvc(t)
-	d, err := svc.UpdateDevice(ctx, 1, "", "offline")
+	offline := model.DeviceStateOffline
+	d, err := svc.UpdateDevice(ctx, 1, "", &offline)
 	require.NoError(t, err)
-	require.Equal(t, "offline", d.State.State)
+	require.Equal(t, model.DeviceStateOffline, d.State.State)
 }
 
 func TestDeviceService_UpdateDevice_InvalidTransition(t *testing.T) {
 	svc, _, ctx := newDeviceSvc(t)
-	_, err := svc.UpdateDevice(ctx, 1, "", "inactive")
+	inactive := model.DeviceStateInactive
+	_, err := svc.UpdateDevice(ctx, 1, "", &inactive)
 	require.Error(t, err)
 }
 
 func TestDeviceService_Activate(t *testing.T) {
 	svc, db, ctx := newDeviceSvc(t)
 	require.NoError(t, db.Create(&model.Device{ID: 2, DeviceKey: "D002", Name: "d2", ProductID: 1, OrganizationID: "org-1", Enabled: true}).Error)
-	require.NoError(t, db.Create(&model.DeviceState{ID: 2, DeviceKey: "D002", State: "inactive"}).Error)
+	require.NoError(t, db.Create(&model.DeviceState{ID: 2, DeviceKey: "D002", State: model.DeviceStateInactive}).Error)
 	d, err := svc.Activate(ctx, 2)
 	require.NoError(t, err)
-	require.Equal(t, "offline", d.State.State)
+	require.Equal(t, model.DeviceStateOffline, d.State.State)
 }
 
 func TestDeviceService_Activate_AlreadyActivated(t *testing.T) {

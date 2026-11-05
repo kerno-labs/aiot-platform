@@ -2,8 +2,6 @@
 // device-service/api/product/v1/product.proto.
 package v1
 
-import "time"
-
 type CreateProductRequest struct {
 	Name               string                 `json:"name" binding:"required"`
 	Description        string                 `json:"description"`
@@ -48,9 +46,9 @@ type Product struct {
 	AccessProtocol     string                 `json:"accessProtocol"`
 	Protocols          []ProductProtocolInput `json:"protocols,omitempty"`
 	OrganizationID     string                 `json:"organizationId"`
-	CreatedAt          time.Time              `json:"createdAt"`
-	UpdatedAt          time.Time              `json:"updatedAt"`
-	DeletedAt          *time.Time             `json:"deletedAt,omitempty"`
+	CreatedAt          string                 `json:"createdAt"`
+	UpdatedAt          string                 `json:"updatedAt"`
+	DeletedAt          *string                `json:"deletedAt,omitempty"`
 } //@name Product
 type ProductListItem struct {
 	Product

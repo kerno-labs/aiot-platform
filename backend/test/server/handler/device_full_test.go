@@ -77,7 +77,7 @@ func TestDeviceHandler_UpdateDevice(t *testing.T) {
 	router := setupDeviceRouterFull(mockService)
 
 	device := &model.Device{ID: 1, Name: "Updated Device"}
-	mockService.EXPECT().UpdateDeviceByKey(gomock.Any(), "1", "Updated Device", "").Return(device, nil)
+	mockService.EXPECT().UpdateDeviceByKey(gomock.Any(), "1", "Updated Device", (*int)(nil)).Return(device, nil)
 
 	body, _ := json.Marshal(map[string]string{"name": "Updated Device"})
 	req, _ := http.NewRequest("PUT", "/devices/1", bytes.NewBuffer(body))

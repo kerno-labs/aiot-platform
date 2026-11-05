@@ -85,7 +85,7 @@ func TestIntegrationDeviceService_ListDevices_WithState(t *testing.T) {
 	testutil.SeedTestData(t, db)
 	svc := testutil.NewTestDeviceService(db)
 
-	devices, _, err := svc.ListDevices(ctx(), dto.ListDevicesQuery{Page: 1, PageSize: 10, States: []string{"online"}})
+	devices, _, err := svc.ListDevices(ctx(), dto.ListDevicesQuery{Page: 1, PageSize: 10, States: []int{model.DeviceStateOnline}})
 	require.NoError(t, err)
 	assert.Len(t, devices, 1)
 }
@@ -106,7 +106,7 @@ func TestIntegrationDeviceService_UpdateDevice(t *testing.T) {
 	testutil.SeedTestData(t, db)
 	svc := testutil.NewTestDeviceService(db)
 
-	device, err := svc.UpdateDevice(ctx(), 1, "Updated Device", "")
+	device, err := svc.UpdateDevice(ctx(), 1, "Updated Device", nil)
 	require.NoError(t, err)
 	assert.Equal(t, "Updated Device", device.Name)
 }
@@ -114,7 +114,7 @@ func TestIntegrationDeviceService_UpdateDevice(t *testing.T) {
 func TestIntegrationDeviceService_Activate(t *testing.T) {
 	db := testutil.SetupTestDB(t)
 	testutil.SeedTestData(t, db)
-	db.Model(&model.DeviceState{}).Where("device_key = ?", "D001").Update("state", "inactive")
+	db.Model(&model.DeviceState{}).Where("device_key = ?", "D001").Update("state", model.DeviceStateInactive)
 	svc := testutil.NewTestDeviceService(db)
 
 	device, err := svc.Activate(ctx(), 1)

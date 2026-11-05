@@ -573,7 +573,7 @@ const docTemplate = `{
                     {
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "type": "integer"
                         },
                         "collectionFormat": "csv",
                         "name": "states",
@@ -1630,6 +1630,59 @@ const docTemplate = `{
                         "description": "Successful response",
                         "schema": {
                             "$ref": "#/definitions/ApiResponse-DeviceListServiceInvocationsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/devices/{deviceKey}/thing-model/services/{serviceIdentifier}/invoke": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Persists a service invocation record and dispatches the RPC command to the device over MQTT.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Devices"
+                ],
+                "summary": "Invoke thing-model service on a device",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Device key",
+                        "name": "deviceKey",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Thing-model service identifier",
+                        "name": "serviceIdentifier",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Service input parameters",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/InvokeDeviceServiceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "$ref": "#/definitions/ApiResponse-DeviceInvokeServiceResponse"
                         }
                     }
                 }
@@ -3263,6 +3316,20 @@ const docTemplate = `{
                 }
             }
         },
+        "ApiResponse-DeviceInvokeServiceResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/DeviceInvokeServiceResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "ApiResponse-DeviceListDeviceShadowHistoryResponse": {
             "type": "object",
             "properties": {
@@ -3997,10 +4064,10 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "lastOfflineTime": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "lastOnlineTime": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -4015,7 +4082,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "state": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "updatedAt": {
                     "type": "string"
@@ -4201,6 +4268,14 @@ const docTemplate = `{
             "properties": {
                 "record": {
                     "$ref": "#/definitions/DevicePushRecord"
+                }
+            }
+        },
+        "DeviceInvokeServiceResponse": {
+            "type": "object",
+            "properties": {
+                "invocation": {
+                    "$ref": "#/definitions/DeviceServiceInvocation"
                 }
             }
         },
@@ -4543,7 +4618,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "state": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },
@@ -4585,6 +4660,14 @@ const docTemplate = `{
             "properties": {
                 "ruleChain": {
                     "$ref": "#/definitions/RuleChain"
+                }
+            }
+        },
+        "InvokeDeviceServiceRequest": {
+            "type": "object",
+            "properties": {
+                "inputParams": {
+                    "type": "string"
                 }
             }
         },

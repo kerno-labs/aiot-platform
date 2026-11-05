@@ -78,7 +78,7 @@ func sampleDevice() *model.Device {
 		ID:        1,
 		DeviceKey: "dk1",
 		Product:   model.Product{ProductKey: "pk", Name: "pn"},
-		State:     model.DeviceState{State: "online"},
+		State:     model.DeviceState{State: model.DeviceStateOnline},
 	}
 }
 
@@ -138,7 +138,7 @@ func TestDeviceHandler_ListDevices(t *testing.T) {
 func TestDeviceHandler_UpdateDevice(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	h, m := newTestDeviceHandler(t, ctrl, viper.New())
-	m.EXPECT().UpdateDeviceByKey(gomock.Any(), "1", "n", "").Return(sampleDevice(), nil)
+	m.EXPECT().UpdateDeviceByKey(gomock.Any(), "1", "n", (*int)(nil)).Return(sampleDevice(), nil)
 	w := doDeviceReq(h, http.MethodPut, "/devices/1", []byte(`{"name":"n"}`), nil)
 	if w.Code != http.StatusOK {
 		t.Fatalf("got %d", w.Code)

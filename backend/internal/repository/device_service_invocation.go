@@ -15,6 +15,10 @@ func NewDeviceServiceInvocationRepository(db *gorm.DB) *DeviceServiceInvocationR
 	return &DeviceServiceInvocationRepository{db: db}
 }
 
+func (r *DeviceServiceInvocationRepository) Create(ctx context.Context, item *model.DeviceServiceInvocation) error {
+	return useQuery(r.db).DeviceServiceInvocation.WithContext(ctx).Create(item)
+}
+
 func (r *DeviceServiceInvocationRepository) List(ctx context.Context, query dto.ListDeviceServiceInvocationsQuery) ([]model.DeviceServiceInvocation, int64, error) {
 	q := useQuery(r.db)
 	base := q.DeviceServiceInvocation.WithContext(ctx).Where(q.DeviceServiceInvocation.DeviceID.Eq(query.DeviceID))

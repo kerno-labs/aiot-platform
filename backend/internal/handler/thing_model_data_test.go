@@ -46,6 +46,10 @@ func (f fakeThingModelPropertyService) ListServiceInvocations(context.Context, d
 	return nil, 0, nil
 }
 
+func (f fakeThingModelPropertyService) InvokeService(context.Context, string, string, string) (*model.DeviceServiceInvocation, error) {
+	return nil, f.err
+}
+
 func TestThingModelPropertyHandler_List(t *testing.T) {
 	reportedAt := time.Now()
 	h := NewThingModelDataHandler(baseHandler(t), fakeThingModelPropertyService{properties: []dto.ThingModelProperty{{

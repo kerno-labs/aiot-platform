@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"strings"
 	"time"
 
 	v1 "aiot-backend/api/v1"
@@ -56,7 +57,7 @@ type MCPDevice struct {
 	ProductID   int64  `json:"productId"`
 	ProductKey  string `json:"productKey"`
 	ProductName string `json:"productName"`
-	State       string `json:"state"`
+	State       int    `json:"state"`
 	Enabled     bool   `json:"enabled"`
 }
 
@@ -89,8 +90,8 @@ func (h *MCPHandler) QueryDevices(ctx context.Context, req v1.QueryDevicesReques
 	if req.ProductID != nil {
 		query.ProductID = *req.ProductID
 	}
-	if req.Status != "" {
-		query.States = []string{req.Status}
+	if state, ok := parseMCPDeviceState(req.Status); ok {
+		query.States = []int{state}
 	}
 
 	devices, _, err := h.devices.ListDevices(ctx, query)
@@ -179,6 +180,19 @@ func toolLimit(limit, fallback int) (int, error) {
 		return 0, fmt.Errorf("limit must be between 1 and %d", maxToolLimit)
 	}
 	return limit, nil
+}
+
+func parseMCPDeviceState(status string) (int, bool) {
+	switch strings.ToLower(strings.TrimSpace(status)) {
+	case "0", "offline":
+		return model.DeviceStateOffline, true
+	case "1", "online":
+		return model.DeviceStateOnline, true
+	case "2", "inactive":
+		return model.DeviceStateInactive, true
+	default:
+		return 0, false
+	}
 }
 
 func mcpDevice(device model.Device) MCPDevice {

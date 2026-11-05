@@ -58,8 +58,8 @@ func TestDeviceRepository_TenantIsolation(t *testing.T) {
 	device2 := &model.Device{DeviceKey: "D002", Name: "Tenant two", ProductID: product2.ID, OrganizationID: "org-2"}
 	require.NoError(t, store.Create(device1).Error)
 	require.NoError(t, store.Create(device2).Error)
-	require.NoError(t, store.Create(&model.DeviceState{DeviceKey: device1.DeviceKey, State: "online"}).Error)
-	require.NoError(t, store.Create(&model.DeviceState{DeviceKey: device2.DeviceKey, State: "online"}).Error)
+	require.NoError(t, store.Create(&model.DeviceState{DeviceKey: device1.DeviceKey, State: model.DeviceStateOnline}).Error)
+	require.NoError(t, store.Create(&model.DeviceState{DeviceKey: device2.DeviceKey, State: model.DeviceStateOnline}).Error)
 
 	items, total, err := repo.List(ctx, dto.ListDevicesQuery{Page: 1, PageSize: 20, Search: "Tenant"})
 	require.NoError(t, err)

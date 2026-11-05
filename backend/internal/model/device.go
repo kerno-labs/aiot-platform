@@ -23,10 +23,16 @@ type Device struct {
 
 func (Device) TableName() string { return "devices" }
 
+const (
+	DeviceStateOffline  = 0
+	DeviceStateOnline   = 1
+	DeviceStateInactive = 2
+)
+
 type DeviceState struct {
 	ID              int64  `gorm:"column:id;primaryKey"`
 	DeviceKey       string `gorm:"column:device_key"`
-	State           string `gorm:"column:state"`
+	State           int    `gorm:"column:state"`
 	LastOnlineTime  *int64 `gorm:"column:last_online_time"`
 	LastOfflineTime *int64 `gorm:"column:last_offline_time"`
 	CreatedAt       time.Time

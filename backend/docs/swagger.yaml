@@ -71,6 +71,15 @@ definitions:
       message:
         type: string
     type: object
+  ApiResponse-DeviceInvokeServiceResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/DeviceInvokeServiceResponse'
+      message:
+        type: string
+    type: object
   ApiResponse-DeviceListDeviceShadowHistoryResponse:
     properties:
       code:
@@ -544,9 +553,9 @@ definitions:
       id:
         type: integer
       lastOfflineTime:
-        type: integer
+        type: string
       lastOnlineTime:
-        type: integer
+        type: string
       name:
         type: string
       productId:
@@ -556,7 +565,7 @@ definitions:
       productName:
         type: string
       state:
-        type: string
+        type: integer
       updatedAt:
         type: string
     type: object
@@ -681,6 +690,11 @@ definitions:
     properties:
       record:
         $ref: '#/definitions/DevicePushRecord'
+    type: object
+  DeviceInvokeServiceResponse:
+    properties:
+      invocation:
+        $ref: '#/definitions/DeviceServiceInvocation'
     type: object
   DeviceListDeviceShadowHistoryResponse:
     properties:
@@ -905,7 +919,7 @@ definitions:
       name:
         type: string
       state:
-        type: string
+        type: integer
     type: object
   DeviceUpdateDeviceResponse:
     properties:
@@ -932,6 +946,11 @@ definitions:
     properties:
       ruleChain:
         $ref: '#/definitions/RuleChain'
+    type: object
+  InvokeDeviceServiceRequest:
+    properties:
+      inputParams:
+        type: string
     type: object
   ListRuleChainsResponse:
     properties:
@@ -2146,7 +2165,7 @@ paths:
       - collectionFormat: csv
         in: query
         items:
-          type: string
+          type: integer
         name: states
         type: array
       produces:
@@ -2761,6 +2780,41 @@ paths:
       security:
       - Bearer: []
       summary: List thing-model service invocation records
+      tags:
+      - Devices
+  /devices/{deviceKey}/thing-model/services/{serviceIdentifier}/invoke:
+    post:
+      consumes:
+      - application/json
+      description: Persists a service invocation record and dispatches the RPC command
+        to the device over MQTT.
+      parameters:
+      - description: Device key
+        in: path
+        name: deviceKey
+        required: true
+        type: string
+      - description: Thing-model service identifier
+        in: path
+        name: serviceIdentifier
+        required: true
+        type: string
+      - description: Service input parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/InvokeDeviceServiceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/ApiResponse-DeviceInvokeServiceResponse'
+      security:
+      - Bearer: []
+      summary: Invoke thing-model service on a device
       tags:
       - Devices
   /devices/batch/template:

@@ -101,7 +101,7 @@ func (r *DeviceRepository) Create(ctx context.Context, device *model.Device, cre
 		if err := q.Device.WithContext(ctx).Create(device); err != nil {
 			return err
 		}
-		if err := q.DeviceState.WithContext(ctx).Create(&model.DeviceState{DeviceKey: device.DeviceKey, State: "inactive"}); err != nil {
+		if err := q.DeviceState.WithContext(ctx).Create(&model.DeviceState{DeviceKey: device.DeviceKey, State: model.DeviceStateInactive}); err != nil {
 			return err
 		}
 		return tx.WithContext(ctx).Create(credential).Error
@@ -161,7 +161,7 @@ func (r *DeviceRepository) Statistics(ctx context.Context) (DeviceStatistics, er
 	if total, err = q.Device.WithContext(ctx).Where(q.Device.OrganizationID.Eq(tenant.GetOrganizationID(ctx))).Count(); err != nil {
 		return DeviceStatistics{}, err
 	}
-	for state, target := range map[string]*int64{"online": &online, "offline": &offline, "inactive": &inactive} {
+	for state, target := range map[int]*int64{model.DeviceStateOnline: &online, model.DeviceStateOffline: &offline, model.DeviceStateInactive: &inactive} {
 		count, err := q.Device.WithContext(ctx).Join(q.DeviceState, q.DeviceState.DeviceKey.EqCol(q.Device.DeviceKey)).Where(q.Device.OrganizationID.Eq(tenant.GetOrganizationID(ctx)), q.DeviceState.State.Eq(state)).Count()
 		*target = count
 		if err != nil {

@@ -29,7 +29,7 @@ func newDeviceState(db *gorm.DB, opts ...gen.DOOption) deviceState {
 	_deviceState.ALL = field.NewAsterisk(tableName)
 	_deviceState.ID = field.NewInt64(tableName, "id")
 	_deviceState.DeviceKey = field.NewString(tableName, "device_key")
-	_deviceState.State = field.NewString(tableName, "state")
+	_deviceState.State = field.NewInt(tableName, "state")
 	_deviceState.LastOnlineTime = field.NewInt64(tableName, "last_online_time")
 	_deviceState.LastOfflineTime = field.NewInt64(tableName, "last_offline_time")
 	_deviceState.CreatedAt = field.NewTime(tableName, "created_at")
@@ -46,7 +46,7 @@ type deviceState struct {
 	ALL             field.Asterisk
 	ID              field.Int64
 	DeviceKey       field.String
-	State           field.String
+	State           field.Int
 	LastOnlineTime  field.Int64
 	LastOfflineTime field.Int64
 	CreatedAt       field.Time
@@ -69,7 +69,7 @@ func (d *deviceState) updateTableName(table string) *deviceState {
 	d.ALL = field.NewAsterisk(table)
 	d.ID = field.NewInt64(table, "id")
 	d.DeviceKey = field.NewString(table, "device_key")
-	d.State = field.NewString(table, "state")
+	d.State = field.NewInt(table, "state")
 	d.LastOnlineTime = field.NewInt64(table, "last_online_time")
 	d.LastOfflineTime = field.NewInt64(table, "last_offline_time")
 	d.CreatedAt = field.NewTime(table, "created_at")

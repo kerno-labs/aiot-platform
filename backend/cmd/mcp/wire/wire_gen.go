@@ -37,7 +37,7 @@ func NewWire(viperViper *viper.Viper, logger *log.Logger) (*app.App, func(), err
 	deviceServiceInvocationRepository := repository.NewDeviceServiceInvocationRepository(db)
 	productTSLRepository := repository.NewProductTSLRepository(db)
 	telemetryRepository := repository.NewTelemetryRepository(viperViper, logger)
-	thingModelDataService := service.NewThingModelDataService(deviceServiceInvocationRepository, deviceRepository, productTSLRepository, telemetryRepository)
+	thingModelDataService := provideThingModelDataService(deviceServiceInvocationRepository, deviceRepository, productTSLRepository, telemetryRepository)
 	telemetryService := service.NewTelemetryService(telemetryRepository, logger)
 	mcpHandler := handler.NewMCPHandler(deviceService, thingModelDataService, telemetryService)
 	mcpServer := server.NewMCPServer(viperViper, logger, mcpHandler)
@@ -51,7 +51,16 @@ func NewWire(viperViper *viper.Viper, logger *log.Logger) (*app.App, func(), err
 
 var repositorySet = wire.NewSet(repository.NewDB, repository.NewRedis, repository.NewDeviceRepository, repository.NewProductRepository, repository.NewDeviceTagRepository, repository.NewDeviceShadowRepository, repository.NewPushRecordRepository, repository.NewProductTSLRepository, repository.NewDeviceServiceInvocationRepository, repository.NewTelemetryRepository)
 
-var serviceSet = wire.NewSet(service.NewDeviceService, service.NewThingModelDataService, service.NewTelemetryService, wire.Bind(new(handler.MCPDeviceService), new(*service.DeviceService)), wire.Bind(new(handler.MCPThingModelService), new(*service.ThingModelDataService)), wire.Bind(new(handler.MCPTelemetryService), new(*service.TelemetryService)))
+func provideThingModelDataService(
+	invocations *repository.DeviceServiceInvocationRepository,
+	devices *repository.DeviceRepository,
+	tsls *repository.ProductTSLRepository,
+	telemetry *repository.TelemetryRepository,
+) *service.ThingModelDataService {
+	return service.NewThingModelDataService(invocations, devices, tsls, telemetry, nil)
+}
+
+var serviceSet = wire.NewSet(service.NewDeviceService, provideThingModelDataService, service.NewTelemetryService, wire.Bind(new(handler.MCPDeviceService), new(*service.DeviceService)), wire.Bind(new(handler.MCPThingModelService), new(*service.ThingModelDataService)), wire.Bind(new(handler.MCPTelemetryService), new(*service.TelemetryService)))
 
 func newApp(mcpServer *mcp.Server) *app.App {
 	return app.NewApp(app.WithServer(mcpServer), app.WithName("0things-mcp"))

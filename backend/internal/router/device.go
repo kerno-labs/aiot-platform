@@ -28,6 +28,7 @@ func InitDeviceRouter(deps RouterDeps, r *gin.RouterGroup) {
 	r.POST("/devices/:deviceKey/simulate-push", device.SimulatePush)
 	r.GET("/devices/:deviceKey/push-records", device.PushRecords)
 	r.GET("/devices/:deviceKey/thing-model/service-invocations", thingModelData.ListServiceInvocations)
+	r.POST("/devices/:deviceKey/thing-model/services/:serviceIdentifier/invoke", thingModelData.InvokeService)
 	r.GET("/devices/:deviceKey/thing-model/properties", thingModelData.ListProperties)
 	r.GET("/devices/push-records/:pushRecordId", device.PushRecord)
 	r.DELETE("/devices/:deviceKey/push-records", device.ClearPushRecords)

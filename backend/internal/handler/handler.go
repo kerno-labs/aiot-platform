@@ -4,8 +4,16 @@ import (
 	"aiot-backend/internal/middleware"
 	"aiot-backend/pkg/log"
 
+	"github.com/dromara/carbon/v2"
 	"github.com/gin-gonic/gin"
 )
+
+func init() {
+	carbon.SetDefault(carbon.Default{
+		Layout:   carbon.DateTimeLayout,
+		Timezone: carbon.Local,
+	})
+}
 
 type Handler struct {
 	logger *log.Logger

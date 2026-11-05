@@ -48,8 +48,8 @@ func deviceGroupJSON(group model.DeviceGroup) v1.DeviceGroup {
 		Description: group.Description,
 		Rule:        group.Rule,
 		DeletedAt:   deletedAt(group.DeletedAt),
-		CreatedAt:   group.CreatedAt,
-		UpdatedAt:   group.UpdatedAt,
+		CreatedAt:   formatStdTime(group.CreatedAt),
+		UpdatedAt:   formatStdTime(group.UpdatedAt),
 	}
 }
 

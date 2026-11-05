@@ -152,7 +152,7 @@ func TestOTAService_BatchUpgrade_PublishEvent(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, batch)
 	require.Equal(t, 2, len(mockProd.published))
-	require.Equal(t, event.TopicOTAUpgradeCommandMQTT, mockProd.topics[0])
+	require.Equal(t, event.TopicOTAUpgradeCommand, mockProd.topics[0])
 
 	cmd, ok := mockProd.published[0].(*event.OTAUpgradeCommand)
 	require.True(t, ok)
@@ -189,11 +189,11 @@ func TestOTAService_BatchUpgrade_ProtocolRouting(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, 0, len(mockProd.published))
 
-	// 2. Batch upgrade on MQTT device -> should publish to TopicOTAUpgradeCommandMQTT
+	// 2. Batch upgrade on MQTT device -> should publish to TopicOTAUpgradeCommand
 	pkgMQTT := &model.OTAPackage{PackageName: "fw-mqtt", Version: "1.0.0", ProductID: mqttProd.ID, FileURL: "http://example.com/mqtt.bin"}
 	require.NoError(t, svc.Create(ctx, pkgMQTT, "P_MQTT"))
 	_, err = svc.BatchUpgrade(ctx, pkgMQTT.UUID, []string{"DEV_MQTT"})
 	require.NoError(t, err)
 	require.Equal(t, 1, len(mockProd.published))
-	require.Equal(t, event.TopicOTAUpgradeCommandMQTT, mockProd.topics[0])
+	require.Equal(t, event.TopicOTAUpgradeCommand, mockProd.topics[0])
 }

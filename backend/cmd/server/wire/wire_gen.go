@@ -63,7 +63,7 @@ func NewWire(viperViper *viper.Viper, logger *log.Logger) (*app.App, func(), err
 	deviceEventHandler := handler.NewDeviceEventHandler(handlerHandler, deviceEventService)
 	deviceServiceInvocationRepository := repository.NewDeviceServiceInvocationRepository(db)
 	telemetryRepository := repository.NewTelemetryRepository(viperViper, logger)
-	thingModelDataService := service.NewThingModelDataService(deviceServiceInvocationRepository, deviceRepository, productTSLRepository, telemetryRepository)
+	thingModelDataService := service.NewThingModelDataService(deviceServiceInvocationRepository, deviceRepository, productTSLRepository, telemetryRepository, producer)
 	thingModelDataHandler := handler.NewThingModelDataHandler(handlerHandler, thingModelDataService)
 	protocolRepository := repository.NewProtocolRepository(db)
 	protocolService := provideProtocolService(protocolRepository, viperViper)
