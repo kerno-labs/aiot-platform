@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Switch } from '@/components/ui/switch'
 import { useSetDeviceEnabled } from '../api/queries'
 import { type Device } from '../data/schema'
 
 export function DeviceEnabledSwitch({ device }: { device: Device }) {
+  const { t } = useTranslation(['deviceManagement', 'common'])
   const setDeviceEnabled = useSetDeviceEnabled()
 
   return (
@@ -17,16 +19,12 @@ export function DeviceEnabledSwitch({ device }: { device: Device }) {
               deviceKey: device.deviceKey,
               data: { enabled: checked },
             })
-            toast.success(
-              checked
-                ? 'Device enabled successfully!'
-                : 'Device disabled successfully!'
-            )
+            toast.success(t('common:updateSuccess'))
           } catch {
-            toast.error('Failed to update device status')
+            toast.error(t('common:updateError'))
           }
         }}
-        aria-label='Toggle device enabled'
+        aria-label={t('devices.columns.enabled')}
       />
     </div>
   )

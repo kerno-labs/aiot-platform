@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { TFunction } from 'i18next'
 
 export const DEVICE_STATE = {
   OFFLINE: 0,
@@ -32,12 +33,13 @@ export const deviceSchema = z.object({
 export type Device = z.infer<typeof deviceSchema>
 
 // Schema for device form validation
-export const deviceFormSchema = z.object({
-  name: z
-    .string()
-    .min(1, 'Device name is required')
-    .max(100, 'Device name too long'),
-  productId: z.string().min(1, 'Product is required'),
-})
+export const createDeviceFormSchema = (t: TFunction) =>
+  z.object({
+    name: z
+      .string()
+      .min(1, t('common:required'))
+      .max(100, t('common:maxLength', { max: 100 })),
+    productId: z.string().min(1, t('common:required')),
+  })
 
-export type DeviceFormData = z.infer<typeof deviceFormSchema>
+export type DeviceFormData = z.infer<ReturnType<typeof createDeviceFormSchema>>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { type Table } from '@tanstack/react-table'
 import { Trash2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import {
   Tooltip,
@@ -17,6 +18,7 @@ type DataTableBulkActionsProps<TData> = {
 export function DataTableBulkActions<TData>({
   table,
 }: DataTableBulkActionsProps<TData>) {
+  const { t } = useTranslation('common')
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   return (
@@ -29,15 +31,15 @@ export function DataTableBulkActions<TData>({
               size='icon'
               onClick={() => setShowDeleteConfirm(true)}
               className='size-8'
-              aria-label='Delete selected devices'
-              title='Delete selected devices'
+              aria-label={t('delete')}
+              title={t('delete')}
             >
               <Trash2 />
-              <span className='sr-only'>Delete selected devices</span>
+              <span className='sr-only'>{t('delete')}</span>
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Delete selected devices</p>
+            <p>{t('delete')}</p>
           </TooltipContent>
         </Tooltip>
       </BulkActionsToolbar>

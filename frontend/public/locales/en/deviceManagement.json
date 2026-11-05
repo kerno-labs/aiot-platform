@@ -635,15 +635,11 @@
   "dialog": {
     "create": {
       "title": "Create New Device",
-      "description": "Register a new device. Click save when you're done.",
-      "successMessage": "Device created successfully!",
-      "errorMessage": "Failed to create device"
+      "description": "Register a new device. Click save when you're done."
     },
     "edit": {
       "title": "Edit Device",
-      "description": "Update the device details here. Click save when you're done.",
-      "successMessage": "Device updated successfully!",
-      "errorMessage": "Failed to update device"
+      "description": "Update the device details here. Click save when you're done."
     },
     "form": {
       "deviceKey": "Device Key",

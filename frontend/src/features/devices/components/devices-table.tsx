@@ -34,7 +34,7 @@ import { useDevicesColumns } from './devices-columns'
 
 export function DevicesTable() {
   // Get translations
-  const { t } = useTranslation('deviceManagement')
+  const { t } = useTranslation(['deviceManagement', 'common'])
 
   // Get query client for manual invalidation
   const queryClient = useQueryClient()
@@ -176,7 +176,6 @@ export function DevicesTable() {
     >
       <DataTableToolbar
         table={table}
-        searchPlaceholder='Filter devices...'
         searchKey='deviceKey'
         filters={[
           {
@@ -236,7 +235,7 @@ export function DevicesTable() {
                   colSpan={columns.length}
                   className='h-24 text-center text-destructive'
                 >
-                  Error loading devices. Please try again.
+                  {t('common:loadError')}
                 </TableCell>
               </TableRow>
             ) : table.getRowModel().rows?.length ? (
@@ -269,7 +268,7 @@ export function DevicesTable() {
                   colSpan={columns.length}
                   className='h-24 text-center'
                 >
-                  No devices found.
+                  {t('common:noResults')}
                 </TableCell>
               </TableRow>
             )}

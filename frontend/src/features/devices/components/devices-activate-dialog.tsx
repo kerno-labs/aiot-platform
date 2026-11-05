@@ -1,7 +1,9 @@
 'use client'
 
 import { CheckCircle } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { useActivateDevice } from '../api/queries'
 import { type Device } from '../data/schema'
@@ -17,6 +19,7 @@ export function DevicesActivateDialog({
   onOpenChange,
   currentRow,
 }: DeviceActivateDialogProps) {
+  const { t } = useTranslation('common')
   const activateDevice = useActivateDevice()
 
   const handleActivate = async () => {
@@ -25,21 +28,12 @@ export function DevicesActivateDialog({
         id: currentRow.id,
         data: {},
       })
-      toast.success('Device activated successfully!')
+      toast.success(t('updateSuccess'))
       onOpenChange(false)
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Failed to activate device:', error)
-      const apiError = error as {
-        response?: { data?: { message?: string; error?: string } }
-        message?: string
-      }
-      const errorMessage =
-        apiError?.response?.data?.message ||
-        apiError?.response?.data?.error ||
-        apiError?.message ||
-        'Failed to activate device'
-      toast.error(errorMessage)
+      toast.error(getApiErrorMessage(error, t('updateError')))
     }
   }
 
@@ -52,21 +46,16 @@ export function DevicesActivateDialog({
       title={
         <span>
           <CheckCircle className='me-1 inline-block' size={18} />
-          Activate Device
+          {t('confirm')}
         </span>
       }
       desc={
         <div className='space-y-4'>
           <p className='mb-2'>
-            Are you sure you want to activate{' '}
-            <span className='font-bold'>{currentRow.name}</span>?
-            <br />
-            Once activated, the device will be able to connect and communicate
-            with the system.
+            <span className='font-bold'>{currentRow.name}</span>
           </p>
         </div>
       }
-      confirmText='Activate'
     />
   )
 }

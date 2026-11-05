@@ -635,15 +635,11 @@
   "dialog": {
     "create": {
       "title": "创建新设备",
-      "description": "注册一个新设备。完成后点击保存。",
-      "successMessage": "设备创建成功！",
-      "errorMessage": "创建设备失败"
+      "description": "注册一个新设备。完成后点击保存。"
     },
     "edit": {
       "title": "编辑设备",
-      "description": "在此更新设备详情。完成后点击保存。",
-      "successMessage": "设备更新成功！",
-      "errorMessage": "更新设备失败"
+      "description": "在此更新设备详情。完成后点击保存。"
     },
     "form": {
       "deviceKey": "设备标识",

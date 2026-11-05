@@ -22,19 +22,16 @@ export const states = [
   {
     value: String(DEVICE_STATE.ONLINE),
     key: 'online',
-    label: 'Online',
     variant: 'success' as const,
   },
   {
     value: String(DEVICE_STATE.OFFLINE),
     key: 'offline',
-    label: 'Offline',
     variant: 'secondary' as const,
   },
   {
     value: String(DEVICE_STATE.INACTIVE),
     key: 'inactive',
-    label: 'Inactive',
     variant: 'outline' as const,
   },
 ]

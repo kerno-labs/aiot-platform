@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -34,7 +35,7 @@ import { useProductOptions } from '@/features/products/api/queries'
 import { useCreateDevice, useUpdateDevice } from '../api/queries'
 import {
   type Device,
-  deviceFormSchema,
+  createDeviceFormSchema,
   type DeviceFormData,
 } from '../data/schema'
 
@@ -61,7 +62,7 @@ export function DevicesActionDialog({
   const updateDevice = useUpdateDevice()
 
   const form = useForm<DeviceFormData>({
-    resolver: zodResolver(deviceFormSchema),
+    resolver: zodResolver(createDeviceFormSchema(t)),
     defaultValues: {
       name: '',
       productId: '',
@@ -95,45 +96,25 @@ export function DevicesActionDialog({
             name: values.name,
           },
         })
-        toast.success(
-          t('dialog.edit.successMessage', 'Device updated successfully!')
-        )
+        toast.success(t('common:updateSuccess'))
       } else {
         // Create new device
         await createDevice.mutateAsync({
           name: values.name,
           productId: Number(values.productId),
         })
-        toast.success(
-          t('dialog.create.successMessage', 'Device created successfully!')
-        )
+        toast.success(t('common:createSuccess'))
       }
       onOpenChange(false)
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Failed to submit device form:', error)
-
-      // Extract error message from API response
-      // API error format: { code, reason, message, metadata }
-      const apiError = error as {
-        response?: {
-          data?: {
-            message?: string
-            error?: string
-          }
-        }
-        message?: string
-      }
-
-      const errorMessage =
-        apiError?.response?.data?.message ||
-        apiError?.response?.data?.error ||
-        apiError?.message ||
-        (isEdit
-          ? t('dialog.edit.errorMessage', 'Failed to update device')
-          : t('dialog.create.errorMessage', 'Failed to create device'))
-
-      toast.error(errorMessage)
+      toast.error(
+        getApiErrorMessage(
+          error,
+          isEdit ? t('common:updateError') : t('common:createError')
+        )
+      )
     }
   }
 

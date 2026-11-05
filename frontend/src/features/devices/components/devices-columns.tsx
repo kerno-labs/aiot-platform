@@ -13,6 +13,11 @@ import { DeviceEnabledSwitch } from './device-enabled-switch'
 
 export const useDevicesColumns = (): ColumnDef<Device>[] => {
   const { t } = useTranslation(['deviceManagement', 'common'])
+  const nameLabel = t('devices.columns.name')
+  const productLabel = t('devices.columns.product')
+  const stateLabel = t('devices.columns.state')
+  const enabledLabel = t('devices.columns.enabled')
+  const lastOnlineLabel = t('devices.columns.lastOnline')
 
   return [
     {
@@ -24,7 +29,7 @@ export const useDevicesColumns = (): ColumnDef<Device>[] => {
             (table.getIsSomePageRowsSelected() && 'indeterminate')
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label='Select all'
+          aria-label={t('common:selectAll')}
           className='translate-y-[2px]'
         />
       ),
@@ -35,7 +40,7 @@ export const useDevicesColumns = (): ColumnDef<Device>[] => {
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label='Select row'
+          aria-label={t('common:selectRow')}
           className='translate-y-[2px]'
         />
       ),
@@ -73,10 +78,7 @@ export const useDevicesColumns = (): ColumnDef<Device>[] => {
     {
       accessorKey: 'name',
       header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title={t('devices.columns.name')}
-        />
+        <DataTableColumnHeader column={column} title={nameLabel} />
       ),
       cell: ({ row }) => (
         <Link
@@ -87,16 +89,13 @@ export const useDevicesColumns = (): ColumnDef<Device>[] => {
           <LongText className='max-w-48'>{row.getValue('name')}</LongText>
         </Link>
       ),
-      meta: { className: 'w-48' },
+      meta: { className: 'w-48', label: nameLabel },
       enableSorting: false,
     },
     {
       accessorKey: 'productName',
       header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title={t('devices.columns.product')}
-        />
+        <DataTableColumnHeader column={column} title={productLabel} />
       ),
       cell: ({ row }) => {
         const productName = row.getValue('productName') as string | undefined
@@ -110,16 +109,13 @@ export const useDevicesColumns = (): ColumnDef<Device>[] => {
           </LongText>
         )
       },
-      meta: { className: 'w-40' },
+      meta: { className: 'w-40', label: productLabel },
       enableSorting: false,
     },
     {
       accessorKey: 'state',
       header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title={t('devices.columns.state')}
-        />
+        <DataTableColumnHeader column={column} title={stateLabel} />
       ),
       cell: ({ row }) => {
         const state = row.getValue('state') as DeviceState
@@ -134,29 +130,25 @@ export const useDevicesColumns = (): ColumnDef<Device>[] => {
       filterFn: (row, id, value: string[]) => {
         return value.includes(String(row.getValue(id)))
       },
+      meta: { label: stateLabel },
       enableSorting: false,
     },
     {
       accessorKey: 'enabled',
       header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title={t('devices.columns.enabled')}
-        />
+        <DataTableColumnHeader column={column} title={enabledLabel} />
       ),
       cell: ({ row }) => <DeviceEnabledSwitch device={row.original} />,
       filterFn: (row, id, value) => {
         return value === row.getValue(id)
       },
+      meta: { label: enabledLabel },
       enableSorting: false,
     },
     {
       accessorKey: 'lastOnlineTime',
       header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title={t('devices.columns.lastOnline')}
-        />
+        <DataTableColumnHeader column={column} title={lastOnlineLabel} />
       ),
       cell: ({ row }) => {
         const time = row.getValue('lastOnlineTime') as string | undefined
@@ -166,6 +158,7 @@ export const useDevicesColumns = (): ColumnDef<Device>[] => {
           )
         return <div className='text-nowrap'>{time}</div>
       },
+      meta: { label: lastOnlineLabel },
       enableSorting: false,
     },
     {
@@ -182,6 +175,3 @@ export const useDevicesColumns = (): ColumnDef<Device>[] => {
     },
   ]
 }
-
-// Keep the old export for backward compatibility, but it won't have translations
-export const devicesColumns: ColumnDef<Device>[] = []
