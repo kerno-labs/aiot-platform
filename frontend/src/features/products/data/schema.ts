@@ -111,16 +111,7 @@ export const createProductFormSchema = (t: TFunction) =>
       const isDirectOrGatewayProtocol = directGatewayProtocolSchema.safeParse(
         data.accessProtocol
       ).success
-      if (
-        (data.nodeType === 'direct' || data.nodeType === 'gateway') &&
-        !isDirectOrGatewayProtocol
-      ) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: t('common:required'),
-          path: ['accessProtocol'],
-        })
-      } else if (data.nodeType === 'gateway-sub' && isDirectOrGatewayProtocol) {
+      if ((data.nodeType === 'gateway-sub') === isDirectOrGatewayProtocol) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: t('common:required'),

@@ -88,7 +88,7 @@ export const directGatewayProtocols = [
   { value: 'tcp' },
   { value: 'udp' },
   { value: 'gb28181' },
-]
+] as const
 
 // Access protocols for gateway sub-devices
 export const gatewaySubProtocols = [
@@ -99,4 +99,4 @@ export const gatewaySubProtocols = [
   { value: 'ble' },
   { value: 'jt808' },
   { value: 'jt1078' },
-]
+] as const

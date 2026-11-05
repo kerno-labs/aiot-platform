@@ -20,14 +20,14 @@ export const protocolLabels = {
 
 export type ProtocolCode = keyof typeof protocolLabels | 'default' | 'custom'
 
-export function getProtocolLabel(protocol: string, t: TFunction): string {
+export function getProtocolLabel(protocol: ProtocolCode, t: TFunction): string {
   if (protocol === 'default') {
     return `${t('common:default')} (HTTP, MQTT)`
   }
   if (protocol === 'custom') {
     return t('common:custom')
   }
-  return protocolLabels[protocol as keyof typeof protocolLabels] ?? protocol
+  return protocolLabels[protocol]
 }
 
 export const transportProtocols = [

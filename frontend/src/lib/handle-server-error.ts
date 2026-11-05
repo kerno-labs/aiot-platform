@@ -1,24 +1,41 @@
 import { AxiosError } from 'axios'
 import { toast } from 'sonner'
 
-export function handleServerError(error: unknown) {
-  // eslint-disable-next-line no-console
-  console.log(error)
+type ApiErrorResponseData = {
+  title?: string
+  message?: string
+  error?: string
+}
 
-  let errMsg = 'Something went wrong!'
-
+export function getApiErrorMessage(
+  error: unknown,
+  fallback = 'Something went wrong!'
+): string {
   if (
     error &&
     typeof error === 'object' &&
     'status' in error &&
     Number(error.status) === 204
   ) {
-    errMsg = 'Content not found.'
+    return 'Content not found.'
   }
 
   if (error instanceof AxiosError) {
-    errMsg = error.response?.data.title
+    const data = error.response?.data as ApiErrorResponseData | undefined
+    return (
+      data?.message || data?.error || data?.title || error.message || fallback
+    )
   }
 
-  toast.error(errMsg)
+  if (error instanceof Error && error.message) {
+    return error.message
+  }
+
+  return fallback
+}
+
+export function handleServerError(error: unknown) {
+  // eslint-disable-next-line no-console
+  console.log(error)
+  toast.error(getApiErrorMessage(error))
 }

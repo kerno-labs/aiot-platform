@@ -9,6 +9,7 @@ import type {
   ProductCreateProductRequest as ProductV1CreateProductRequest,
   ProductUpdateProductRequest as ProductV1UpdateProductRequest,
 } from '@/api/generated/model'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -72,10 +73,8 @@ export function ProductsActionDialog({
     )
   }, [isEdit, productQuery.data])
 
-  const formSchema = React.useMemo(() => createProductFormSchema(t), [t])
-
   const form = useForm<ProductFormData>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(createProductFormSchema(t)),
     defaultValues: isEdit
       ? {
           name: currentRow.name,
@@ -100,15 +99,6 @@ export function ProductsActionDialog({
           accessProtocol: 'http',
         },
   })
-
-  React.useEffect(() => {
-    const errorFields = Object.keys(
-      form.formState.errors
-    ) as (keyof ProductFormData)[]
-    if (errorFields.length > 0) {
-      void form.trigger(errorFields)
-    }
-  }, [formSchema, form])
 
   // Watch nodeType to control connectivity method field visibility and protocol options
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -191,16 +181,12 @@ export function ProductsActionDialog({
       form.reset()
       onOpenChange(false)
     } catch (error) {
-      const apiError = error as {
-        response?: { data?: { message?: string; error?: string } }
-        message?: string
-      }
-      const errorMessage =
-        apiError?.response?.data?.message ||
-        apiError?.response?.data?.error ||
-        apiError?.message ||
-        (isEdit ? t('common:updateError') : t('common:createError'))
-      toast.error(errorMessage)
+      toast.error(
+        getApiErrorMessage(
+          error,
+          isEdit ? t('common:updateError') : t('common:createError')
+        )
+      )
     }
   }
 
