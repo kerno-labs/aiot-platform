@@ -29,7 +29,7 @@ import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
 import { useRuleChainsColumns } from './rule-chains-columns'
 
 export function RuleChainsTable() {
-  const { t } = useTranslation('ruleChain')
+  const { t } = useTranslation(['ruleChain', 'common'])
   const queryClient = useQueryClient()
   const columns = useRuleChainsColumns()
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
@@ -126,7 +126,7 @@ export function RuleChainsTable() {
         filters={[
           {
             columnId: 'status',
-            title: t('list.columns.status'),
+            title: t('common:status'),
             options: [
               { label: t('status.draft'), value: 'draft' },
               { label: t('status.published'), value: 'published' },

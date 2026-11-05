@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { MailPlus, Send } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -55,8 +56,7 @@ export function UsersInviteDialog({
       form.reset()
       onOpenChange(false)
     } catch (err: unknown) {
-      const errMsg = err instanceof Error ? err.message : t('inviteFailed')
-      toast.error(errMsg)
+      toast.error(getApiErrorMessage(err, t('inviteFailed')))
     }
   }
 

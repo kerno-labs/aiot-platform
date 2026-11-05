@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { setAuthToken } from '@/api/clients'
 import { useAuthStore } from '@/stores/auth-store'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -65,9 +66,7 @@ function AcceptInvitationPage() {
       setAccepted(true)
       toast.success(t('invitationAccepted'))
     } catch (err: unknown) {
-      const msg =
-        err instanceof Error ? err.message : t('invitationAcceptFailed')
-      toast.error(msg)
+      toast.error(getApiErrorMessage(err, t('invitationAcceptFailed')))
       return
     }
     try {
@@ -194,7 +193,7 @@ function AcceptInvitationPage() {
             </span>
           </div>
           <div className='flex justify-between rounded-lg bg-muted/50 p-3'>
-            <span className='text-muted-foreground'>{t('status')}</span>
+            <span className='text-muted-foreground'>{t('common:status')}</span>
             <span className='text-emerald-600 capitalize dark:text-emerald-400'>
               {t('statusPending')}
             </span>

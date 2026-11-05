@@ -9,6 +9,7 @@ import {
   useDeleteRuleChainsUuid,
   useGetRuleChainsUuid,
 } from '@/api/generated'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -33,10 +34,11 @@ export function RuleChainDetailPage({ uuid }: RuleChainDetailPageProps) {
         queryClient.invalidateQueries({
           queryKey: getGetRuleChainsQueryKey(),
         })
-        toast.success(t('list.deleteSuccess'))
+        toast.success(t('common:deleteSuccess'))
         navigate({ to: '/rule-engine/rule-chains' })
       },
-      onError: () => toast.error(t('list.deleteError')),
+      onError: (err) =>
+        toast.error(getApiErrorMessage(err, t('common:deleteError'))),
     },
   })
 
@@ -79,7 +81,7 @@ export function RuleChainDetailPage({ uuid }: RuleChainDetailPageProps) {
             variant='ghost'
             size='icon'
             onClick={() => router.history.back()}
-            aria-label={t('back')}
+            aria-label={t('common:back')}
           >
             <ArrowLeft className='size-4' />
           </Button>
@@ -131,9 +133,8 @@ export function RuleChainDetailPage({ uuid }: RuleChainDetailPageProps) {
         handleConfirm={() => remove.mutate({ uuid })}
         isLoading={remove.isPending}
         title={t('common:delete')}
-        desc={t('list.deleteConfirm', { name: chain.name || '-' })}
+        desc={t('common:deleteConfirm')}
         confirmText={t('common:delete')}
-        cancelBtnText={t('common:cancel')}
         destructive
       />
     </Main>

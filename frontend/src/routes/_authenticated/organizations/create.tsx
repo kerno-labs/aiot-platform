@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 import { setAuthToken } from '@/api/clients'
 import { postOrganizations } from '@/api/generated'
 import { useAuthStore } from '@/stores/auth-store'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
@@ -64,9 +65,7 @@ function CreateOrganizationPage() {
       toast.error(
         createdOrganizationId
           ? t('createOrganization.tokenUnavailable')
-          : error instanceof Error
-            ? error.message
-            : t('createOrganization.failed')
+          : getApiErrorMessage(error, t('createOrganization.failed'))
       )
     } finally {
       setIsSubmitting(false)
@@ -78,7 +77,7 @@ function CreateOrganizationPage() {
       <Card className='w-full max-w-md'>
         <CardHeader>
           <Building2 className='mb-2 size-8 text-primary' />
-          <CardTitle>{t('createOrganization.title')}</CardTitle>
+          <CardTitle>{t('common:createOrg')}</CardTitle>
         </CardHeader>
         <form onSubmit={(event) => void handleSubmit(event)}>
           <CardContent>

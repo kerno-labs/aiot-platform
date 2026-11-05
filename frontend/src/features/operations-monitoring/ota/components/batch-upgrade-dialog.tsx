@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
@@ -100,10 +101,9 @@ export function BatchUpgradeDialog({
         handleClose()
       },
       onError: (error) => {
-        const message =
-          (error as { message?: string })?.message ||
-          t('packageDetail.batchUpgrade.failed')
-        toast.error(message)
+        toast.error(
+          getApiErrorMessage(error, t('packageDetail.batchUpgrade.failed'))
+        )
       },
     })
   }
@@ -137,7 +137,7 @@ export function BatchUpgradeDialog({
                 onCheckedChange={(value) => toggleAll(Boolean(value))}
               />
               <span className='text-sm font-medium'>
-                {t('packageDetail.batchUpgrade.selectAll')}
+                {t('common:selectAll')}
               </span>
             </div>
             <ScrollArea className='flex-1'>
@@ -189,7 +189,7 @@ export function BatchUpgradeDialog({
           <Button onClick={handleConfirm} disabled={batchUpgrade.isPending}>
             {batchUpgrade.isPending
               ? t('packageDetail.batchUpgrade.submitting')
-              : t('packageDetail.batchUpgrade.confirm')}
+              : t('common:confirm')}
           </Button>
         </SheetFooter>
       </SheetContent>

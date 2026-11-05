@@ -132,7 +132,7 @@ const regionStats = [
 ]
 
 export function IotOverview() {
-  const { t } = useTranslation('iotDashboard')
+  const { t } = useTranslation(['iotDashboard', 'common'])
 
   function eventBadge(type: 'success' | 'warning' | 'destructive' | 'info') {
     if (type === 'success')
@@ -188,9 +188,9 @@ export function IotOverview() {
             </TabsList>
           </Tabs>
           <Button variant='outline' size='sm'>
-            {t('actions.export')}
+            {t('common:export')}
           </Button>
-          <Button size='sm'>{t('actions.refresh')}</Button>
+          <Button size='sm'>{t('common:refresh')}</Button>
         </div>
       </div>
 

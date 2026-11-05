@@ -374,13 +374,10 @@ function LanguageConfig() {
   return (
     <div className='space-y-2'>
       <label className='text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
-        {t('settings.appearance.language.title', 'Language')}
+        {t('settings:appearance.language.title')}
       </label>
       <p className='text-sm text-muted-foreground'>
-        {t(
-          'settings.appearance.language.description',
-          'Select your preferred language'
-        )}
+        {t('settings:appearance.language.description')}
       </p>
       <div className='w-[200px]'>
         <select

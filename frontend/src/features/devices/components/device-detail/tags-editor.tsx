@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { X, Plus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -33,7 +34,7 @@ export function TagsEditor({ deviceKey }: Props) {
       setNewValue('')
       toast.success(t('deviceDetail.tags.added'))
     } catch (e) {
-      toast.error((e as Error).message)
+      toast.error(getApiErrorMessage(e, t('common:updateError')))
     }
   }
 

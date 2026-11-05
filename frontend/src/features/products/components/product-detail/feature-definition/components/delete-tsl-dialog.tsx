@@ -1,14 +1,5 @@
-import { Loader2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { ConfirmDialog } from '@/components/confirm-dialog'
 
 interface DeleteTslDialogProps {
   open: boolean
@@ -23,37 +14,18 @@ export function DeleteTslDialog({
   onConfirm,
   isPending,
 }: DeleteTslDialogProps) {
-  const { t } = useTranslation(['deviceManagement', 'common'])
+  const { t } = useTranslation('common')
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='max-w-md'>
-        <DialogHeader>
-          <DialogTitle>
-            {t('productDetail.featureDefinition.deleteDialog.title')}
-          </DialogTitle>
-          <DialogDescription>{t('common:deleteConfirm')}</DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button
-            variant='outline'
-            onClick={() => onOpenChange(false)}
-            disabled={isPending}
-          >
-            {t('common:cancel')}
-          </Button>
-          <Button
-            variant='destructive'
-            onClick={onConfirm}
-            disabled={isPending}
-          >
-            {isPending ? (
-              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-            ) : null}
-            {t('common:delete')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <ConfirmDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      handleConfirm={onConfirm}
+      isLoading={isPending}
+      title={t('delete')}
+      desc={t('deleteConfirm')}
+      confirmText={t('delete')}
+      destructive
+    />
   )
 }

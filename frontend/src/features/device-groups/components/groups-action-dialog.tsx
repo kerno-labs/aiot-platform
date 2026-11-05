@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { postDeviceGroups, putDeviceGroupsGroupUuid } from '@/api/generated'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -90,17 +91,12 @@ export function GroupsActionDialog({
         description: values.description,
       }),
     onSuccess: () => {
-      toast.success(tCommon('success'))
+      toast.success(tCommon('createSuccess'))
       queryClient.invalidateQueries({ queryKey: ['device-groups'] })
       onOpenChange(false)
     },
     onError: (err: unknown) => {
-      const msg =
-        (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ||
-        (err as Error)?.message ||
-        'Operation failed'
-      toast.error(msg)
+      toast.error(getApiErrorMessage(err, tCommon('createError')))
     },
   })
 
@@ -112,7 +108,7 @@ export function GroupsActionDialog({
         description: values.description,
       }),
     onSuccess: () => {
-      toast.success(t('editSuccess'))
+      toast.success(tCommon('updateSuccess'))
       queryClient.invalidateQueries({ queryKey: ['device-groups'] })
       queryClient.invalidateQueries({
         queryKey: ['device-group', currentRow?.groupUuid],
@@ -120,12 +116,7 @@ export function GroupsActionDialog({
       onOpenChange(false)
     },
     onError: (err: unknown) => {
-      const msg =
-        (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ||
-        (err as Error)?.message ||
-        'Operation failed'
-      toast.error(msg)
+      toast.error(getApiErrorMessage(err, tCommon('updateError')))
     },
   })
 

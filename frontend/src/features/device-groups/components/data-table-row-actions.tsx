@@ -20,7 +20,6 @@ interface DataTableRowActionsProps {
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
-  const { t } = useTranslation('deviceGroup')
   const { t: tCommon } = useTranslation('common')
   const { setOpen, setCurrentRow } = useGroups()
 
@@ -41,7 +40,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             to='/device-management/groups/$uuid'
             params={{ uuid: row.original.groupUuid }}
           >
-            {t('detail')}
+            {tCommon('view')}
             <DropdownMenuShortcut>
               <Eye size={16} />
             </DropdownMenuShortcut>

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { putDeviceGroupsGroupUuid } from '@/api/generated'
 import type { AiotBackendApiV1DeviceGroup as DeviceGroupV1Group } from '@/api/generated/model'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -27,7 +28,7 @@ export function EditGroupDialog({
   onOpenChange,
   group,
 }: EditGroupDialogProps) {
-  const { t } = useTranslation('deviceGroup')
+  const { t } = useTranslation(['deviceGroup', 'common'])
   const queryClient = useQueryClient()
   const [name, setName] = useState(group.name || '')
   const [description, setDescription] = useState(group.description || '')
@@ -52,7 +53,7 @@ export function EditGroupDialog({
         rule: group.type === 'dynamic' ? rule : undefined,
       }),
     onSuccess: () => {
-      toast.success(t('editSuccess'))
+      toast.success(t('common:updateSuccess'))
       queryClient.invalidateQueries({
         queryKey: ['device-group', group.groupUuid],
       })
@@ -60,7 +61,7 @@ export function EditGroupDialog({
       onOpenChange(false)
     },
     onError: (err: unknown) => {
-      toast.error(err instanceof Error ? err.message : 'Failed to update group')
+      toast.error(getApiErrorMessage(err, t('common:updateError')))
     },
   })
 

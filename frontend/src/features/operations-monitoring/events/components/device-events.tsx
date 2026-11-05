@@ -318,7 +318,7 @@ export function DeviceEvents({ deviceKey }: { deviceKey?: string }) {
           table={table}
           labels={{
             view: t('common:view'),
-            toggleColumns: t('events.viewOptions.toggleColumns'),
+            toggleColumns: t('common:toggleColumns'),
             columns: {
               eventAt: t('events.columns.eventAt'),
               deviceName: t('events.columns.deviceName'),
@@ -371,7 +371,7 @@ export function DeviceEvents({ deviceKey }: { deviceKey?: string }) {
                       size='sm'
                       onClick={() => refetch()}
                     >
-                      {t('events.retry')}
+                      {t('common:retry')}
                     </Button>
                   </div>
                 </TableCell>

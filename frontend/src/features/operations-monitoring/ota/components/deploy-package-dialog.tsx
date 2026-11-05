@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -84,8 +85,8 @@ export function DeployPackageDialog() {
 
       toast.success(t('notifications.deploymentStarted'))
       setOpenDialog(null)
-    } catch {
-      toast.error(t('notifications.error'))
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, t('notifications.error')))
     } finally {
       setIsDeploying(false)
     }

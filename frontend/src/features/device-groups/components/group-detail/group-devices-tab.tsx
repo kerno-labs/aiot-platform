@@ -28,6 +28,7 @@ import type {
   Device as DeviceV1Device,
   AiotBackendApiV1DeviceGroup as DeviceGroupV1Group,
 } from '@/api/generated/model'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -207,9 +208,7 @@ export function GroupDevicesTab({
       onDevicesUpdated?.()
     },
     onError: (err: unknown) => {
-      toast.error(
-        err instanceof Error ? err.message : 'Failed to remove devices'
-      )
+      toast.error(getApiErrorMessage(err, tCommon('deleteError')))
     },
   })
 

@@ -49,10 +49,10 @@ const AssistantModalButton = forwardRef<
   HTMLButtonElement,
   AssistantModalButtonProps
 >(({ 'data-state': state, ...rest }, ref) => {
-  const { t } = useTranslation('aiCopilot')
+  const { t } = useTranslation(['aiCopilot', 'common'])
   const tooltip =
     state === 'open'
-      ? t('closeCopilot', { defaultValue: 'Close' })
+      ? t('common:close')
       : t('openCopilot', { defaultValue: 'Open AI Copilot' })
   const isRunning = useAuiState((s) => s.thread.isRunning)
 

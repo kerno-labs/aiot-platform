@@ -79,7 +79,7 @@ function ErrorAlert({
           className='flex-shrink-0'
         >
           <RotateCw className='mr-1 h-4 w-4' />
-          {t('packageDetail.retry')}
+          {t('common:retry')}
         </Button>
       )}
     </div>

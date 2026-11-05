@@ -15,17 +15,10 @@ import type {
   OtaCreateOTAPackageRequest,
   OtaOTAPackageRequest as OtaV1UpdateOTAPackageRequest,
 } from '@/api/generated/model'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import type { OTAPackage } from '../data/schema'
 
 export type { GetOtaPackagesParams }
-
-interface ApiError {
-  response?: {
-    data?: {
-      message?: string
-    }
-  }
-}
 
 type CreateOTAPackagePayload = Omit<OtaCreateOTAPackageRequest, 'productId'> & {
   product_key: string
@@ -128,10 +121,7 @@ export function useCreateOTAPackage() {
       toast.success('OTA package created successfully')
     },
     onError: (error) => {
-      const message =
-        (error as unknown as ApiError).response?.data?.message ||
-        'Failed to create OTA package'
-      toast.error(message)
+      toast.error(getApiErrorMessage(error, 'Failed to create OTA package'))
     },
   })
 }
@@ -146,10 +136,9 @@ export function useUploadOTAFile() {
       return response.data
     },
     onError: (error) => {
-      const message =
-        (error as unknown as ApiError).response?.data?.message ||
-        'Failed to upload OTA package file'
-      toast.error(message)
+      toast.error(
+        getApiErrorMessage(error, 'Failed to upload OTA package file')
+      )
     },
   })
 }
@@ -178,10 +167,7 @@ export function useUpdateOTAPackage() {
       toast.success('OTA package updated successfully')
     },
     onError: (error) => {
-      const message =
-        (error as unknown as ApiError).response?.data?.message ||
-        'Failed to update OTA package'
-      toast.error(message)
+      toast.error(getApiErrorMessage(error, 'Failed to update OTA package'))
     },
   })
 }
@@ -199,10 +185,7 @@ export function useDeleteOTAPackage() {
       toast.success('OTA package deleted successfully')
     },
     onError: (error) => {
-      const message =
-        (error as unknown as ApiError).response?.data?.message ||
-        'Failed to delete OTA package'
-      toast.error(message)
+      toast.error(getApiErrorMessage(error, 'Failed to delete OTA package'))
     },
   })
 }
@@ -225,10 +208,7 @@ export function useDeleteOTAPackages() {
       toast.success(`${data.deletedCount} OTA packages deleted successfully`)
     },
     onError: (error) => {
-      const message =
-        (error as unknown as ApiError).response?.data?.message ||
-        'Failed to delete OTA packages'
-      toast.error(message)
+      toast.error(getApiErrorMessage(error, 'Failed to delete OTA packages'))
     },
   })
 }

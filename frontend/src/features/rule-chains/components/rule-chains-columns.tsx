@@ -15,7 +15,7 @@ export function useRuleChainsColumns(): ColumnDef<RuleChain>[] {
     {
       accessorKey: 'name',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={t('list.columns.name')} />
+        <DataTableColumnHeader column={column} title={t('common:name')} />
       ),
       cell: ({ row }) => (
         <Link
@@ -37,7 +37,7 @@ export function useRuleChainsColumns(): ColumnDef<RuleChain>[] {
       header: ({ column }) => (
         <DataTableColumnHeader
           column={column}
-          title={t('list.columns.description')}
+          title={t('common:description')}
         />
       ),
       cell: ({ row }) => (
@@ -51,10 +51,7 @@ export function useRuleChainsColumns(): ColumnDef<RuleChain>[] {
     {
       accessorKey: 'status',
       header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title={t('list.columns.status')}
-        />
+        <DataTableColumnHeader column={column} title={t('common:status')} />
       ),
       cell: ({ row }) => {
         const status = row.original.status || '-'

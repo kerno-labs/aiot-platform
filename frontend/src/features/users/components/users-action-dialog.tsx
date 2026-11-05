@@ -294,7 +294,7 @@ export function UsersActionDialog({
         </div>
         <DialogFooter>
           <Button type='submit' form='user-form'>
-            {t('saveChanges')}
+            {t('common:save')}
           </Button>
         </DialogFooter>
       </DialogContent>

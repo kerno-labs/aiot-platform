@@ -24,6 +24,7 @@ import {
   usePostRuleChains,
   usePutRuleChainsUuid,
 } from '@/api/generated'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { useTheme } from '@/context/theme-provider'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -54,7 +55,7 @@ interface RuleChainCanvasInnerProps {
 }
 
 function RuleChainCanvasInner({ initialUuid = '' }: RuleChainCanvasInnerProps) {
-  const { t } = useTranslation('ruleChain')
+  const { t } = useTranslation(['ruleChain', 'common'])
   const { resolvedTheme } = useTheme()
   const catalog = useGetRuleNodeDefinitions({
     query: { select: (response) => response.data?.items ?? [] },
@@ -229,12 +230,13 @@ function RuleChainCanvasInner({ initialUuid = '' }: RuleChainCanvasInnerProps) {
           params: { uuid: targetUuid },
         })
       }
-      toast.success(t('saveSuccess'))
+      toast.success(t('common:saveSuccess'))
     }
     const options = {
       onSuccess: (response: { data?: { ruleChain?: { uuid?: string } } }) =>
         done(response.data?.ruleChain?.uuid),
-      onError: () => toast.error(t('saveError')),
+      onError: (err: unknown) =>
+        toast.error(getApiErrorMessage(err, t('common:saveError'))),
     }
     if (uuid) update.mutate({ uuid, data }, options)
     else create.mutate({ data }, options)
@@ -257,7 +259,7 @@ function RuleChainCanvasInner({ initialUuid = '' }: RuleChainCanvasInnerProps) {
               variant='ghost'
               size='icon'
               onClick={() => router.history.back()}
-              aria-label={t('back')}
+              aria-label={t('common:back')}
             >
               <ArrowLeft className='size-4' />
             </Button>

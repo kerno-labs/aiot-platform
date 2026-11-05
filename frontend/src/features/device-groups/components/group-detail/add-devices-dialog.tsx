@@ -15,6 +15,7 @@ import {
   postDeviceGroupsGroupUuidDevices,
 } from '@/api/generated'
 import type { Device as DeviceV1Device } from '@/api/generated/model'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -141,7 +142,7 @@ export function AddDevicesDialog({
       onOpenChange(false)
     },
     onError: (err: unknown) => {
-      toast.error(err instanceof Error ? err.message : t('addError'))
+      toast.error(getApiErrorMessage(err, t('addError')))
     },
   })
 
@@ -175,7 +176,7 @@ export function AddDevicesDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='flex max-h-[85vh] flex-col sm:max-w-2xl'>
         <DialogHeader>
-          <DialogTitle>{t('addDeviceDialogTitle')}</DialogTitle>
+          <DialogTitle>{t('addDevice')}</DialogTitle>
         </DialogHeader>
 
         {/* 筛选与搜索工具栏 */}

@@ -52,7 +52,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           }
         >
           <Eye className='me-2 h-4 w-4' />
-          {t('packageList.actions.viewDetails')}
+          {t('common:view')}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem

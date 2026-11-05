@@ -14,6 +14,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { usePutDevicesDeviceKeyShadowDesired } from '@/api/generated'
+import { getApiErrorMessage } from '@/lib/handle-server-error'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -111,6 +112,7 @@ export function OnlineDebugTab() {
         },
         onError: (err) => {
           const duration = Date.now() - start
+          const errMsg = getApiErrorMessage(err, t('common:error'))
           setLogs((prev) => [
             ...prev,
             {
@@ -119,14 +121,14 @@ export function OnlineDebugTab() {
               type: 'telemetry_push',
               title: t('deviceDetail.onlineDebugTab.telemetryFailureTitle'),
               request: telemetryPayload,
-              response: (err as Error).message,
+              response: errMsg,
               success: false,
               durationMs: duration,
             },
           ])
           toast.error(
             t('deviceDetail.onlineDebugTab.telemetryFailure', {
-              error: (err as Error).message,
+              error: errMsg,
             })
           )
         },
@@ -176,6 +178,7 @@ export function OnlineDebugTab() {
         },
         onError: (err) => {
           const duration = Date.now() - start
+          const errMsg = getApiErrorMessage(err, t('common:error'))
           setLogs((prev) => [
             ...prev,
             {
@@ -184,14 +187,14 @@ export function OnlineDebugTab() {
               type: 'command_send',
               title: t('deviceDetail.onlineDebugTab.commandFailureTitle'),
               request: commandPayload,
-              response: (err as Error).message,
+              response: errMsg,
               success: false,
               durationMs: duration,
             },
           ])
           toast.error(
             t('deviceDetail.onlineDebugTab.commandFailure', {
-              error: (err as Error).message,
+              error: errMsg,
             })
           )
         },
