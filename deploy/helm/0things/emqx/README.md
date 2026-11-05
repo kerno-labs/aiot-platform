@@ -12,7 +12,10 @@
 | 上行事件 | `/sys/thing/event/post/{product_key}/{device_key}` | `device-event-report` | `event` |
 | OTA 进度 | `/sys/ota/device/progress/{product_key}/{device_key}` | `ota-progress-report` | `ota_progress` |
 | OTA 版本 | `/sys/ota/device/inform/{product_key}/{device_key}` | `ota-device-info` | `ota_inform` |
-| OTA 下行 | `/ota/device/upgrade/{product_key}/{device_name}` | `ota-upgrade-command-mqtt` | 原始 OTAUpgradeCommand |
+| 在线状态事件 | `$events/client_connected`, `$events/client_disconnected` | `device-online-status` | `online_status` |
+| 服务调用回执 | `/sys/thing/service/reply/{product_key}/{device_key}` | `device-service-reply` | `service_reply` |
+| 服务调用下行 | `/sys/thing/service/invoke/{product_key}/{device_key}` | `device-service-invoke` | 原始 DeviceServiceInvokeCommand |
+| OTA 下行 | `/ota/device/upgrade/{product_key}/{device_name}` | `ota-upgrade-command` | 原始 OTAUpgradeCommand |
 
 OTA 下行保留原服务实际使用的 `/ota/device/upgrade/` 路径，未改成旧常量中的 `/sys/ota/device/upgrade/`。`device_name` 缺失或为空时使用 `device_key`。属性设置过去只有 topic 常量，没有实际消费或转发逻辑，此次不新增。
 
@@ -20,7 +23,7 @@ OTA 下行保留原服务实际使用的 `/ota/device/upgrade/` 路径，未改�
 
 复用 Kafka Producer 连接器 `kafka`，主机 `kafka:9092`，认证和 TLS 按集群实际配置。当前同 namespace 部署使用无认证、无 TLS；连接器开启“允许自动创建主题”，Kafka Broker 也需允许自动创建。
 
-四类上行分别使用独立规则、独立 Kafka Producer 动作和固定目标 topic：
+六类上行分别使用独立规则、独立 Kafka Producer 动作和固定目标 topic：
 
 | 规则 | SQL | Kafka 动作 | 固定 Kafka topic |
 | --- | --- | --- | --- |
@@ -28,16 +31,18 @@ OTA 下行保留原服务实际使用的 `/ota/device/upgrade/` 路径，未改�
 | `mqtt_device_events_to_kafka` | [device-events-uplink.sql](device-events-uplink.sql) | `device_events` | `device-event-report` |
 | `mqtt_ota_progress_to_kafka` | [ota-progress-uplink.sql](ota-progress-uplink.sql) | `ota_progress` | `ota-progress-report` |
 | `mqtt_ota_inform_to_kafka` | [ota-inform-uplink.sql](ota-inform-uplink.sql) | `ota_inform` | `ota-device-info` |
+| `mqtt_online_status_to_kafka` | [online-status-uplink.sql](online-status-uplink.sql) | `online_status` | `device-online-status` |
+| `mqtt_service_reply_to_kafka` | [service-reply-uplink.sql](service-reply-uplink.sql) | `service_reply` | `device-service-reply` |
 
-每条 SQL 只监听一个 MQTT topic，使用固定 `message_type`，不包含 `CASE` 或动态 `kafka_topic` 字段。原合并规则 `mqtt_events_ota_to_kafka` 已停用，防止重复转发。
+每条业务上行 SQL 只监听一个 MQTT topic，在线状态规则监听 `$events/client_connected` 与 `$events/client_disconnected`（以 `clientid` 作为 `device_key`），使用固定 `message_type`，不包含 `CASE` 或动态 `kafka_topic` 字段。原合并规则 `mqtt_events_ota_to_kafka` 已停用，防止重复转发。
 
-四个动作分别填写上表的固定 Kafka topic，其余通用配置：
+六个动作分别填写上表的固定 Kafka topic，其余通用配置：
 
 | 字段 | 配置 |
 | --- | --- |
 | 连接器 | `kafka` |
 | Kafka 主题名称 | 按上表填写固定 topic |
-| 消息的键 | `${.product_key}/${.device_key}` |
+| 消息的键 | 业务上行为 `${.product_key}/${.device_key}`；在线状态事件为 `${.device_key}` |
 | 消息的值 | `${.}` |
 | 消息的时间戳 | `${.timestamp}` |
 | 压缩 | `snappy` |
@@ -54,7 +59,7 @@ OTA 下行保留原服务实际使用的 `/ota/device/upgrade/` 路径，未改�
 
 | 字段 | 配置 |
 | --- | --- |
-| Kafka topic | `ota-upgrade-command-mqtt` |
+| Kafka topic | `ota-upgrade-command` |
 | 消费组 ID | `aiot-emqx-ota-mqtt` |
 | Key / Value 编码模式 | `None` |
 | 偏移重置策略 | `latest` |
@@ -72,6 +77,8 @@ OTA 下行保留原服务实际使用的 `/ota/device/upgrade/` 路径，未改�
 | 直接派发 | `false` |
 
 命令正文使用 Kafka `value` 原文，仅解析副本以提取目标设备，不重写升级指令内容。
+
+服务调用下行同理创建 Source `service_invoke_commands`（Kafka topic `device-service-invoke`，消费组 `aiot-emqx-service-mqtt`）和规则 `kafka_service_invoke_to_mqtt`（SQL 使用 [service-invoke-downlink.sql](service-invoke-downlink.sql)），消息重发布到 `/sys/thing/service/invoke/${.command.product_key}/${.command.device_key}`，Payload 为 `${.payload}`。
 
 ## 原生 payload 发布顺序
 

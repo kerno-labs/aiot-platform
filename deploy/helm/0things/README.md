@@ -216,7 +216,7 @@ MQTT 与 Kafka 的双向转发全部由 EMQX 原生规则处理，配置步骤�
 
 backend、data-engine 的事件发布和消费统一使用 Kafka。Helm 为两个服务分别配置 `aiot-backend`、`aiot-data-engine` 消费组；同一服务的副本共享消费组，不同服务独立消费。新消费组从最早保留的消息开始读取，已有消费组从已提交的 offset 继续处理。事件配置变化会触发应用 Pod 滚动更新，避免 `subPath` 挂载的 ConfigMap 仍使用旧配置。
 
-平台沿用 `device-telemetry-report`、`device-event-report`、`ota-upgrade-command-mqtt`、`ota-progress-report` 等业务主题。EMQX 直接写入时，必须将 MQTT 消息转换成对应的事件 JSON（设备上行使用 `DeviceMessage`，包含 `device_key`、`transport`、`message_type`、`payload` 和 `timestamp`），并写入正确的业务主题；任意原始 MQTT JSON 不会自动成为平台事件。
+平台沿用 `device-telemetry-report`、`device-event-report`、`ota-upgrade-command`、`ota-progress-report` 等业务主题。EMQX 直接写入时，必须将 MQTT 消息转换成对应的事件 JSON（设备上行使用 `DeviceMessage`，包含 `device_key`、`transport`、`message_type`、`payload` 和 `timestamp`），并写入正确的业务主题；任意原始 MQTT JSON 不会自动成为平台事件。
 
 从原 NATS 部署升级时，应先处理剩余待消费事件，再重新构建并推送 backend、data-engine、transport-mqtt 镜像，以及使用 backend 镜像的 MCP 服务。随后用 `aiot-prod` release 和 namespace 执行 Helm upgrade。Kafka 不会自动导入旧 JetStream 消息；Chart 已移除 NATS 工作负载，其原数据卷不在此次应用迁移中主动删除。
 
