@@ -13,6 +13,8 @@ type Manager struct {
 	consumer              event.Consumer
 	telemetryConsumer     *TelemetryConsumer
 	eventConsumer         *EventConsumer
+	deviceStateConsumer   *DeviceStateConsumer
+	serviceReplyConsumer  *ServiceReplyConsumer
 	otaProgressConsumer   *OTAProgressConsumer
 	otaDeviceInfoConsumer *OTADeviceInfoConsumer
 	logger                *zap.Logger
@@ -22,6 +24,8 @@ func NewManager(
 	consumer event.Consumer,
 	telemetryConsumer *TelemetryConsumer,
 	eventConsumer *EventConsumer,
+	deviceStateConsumer *DeviceStateConsumer,
+	serviceReplyConsumer *ServiceReplyConsumer,
 	otaProgressConsumer *OTAProgressConsumer,
 	otaDeviceInfoConsumer *OTADeviceInfoConsumer,
 	logger *zap.Logger,
@@ -30,6 +34,8 @@ func NewManager(
 		consumer:              consumer,
 		telemetryConsumer:     telemetryConsumer,
 		eventConsumer:         eventConsumer,
+		deviceStateConsumer:   deviceStateConsumer,
+		serviceReplyConsumer:  serviceReplyConsumer,
 		otaProgressConsumer:   otaProgressConsumer,
 		otaDeviceInfoConsumer: otaDeviceInfoConsumer,
 		logger:                logger,
@@ -48,12 +54,22 @@ func (m *Manager) Start(ctx context.Context) error {
 		return err
 	}
 
-	// 4. Subscribe to device OTA progress reports
+	// 3. Subscribe to device online/offline status events
+	if err := event.Subscribe(ctx, m.consumer, event.TopicDeviceOnlineStatus, m.deviceStateConsumer.HandleOnlineStatus); err != nil {
+		return err
+	}
+
+	// 4. Subscribe to device service invocation replies
+	if err := event.Subscribe(ctx, m.consumer, event.TopicDeviceServiceReply, m.serviceReplyConsumer.HandleServiceReply); err != nil {
+		return err
+	}
+
+	// 5. Subscribe to device OTA progress reports
 	if err := event.Subscribe(ctx, m.consumer, event.TopicOTAProgressReport, m.otaProgressConsumer.HandleProgressReport); err != nil {
 		return err
 	}
 
-	// 5. Subscribe to device OTA inform version reports
+	// 6. Subscribe to device OTA inform version reports
 	if err := event.Subscribe(ctx, m.consumer, event.TopicOTADeviceInfo, m.otaDeviceInfoConsumer.HandleDeviceInfo); err != nil {
 		return err
 	}

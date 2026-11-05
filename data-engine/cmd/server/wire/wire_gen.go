@@ -50,12 +50,20 @@ func NewWire(viperViper *viper.Viper, logger *log.Logger) (*app.App, func(), err
 	eventService := service.NewEventService(zapLogger, deviceEventRepository)
 	eventHandler := handler.NewEventHandler(eventService, zapLogger)
 	consumerEventConsumer := consumer.NewEventConsumer(eventHandler)
+	deviceStateRepository := repository.NewDeviceStateRepository(repositoryRepository)
+	deviceStateService := service.NewDeviceStateService(zapLogger, deviceStateRepository)
+	deviceStateHandler := handler.NewDeviceStateHandler(deviceStateService, zapLogger)
+	deviceStateConsumer := consumer.NewDeviceStateConsumer(deviceStateHandler)
+	deviceServiceInvocationRepository := repository.NewDeviceServiceInvocationRepository(repositoryRepository)
+	serviceInvocationService := service.NewServiceInvocationService(deviceServiceInvocationRepository, zapLogger)
+	serviceInvocationHandler := handler.NewServiceInvocationHandler(serviceInvocationService)
+	serviceReplyConsumer := consumer.NewServiceReplyConsumer(serviceInvocationHandler)
 	deviceUpgradeStatusRepository := repository.NewDeviceUpgradeStatusRepository(repositoryRepository)
 	otaService := service.NewOTAService(deviceUpgradeStatusRepository, zapLogger)
 	otaHandler := handler.NewOTAHandler(otaService, zapLogger)
 	otaProgressConsumer := consumer.NewOTAProgressConsumer(otaHandler)
 	otaDeviceInfoConsumer := consumer.NewOTADeviceInfoConsumer(otaHandler)
-	manager := consumer.NewManager(eventConsumer, telemetryConsumer, consumerEventConsumer, otaProgressConsumer, otaDeviceInfoConsumer, zapLogger)
+	manager := consumer.NewManager(eventConsumer, telemetryConsumer, consumerEventConsumer, deviceStateConsumer, serviceReplyConsumer, otaProgressConsumer, otaDeviceInfoConsumer, zapLogger)
 	dataEngineServer := server.NewDataEngineServer(manager, logger)
 	appApp := newApp(dataEngineServer)
 	return appApp, func() {
@@ -110,14 +118,14 @@ func provideEventProducer(holder *eventBusHolder) event.Producer {
 }
 
 var repositorySet = wire.NewSet(
-	provideDB, repository.NewRepository, repository.NewDeviceUpgradeStatusRepository, repository.NewDeviceEventRepository,
+	provideDB, repository.NewRepository, repository.NewDeviceUpgradeStatusRepository, repository.NewDeviceEventRepository, repository.NewDeviceStateRepository, repository.NewDeviceServiceInvocationRepository,
 )
 
-var serviceSet = wire.NewSet(service.NewTelemetryService, service.NewOTAService, service.NewEventService)
+var serviceSet = wire.NewSet(service.NewTelemetryService, service.NewOTAService, service.NewEventService, service.NewDeviceStateService, service.NewServiceInvocationService)
 
-var consumerSet = wire.NewSet(consumer.NewTelemetryConsumer, consumer.NewEventConsumer, consumer.NewOTAProgressConsumer, consumer.NewOTADeviceInfoConsumer, consumer.NewManager)
+var consumerSet = wire.NewSet(consumer.NewTelemetryConsumer, consumer.NewEventConsumer, consumer.NewDeviceStateConsumer, consumer.NewServiceReplyConsumer, consumer.NewOTAProgressConsumer, consumer.NewOTADeviceInfoConsumer, consumer.NewManager)
 
-var handlerSet = wire.NewSet(handler.NewTelemetryHandler, handler.NewEventHandler, handler.NewOTAHandler)
+var handlerSet = wire.NewSet(handler.NewTelemetryHandler, handler.NewEventHandler, handler.NewDeviceStateHandler, handler.NewServiceInvocationHandler, handler.NewOTAHandler)
 
 var serverSet = wire.NewSet(server.NewDataEngineServer)
 

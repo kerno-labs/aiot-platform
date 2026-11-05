@@ -17,6 +17,21 @@ func TestDeviceMessageDecodePayload(t *testing.T) {
 			require.Equal(t, raw, string(msg.Payload))
 		})
 	}
+	for _, raw := range []string{
+		`{"event":"client.disconnected","reason":"keepalive_timeout"}`,
+		`"{\"event\":\"client.disconnected\",\"reason\":\"keepalive_timeout\"}"`,
+	} {
+		t.Run("online_status_"+raw, func(t *testing.T) {
+			msg := DeviceMessage{
+				MessageType: MessageTypeOnlineStatus,
+				Payload:     json.RawMessage(raw),
+			}
+			var payload DeviceOnlineStatusPayload
+			require.NoError(t, msg.DecodePayload(&payload))
+			require.Equal(t, OnlineStatusEventDisconnected, payload.Event)
+			require.Equal(t, DisconnectReason("keepalive_timeout"), payload.Reason)
+		})
+	}
 	for _, raw := range []string{`"not json"`, `"{broken`, `{broken`} {
 		t.Run("invalid_"+raw, func(t *testing.T) {
 			var payload OTAInformPayload

@@ -17,21 +17,25 @@ import (
 
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
-		db:                     db,
-		Device:                 newDevice(db, opts...),
-		DeviceEvent:            newDeviceEvent(db, opts...),
-		OTADeviceUpgradeStatus: newOTADeviceUpgradeStatus(db, opts...),
-		OTAUpgradeBatch:        newOTAUpgradeBatch(db, opts...),
+		db:                      db,
+		Device:                  newDevice(db, opts...),
+		DeviceEvent:             newDeviceEvent(db, opts...),
+		DeviceServiceInvocation: newDeviceServiceInvocation(db, opts...),
+		DeviceState:             newDeviceState(db, opts...),
+		OTADeviceUpgradeStatus:  newOTADeviceUpgradeStatus(db, opts...),
+		OTAUpgradeBatch:         newOTAUpgradeBatch(db, opts...),
 	}
 }
 
 type Query struct {
 	db *gorm.DB
 
-	Device                 device
-	DeviceEvent            deviceEvent
-	OTADeviceUpgradeStatus oTADeviceUpgradeStatus
-	OTAUpgradeBatch        oTAUpgradeBatch
+	Device                  device
+	DeviceEvent             deviceEvent
+	DeviceServiceInvocation deviceServiceInvocation
+	DeviceState             deviceState
+	OTADeviceUpgradeStatus  oTADeviceUpgradeStatus
+	OTAUpgradeBatch         oTAUpgradeBatch
 }
 
 func (q *Query) Available() bool { return q.db != nil }
@@ -40,11 +44,13 @@ func (q *Query) UnderlyingDB() *gorm.DB { return q.db }
 
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
-		db:                     db,
-		Device:                 q.Device.clone(db),
-		DeviceEvent:            q.DeviceEvent.clone(db),
-		OTADeviceUpgradeStatus: q.OTADeviceUpgradeStatus.clone(db),
-		OTAUpgradeBatch:        q.OTAUpgradeBatch.clone(db),
+		db:                      db,
+		Device:                  q.Device.clone(db),
+		DeviceEvent:             q.DeviceEvent.clone(db),
+		DeviceServiceInvocation: q.DeviceServiceInvocation.clone(db),
+		DeviceState:             q.DeviceState.clone(db),
+		OTADeviceUpgradeStatus:  q.OTADeviceUpgradeStatus.clone(db),
+		OTAUpgradeBatch:         q.OTAUpgradeBatch.clone(db),
 	}
 }
 
@@ -58,27 +64,33 @@ func (q *Query) WriteDB() *Query {
 
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
-		db:                     db,
-		Device:                 q.Device.replaceDB(db),
-		DeviceEvent:            q.DeviceEvent.replaceDB(db),
-		OTADeviceUpgradeStatus: q.OTADeviceUpgradeStatus.replaceDB(db),
-		OTAUpgradeBatch:        q.OTAUpgradeBatch.replaceDB(db),
+		db:                      db,
+		Device:                  q.Device.replaceDB(db),
+		DeviceEvent:             q.DeviceEvent.replaceDB(db),
+		DeviceServiceInvocation: q.DeviceServiceInvocation.replaceDB(db),
+		DeviceState:             q.DeviceState.replaceDB(db),
+		OTADeviceUpgradeStatus:  q.OTADeviceUpgradeStatus.replaceDB(db),
+		OTAUpgradeBatch:         q.OTAUpgradeBatch.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
-	Device                 *deviceDo
-	DeviceEvent            *deviceEventDo
-	OTADeviceUpgradeStatus *oTADeviceUpgradeStatusDo
-	OTAUpgradeBatch        *oTAUpgradeBatchDo
+	Device                  *deviceDo
+	DeviceEvent             *deviceEventDo
+	DeviceServiceInvocation *deviceServiceInvocationDo
+	DeviceState             *deviceStateDo
+	OTADeviceUpgradeStatus  *oTADeviceUpgradeStatusDo
+	OTAUpgradeBatch         *oTAUpgradeBatchDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		Device:                 q.Device.WithContext(ctx),
-		DeviceEvent:            q.DeviceEvent.WithContext(ctx),
-		OTADeviceUpgradeStatus: q.OTADeviceUpgradeStatus.WithContext(ctx),
-		OTAUpgradeBatch:        q.OTAUpgradeBatch.WithContext(ctx),
+		Device:                  q.Device.WithContext(ctx),
+		DeviceEvent:             q.DeviceEvent.WithContext(ctx),
+		DeviceServiceInvocation: q.DeviceServiceInvocation.WithContext(ctx),
+		DeviceState:             q.DeviceState.WithContext(ctx),
+		OTADeviceUpgradeStatus:  q.OTADeviceUpgradeStatus.WithContext(ctx),
+		OTAUpgradeBatch:         q.OTAUpgradeBatch.WithContext(ctx),
 	}
 }
 

@@ -68,17 +68,23 @@ var repositorySet = wire.NewSet(
 	repository.NewRepository,
 	repository.NewDeviceUpgradeStatusRepository,
 	repository.NewDeviceEventRepository,
+	repository.NewDeviceStateRepository,
+	repository.NewDeviceServiceInvocationRepository,
 )
 
 var serviceSet = wire.NewSet(
 	service.NewTelemetryService,
 	service.NewOTAService,
 	service.NewEventService,
+	service.NewDeviceStateService,
+	service.NewServiceInvocationService,
 )
 
 var consumerSet = wire.NewSet(
 	consumer.NewTelemetryConsumer,
 	consumer.NewEventConsumer,
+	consumer.NewDeviceStateConsumer,
+	consumer.NewServiceReplyConsumer,
 	consumer.NewOTAProgressConsumer,
 	consumer.NewOTADeviceInfoConsumer,
 	consumer.NewManager,
@@ -87,6 +93,8 @@ var consumerSet = wire.NewSet(
 var handlerSet = wire.NewSet(
 	handler.NewTelemetryHandler,
 	handler.NewEventHandler,
+	handler.NewDeviceStateHandler,
+	handler.NewServiceInvocationHandler,
 	handler.NewOTAHandler,
 )
 

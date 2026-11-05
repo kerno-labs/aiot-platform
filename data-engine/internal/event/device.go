@@ -9,10 +9,12 @@ import (
 type MessageType string
 
 const (
-	MessageTypeTelemetry   MessageType = "telemetry"
-	MessageTypeEvent       MessageType = "event"
-	MessageTypeOTAProgress MessageType = "ota_progress"
-	MessageTypeOTAInform   MessageType = "ota_inform"
+	MessageTypeTelemetry    MessageType = "telemetry"
+	MessageTypeEvent        MessageType = "event"
+	MessageTypeOTAProgress  MessageType = "ota_progress"
+	MessageTypeOTAInform    MessageType = "ota_inform"
+	MessageTypeOnlineStatus MessageType = "online_status"
+	MessageTypeServiceReply MessageType = "service_reply"
 )
 
 // String returns string representation of MessageType.
@@ -66,6 +68,35 @@ type DeviceEventPayload struct {
 	Type       EventType       `json:"type" validate:"required,oneof=info alert error"` // Event severity: info, alert, error
 	Timestamp  int64           `json:"timestamp" validate:"required,gt=0"`              // Unix millisecond timestamp
 	Data       json.RawMessage `json:"data,omitempty"`                                  // Event parameters or field data
+}
+
+// OnlineStatusEvent represents the EMQX client connection lifecycle event type.
+type OnlineStatusEvent string
+
+const (
+	OnlineStatusEventConnected    OnlineStatusEvent = "client.connected"
+	OnlineStatusEventDisconnected OnlineStatusEvent = "client.disconnected"
+)
+
+// DisconnectReason represents the EMQX client disconnection reason.
+type DisconnectReason string
+
+const (
+	DisconnectReasonTakenOver DisconnectReason = "takenover"
+)
+
+// DeviceOnlineStatusPayload defines the EMQX client connected/disconnected event payload.
+type DeviceOnlineStatusPayload struct {
+	Event  OnlineStatusEvent `json:"event"`
+	Reason DisconnectReason  `json:"reason,omitempty"`
+}
+
+// DeviceServiceReplyPayload defines the device reply payload for a thing-model service invocation.
+type DeviceServiceReplyPayload struct {
+	ID      string          `json:"id" validate:"required"`
+	Code    int             `json:"code"`
+	Data    json.RawMessage `json:"data"`
+	Message string          `json:"message,omitempty"`
 }
 
 // DeviceMessage is the standard uplink envelope for device telemetry, attributes, events, and OTA reports.

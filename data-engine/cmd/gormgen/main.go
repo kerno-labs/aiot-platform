@@ -19,6 +19,8 @@ func main() {
 
 	g.ApplyBasic(
 		model.Device{},
+		model.DeviceState{},
+		model.DeviceServiceInvocation{},
 		model.OTAUpgradeBatch{},
 		model.OTADeviceUpgradeStatus{},
 		model.DeviceEvent{},

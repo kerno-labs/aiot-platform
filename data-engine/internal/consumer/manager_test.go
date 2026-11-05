@@ -31,6 +31,8 @@ func TestManager_Start(t *testing.T) {
 	mockTSDB := tsdb.NewMockClient(logger)
 	telemetryService := service.NewTelemetryService(logger, mockTSDB)
 	eventService := service.NewEventService(logger, &mockDeviceEventRepository{})
+	deviceStateService := service.NewDeviceStateService(logger, &mockDeviceStateRepository{})
+	serviceInvocationService := service.NewServiceInvocationService(&mockServiceInvocationRepository{}, logger)
 	otaStore := &mockDeviceUpgradeStatusRepository{}
 	otaService := service.NewOTAService(otaStore, logger)
 
@@ -41,17 +43,19 @@ func TestManager_Start(t *testing.T) {
 	eventConsumer := event.NewConsumer(subscriber, logger)
 	telemetryConsumer := NewTelemetryConsumer(handler.NewTelemetryHandler(telemetryService, logger))
 	eventConsumerHandler := NewEventConsumer(handler.NewEventHandler(eventService, logger))
+	deviceStateConsumer := NewDeviceStateConsumer(handler.NewDeviceStateHandler(deviceStateService, logger))
+	serviceReplyConsumer := NewServiceReplyConsumer(handler.NewServiceInvocationHandler(serviceInvocationService))
 	otaHandler := handler.NewOTAHandler(otaService, logger)
 	otaProgressConsumer := NewOTAProgressConsumer(otaHandler)
 	otaDeviceInfoConsumer := NewOTADeviceInfoConsumer(otaHandler)
 
-	manager := NewManager(eventConsumer, telemetryConsumer, eventConsumerHandler, otaProgressConsumer, otaDeviceInfoConsumer, logger)
+	manager := NewManager(eventConsumer, telemetryConsumer, eventConsumerHandler, deviceStateConsumer, serviceReplyConsumer, otaProgressConsumer, otaDeviceInfoConsumer, logger)
 
 	err := manager.Start(context.Background())
 	if err != nil {
 		t.Fatalf("unexpected error starting manager: %v", err)
 	}
 	require.ElementsMatch(t, []string{
-		"device-telemetry-report", "device-event-report", "ota-progress-report", "ota-device-info",
+		"device-telemetry-report", "device-event-report", "device-online-status", "device-service-reply", "ota-progress-report", "ota-device-info",
 	}, subscriber.topics)
 }
