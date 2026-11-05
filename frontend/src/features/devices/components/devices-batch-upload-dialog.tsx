@@ -12,7 +12,6 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -145,9 +144,6 @@ export function DevicesBatchUploadDialog({
       <DialogContent className='max-w-2xl'>
         <DialogHeader>
           <DialogTitle>{t('dialog.batchUpload.title')}</DialogTitle>
-          <DialogDescription>
-            {t('dialog.batchUpload.description')}
-          </DialogDescription>
         </DialogHeader>
 
         {!uploadResult ? (

@@ -7,7 +7,6 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -75,9 +74,6 @@ export function TasksImportDialog({
       <DialogContent className='gap-2 sm:max-w-sm'>
         <DialogHeader className='text-start'>
           <DialogTitle>Import Tasks</DialogTitle>
-          <DialogDescription>
-            Import tasks quickly from a CSV file.
-          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form id='task-import-form' onSubmit={form.handleSubmit(onSubmit)}>

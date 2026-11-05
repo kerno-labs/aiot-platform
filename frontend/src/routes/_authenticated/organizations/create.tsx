@@ -12,17 +12,11 @@ import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 
 export const Route = createFileRoute('/_authenticated/organizations/create')({
@@ -85,9 +79,6 @@ function CreateOrganizationPage() {
         <CardHeader>
           <Building2 className='mb-2 size-8 text-primary' />
           <CardTitle>{t('createOrganization.title')}</CardTitle>
-          <CardDescription>
-            {t('createOrganization.description')}
-          </CardDescription>
         </CardHeader>
         <form onSubmit={(event) => void handleSubmit(event)}>
           <CardContent>
@@ -106,9 +97,6 @@ function CreateOrganizationPage() {
                   autoFocus
                   placeholder={t('createOrganization.namePlaceholder')}
                 />
-                <FieldDescription>
-                  {t('createOrganization.nameDescription')}
-                </FieldDescription>
               </Field>
             </FieldGroup>
             {tokenFailed && (

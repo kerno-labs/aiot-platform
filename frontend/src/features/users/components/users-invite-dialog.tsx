@@ -9,7 +9,6 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -74,7 +73,6 @@ export function UsersInviteDialog({
           <DialogTitle className='flex items-center gap-2'>
             <MailPlus /> {t('inviteUser')}
           </DialogTitle>
-          <DialogDescription>{t('inviteUserDesc')}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form

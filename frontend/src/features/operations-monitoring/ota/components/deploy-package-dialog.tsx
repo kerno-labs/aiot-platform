@@ -7,7 +7,6 @@ import { Checkbox } from '@/components/ui/checkbox'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -100,7 +99,6 @@ export function DeployPackageDialog() {
       <DialogContent className='sm:max-w-[560px]'>
         <DialogHeader>
           <DialogTitle>{t('deployForm.title')}</DialogTitle>
-          <DialogDescription>{t('deployForm.description')}</DialogDescription>
         </DialogHeader>
 
         <div className='space-y-6 py-4'>

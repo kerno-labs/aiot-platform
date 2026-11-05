@@ -1,6 +1,5 @@
 {
   "title": "Device Groups",
-  "description": "Organize and filter devices by business needs",
   "search": "Search groups",
   "viewColumns": "Toggle columns",
   "detail": "Details",
@@ -42,7 +41,6 @@
   "batchRemoveFromGroup": "Batch remove",
   "removeConfirm": "Are you sure you want to remove the selected device(s) from this group?",
   "addDeviceDialogTitle": "Add devices to group",
-  "addDeviceDialogDesc": "Select devices to join this group",
   "noDevicesFound": "No devices found",
   "selectDevicesPrompt": "Please select at least one device",
   "selectedDevicesCount": "{{count}} device(s) selected",

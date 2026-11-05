@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -154,7 +153,6 @@ export function GroupsActionDialog({
           <DialogTitle>
             {isEdit ? tCommon('edit') : tCommon('create')}
           </DialogTitle>
-          <DialogDescription>{t('description')}</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>

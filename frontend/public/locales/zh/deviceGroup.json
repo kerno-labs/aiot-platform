@@ -1,6 +1,5 @@
 {
   "title": "设备分组",
-  "description": "按业务组织和筛选设备",
   "search": "搜索分组",
   "viewColumns": "显示列",
   "detail": "详情",
@@ -42,7 +41,6 @@
   "batchRemoveFromGroup": "批量移除",
   "removeConfirm": "确定要将选中的设备从当前分组中移除吗？",
   "addDeviceDialogTitle": "添加设备到分组",
-  "addDeviceDialogDesc": "选择要加入该分组的设备",
   "noDevicesFound": "没有找到设备",
   "selectDevicesPrompt": "请选择至少一个设备",
   "selectedDevicesCount": "已选择 {{count}} 台设备",

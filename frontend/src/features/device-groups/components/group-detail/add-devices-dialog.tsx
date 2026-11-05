@@ -21,7 +21,6 @@ import { Checkbox } from '@/components/ui/checkbox'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -177,7 +176,6 @@ export function AddDevicesDialog({
       <DialogContent className='flex max-h-[85vh] flex-col sm:max-w-2xl'>
         <DialogHeader>
           <DialogTitle>{t('addDeviceDialogTitle')}</DialogTitle>
-          <DialogDescription>{t('addDeviceDialogDesc')}</DialogDescription>
         </DialogHeader>
 
         {/* 筛选与搜索工具栏 */}

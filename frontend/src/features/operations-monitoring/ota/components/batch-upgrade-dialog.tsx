@@ -9,7 +9,6 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -114,11 +113,6 @@ export function BatchUpgradeDialog({
       <SheetContent side='right' className='w-full sm:max-w-md'>
         <SheetHeader>
           <SheetTitle>{t('packageDetail.batchUpgrade.title')}</SheetTitle>
-          <SheetDescription>
-            {t('packageDetail.batchUpgrade.description', {
-              packageName: packageUuid || '',
-            })}
-          </SheetDescription>
         </SheetHeader>
 
         <div className='flex flex-1 flex-col gap-4 overflow-hidden px-4'>

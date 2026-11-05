@@ -13,7 +13,6 @@ import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -279,9 +278,6 @@ export function ServiceInvocationsTab({ deviceKey }: { deviceKey: string }) {
             <DialogTitle>
               {t('deviceDetail.serviceInvocations.invoke.title')}
             </DialogTitle>
-            <DialogDescription>
-              {t('deviceDetail.serviceInvocations.invoke.description')}
-            </DialogDescription>
           </DialogHeader>
           <div className='grid gap-4 py-2'>
             <div className='grid gap-2'>
