@@ -37,21 +37,9 @@
   "appearance": {
     "title": "外观",
     "description": "自定义应用程序的外观",
-    "theme": {
-      "title": "主题",
-      "description": "选择您偏好的主题",
-      "light": "浅色",
-      "dark": "深色",
-      "system": "系统"
-    },
     "language": {
       "title": "语言",
-      "description": "选择您偏好的语言",
-      "selectLanguage": "选择语言"
-    },
-    "layout": {
-      "title": "布局",
-      "description": "选择您偏好的布局"
+      "description": "选择您偏好的语言"
     }
   },
   "notifications": {

@@ -250,9 +250,6 @@
         "services": "No services yet, click \"Add Service\" to start creating",
         "events": "No events yet, click \"Add Event\" to start creating"
       },
-      "deleteDialog": {
-        "title": "Delete TSL"
-      },
       "errors": {
         "jsonParse": "JSON parse error",
         "tslValidation": "TSL validation error",

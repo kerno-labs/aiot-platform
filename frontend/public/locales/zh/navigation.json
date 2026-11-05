@@ -8,23 +8,12 @@
     "devices": "设备",
     "groups": "分组",
     "ruleEngine": "规则引擎",
-    "rules": "规则管理",
     "ruleChains": "规则链",
     "account": "账户",
     "tasks": "任务",
     "settings": "设置",
     "helpCenter": "帮助中心",
-    "logout": "退出登录",
     "general": "常规",
     "pages": "页面"
-  },
-  "breadcrumb": {
-    "home": "首页",
-    "dashboard": "仪表板"
-  },
-  "topNav": {
-    "search": "搜索",
-    "notifications": "通知",
-    "profile": "个人资料"
   }
 }

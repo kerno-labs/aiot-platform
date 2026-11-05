@@ -1,34 +1,4 @@
 {
   "title": "AI IoT Copilot",
-  "subtitle": "Intelligent IoT operations assistant powered by LLM and real-time tools",
-  "openCopilot": "Open AI Copilot",
-  "closeCopilot": "Close",
-  "newChat": "New Chat",
-  "inputPlaceholder": "Ask a question, e.g. 'Show all online sensor devices'...",
-  "send": "Send",
-  "cancel": "Stop generating",
-  "retry": "Retry",
-  "emptyState": {
-    "title": "How can I help you today?",
-    "description": "AI Copilot can query device statuses, thing-model details, and telemetry history.",
-    "suggestion1": "List all active online devices.",
-    "suggestion2": "Show the recent temperature telemetry history for DEV001.",
-    "suggestion3": "Get thing-model properties and shadow state for DEV001."
-  },
-  "readOnlyNotice": "AI Copilot operates in read-only query mode and cannot execute device commands or write actions.",
-  "toolStatus": {
-    "querying": "Querying data...",
-    "completed": "Query complete",
-    "failed": "Query failed"
-  },
-  "tools": {
-    "iot_query_devices": "Query Devices",
-    "iot_get_device_detail": "Get Device Detail",
-    "iot_query_telemetry_history": "Query Telemetry"
-  },
-  "errors": {
-    "serviceUnavailable": "AI Copilot is temporarily unavailable. Please try again later.",
-    "mcpTimeout": "Connecting to IoT data service timed out. Please try again later.",
-    "unauthorized": "Authentication failed. Please log in again."
-  }
+  "openCopilot": "Open AI Copilot"
 }

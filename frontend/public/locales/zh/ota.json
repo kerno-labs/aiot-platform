@@ -5,22 +5,13 @@
     "analytics": "数据分析"
   },
   "packageList": {
-    "title": "OTA 升级包",
-    "description": "管理固件和软件升级包。",
     "columns": {
       "packageName": "升级包名称",
       "version": "升级包版本号",
       "packageType": "包类型",
-      "productName": "所属产品",
-      "moduleName": "模块名称"
+      "productName": "所属产品"
     },
     "filters": {
-      "allPackages": "全部产品",
-      "upgradePackages": "添加升级包",
-      "securityPackages": "安全升级",
-      "patchPackages": "补丁",
-      "allProducts": "全部产品",
-      "allModules": "全部模块",
       "searchPlaceholder": "请输入升级包名称"
     },
     "packageTypes": {
@@ -43,14 +34,9 @@
       "archived": "已归档"
     },
     "actions": {
-      "deploy": "验证",
-      "cancel": "取消部署",
-      "viewDetails": "查看详情",
-      "bulkUpgrade": "批量升级",
-      "bulkDelete": "批量删除"
+      "bulkUpgrade": "批量升级"
     },
     "emptyState": {
-      "title": "暂无升级包",
       "description": "创建您的第一个升级包开始使用。"
     }
   },
@@ -70,7 +56,6 @@
       "uploadBinaryFile": "上传二进制文件",
       "useExternalUrl": "使用外部URL",
       "file": "升级文件",
-      "filePlaceholder": "上传升级包文件（最大 100MB）",
       "externalUrl": "外部URL",
       "externalUrlPlaceholder": "https://example.com/firmware.bin"
     },
@@ -92,55 +77,22 @@
       "targetDevices": "目标设备",
       "allDevices": "全部设备",
       "specificDevices": "指定设备",
-      "schedule": "调度",
-      "immediate": "立即执行",
-      "scheduled": "定时执行",
-      "scheduleTime": "执行时间",
       "estimatedDevices": "预计设备数"
     },
     "confirmation": {
-      "title": "确认部署",
       "message": "确定要将此升级包部署到 {{count}} 台设备吗？",
       "warning": "此操作无法撤销。"
     },
     "submit": "立即部署"
   },
-  "deleteDialog": {
-    "title": "删除升级包",
-    "description": "确定要删除\"{{packageName}}\"吗？",
-    "warning": "此操作无法撤销。"
-  },
   "viewDialog": {
-    "title": "升级包详情",
-    "description": "查看升级包的详细信息。",
-    "sections": {
-      "basicInfo": "基本信息",
-      "fileInfo": "文件信息",
-      "deploymentStats": "部署统计",
-      "timestamps": "时间信息"
-    },
     "fields": {
-      "fileSize": "文件大小",
-      "checksum": "校验和",
-      "fileUrl": "文件地址",
-      "targetDeviceCount": "目标设备数",
-      "successCount": "成功数",
-      "failureCount": "失败数",
-      "deploymentProgress": "部署进度",
-      "deployedAt": "部署时间",
-      "createdBy": "创建者"
+      "fileUrl": "文件地址"
     }
   },
   "packageDetail": {
     "unknownPackage": "未知升级包",
-    "version": "版本：{{version}}",
     "type": "类型",
-    "lastUpdated": {
-      "label": "最后更新：{{time}}",
-      "justNow": "刚刚",
-      "minutesAgo": "{{count}} 分钟前",
-      "hoursAgo": "{{count}} 小时前"
-    },
     "statistics": {
       "targetDevices": "目标设备",
       "successful": "成功",
@@ -154,7 +106,6 @@
     },
     "columns": {
       "batchId": "批次 ID",
-      "type": "类型",
       "strategy": "策略",
       "devices": "设备数",
       "device": "设备",
@@ -172,10 +123,6 @@
       "failed": "失败",
       "cancelled": "已取消",
       "completed": "已完成"
-    },
-    "batchTypes": {
-      "manual": "手动",
-      "automatic": "自动"
     },
     "strategies": {
       "immediate": "立即执行",
@@ -201,20 +148,14 @@
     "batchUpgrade": {
       "title": "选择升级设备",
       "searchDevices": "搜索设备名称或 Key",
-      "selectAll": "全选",
       "selected": "已选 {{count}} 台",
       "selectAtLeastOne": "请至少选择一台设备",
-      "confirm": "开始升级",
       "empty": "无可用设备",
       "submitting": "提交中...",
       "success": "已创建升级批次，共 {{count}} 台设备",
       "failed": "批量升级失败"
     },
-    "pagination": "第 {{current}} 页，共 {{total}} 页",
-    "previous": "上一页",
-    "retry": "重试",
     "sections": {
-      "basicInformation": "基本信息",
       "fileInformation": "文件信息",
       "descriptionAndNotes": "升级包说明"
     },
@@ -268,18 +209,10 @@
       "productName": "所属产品",
       "time": "时间",
       "noData": "暂无最近活动"
-    },
-    "export": {
-      "exportData": "导出数据",
-      "downloadChart": "下载图表"
     }
   },
   "notifications": {
-    "packageCreated": "升级包创建成功",
-    "packageUpdated": "升级包更新成功",
-    "packageDeleted": "升级包删除成功",
     "deploymentStarted": "部署启动成功",
-    "deploymentCancelled": "部署已取消",
     "error": "发生错误，请重试。"
   }
 }

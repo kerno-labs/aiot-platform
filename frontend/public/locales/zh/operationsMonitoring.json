@@ -1,9 +1,7 @@
 {
   "title": "监控运维",
-  "description": "监控和管理您的物联网基础设施运营。",
   "events": {
     "title": "事件管理",
-    "description": "查看所有设备上报的物模型事件。",
     "filters": {
       "keyword": "搜索设备或事件类型",
       "eventType": "事件类型",
@@ -16,16 +14,11 @@
       "deviceName": "设备",
       "deviceKey": "设备 Key"
     },
-    "viewOptions": {
-      "toggleColumns": "显示列"
-    },
     "detail": {
       "title": "事件详情"
     },
     "empty": "暂无设备事件",
     "error": "加载设备事件失败，请重试。",
-    "retry": "重试",
-    "pagination": "第 {{page}} 页，共 {{total}} 条",
     "bulkActions": {
       "export": "导出选中",
       "delete": "删除选中",

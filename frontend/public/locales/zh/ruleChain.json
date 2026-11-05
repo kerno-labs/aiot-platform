@@ -4,8 +4,6 @@
   "save": "保存规则链",
   "saving": "保存中…",
   "saved": "已保存",
-  "saveSuccess": "规则链已保存",
-  "saveError": "保存失败，请稍后重试",
   "nameLabel": "规则链名称",
   "descriptionLabel": "规则链描述",
   "descriptionPlaceholder": "补充这条规则链的用途（可选）",
@@ -17,7 +15,6 @@
   },
   "inspector": {
     "title": "节点配置",
-    "configFields": "配置字段",
     "noConfig": "该节点无需配置。",
     "selectHint": "在画布中选择节点以查看配置。",
     "deleteNode": "删除节点",
@@ -28,21 +25,12 @@
     "expandPalette": "展开节点库"
   },
   "validation": { "nameRequired": "请填写规则链名称" },
-  "backToList": "返回规则链列表",
-  "backToDetail": "返回规则链详情",
-  "back": "返回",
   "list": {
     "title": "规则链",
     "search": "搜索规则链...",
     "empty": "暂无规则链。",
     "loadError": "规则链加载失败。",
-    "deleteSuccess": "规则链已删除",
-    "deleteError": "规则链删除失败。",
-    "deleteConfirm": "确定要删除 {{name}} 吗？此操作不可撤销。",
     "columns": {
-      "name": "名称",
-      "description": "描述",
-      "status": "状态",
       "version": "版本"
     }
   },

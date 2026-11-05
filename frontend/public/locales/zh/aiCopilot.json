@@ -1,34 +1,4 @@
 {
   "title": "AI 物联助手",
-  "subtitle": "基于大模型与实时 IoT 工具的智能运维助手",
-  "openCopilot": "打开 AI 助手",
-  "closeCopilot": "关闭",
-  "newChat": "新建对话",
-  "inputPlaceholder": "请输入您的问题，例如：'查询当前在线的传感器设备'...",
-  "send": "发送",
-  "cancel": "停止生成",
-  "retry": "重试",
-  "emptyState": {
-    "title": "有什么可以帮您的？",
-    "description": "AI 助手可实时查询设备状态、物模型详情与时序遥测数据。",
-    "suggestion1": "帮我查询当前有哪些在线设备？",
-    "suggestion2": "查询设备 DEV001 的最新温度遥测历史曲线。",
-    "suggestion3": "获取设备 DEV001 的物模型属性与影子状态。"
-  },
-  "readOnlyNotice": "AI 助手当前仅支持只读查询与分析，无法执行下发控制或修改操作。",
-  "toolStatus": {
-    "querying": "正在查询数据...",
-    "completed": "数据查询完成",
-    "failed": "数据查询失败"
-  },
-  "tools": {
-    "iot_query_devices": "查询设备列表",
-    "iot_get_device_detail": "获取设备详情",
-    "iot_query_telemetry_history": "查询时序遥测"
-  },
-  "errors": {
-    "serviceUnavailable": "物联助手暂时无法响应，请稍后重试。",
-    "mcpTimeout": "暂时无法连接物联数据服务，请求超时，请稍后重试。",
-    "unauthorized": "身份认证失败，请重新登录后再试。"
-  }
+  "openCopilot": "打开 AI 助手"
 }

@@ -5,22 +5,13 @@
     "analytics": "Data Analysis"
   },
   "packageList": {
-    "title": "OTA Packages",
-    "description": "Manage firmware and software upgrade packages.",
     "columns": {
       "packageName": "Package Name",
       "version": "Version",
       "packageType": "Package Type",
-      "productName": "Product Name",
-      "moduleName": "Module Name"
+      "productName": "Product Name"
     },
     "filters": {
-      "allPackages": "All Packages",
-      "upgradePackages": "Upgrade Packages",
-      "securityPackages": "Security Patches",
-      "patchPackages": "Patches",
-      "allProducts": "All Products",
-      "allModules": "All Modules",
       "searchPlaceholder": "Search package name..."
     },
     "packageTypes": {
@@ -43,14 +34,9 @@
       "archived": "Archived"
     },
     "actions": {
-      "deploy": "Deploy",
-      "cancel": "Cancel Deployment",
-      "viewDetails": "View Details",
-      "bulkUpgrade": "Batch Upgrade",
-      "bulkDelete": "Delete Selected"
+      "bulkUpgrade": "Batch Upgrade"
     },
     "emptyState": {
-      "title": "No upgrade packages",
       "description": "Get started by creating your first upgrade package."
     }
   },
@@ -70,7 +56,6 @@
       "uploadBinaryFile": "Upload binary file",
       "useExternalUrl": "Use external URL",
       "file": "Upgrade File",
-      "filePlaceholder": "Upload package file (max 100MB)",
       "externalUrl": "External URL",
       "externalUrlPlaceholder": "https://example.com/firmware.bin"
     },
@@ -92,55 +77,22 @@
       "targetDevices": "Target Devices",
       "allDevices": "All Devices",
       "specificDevices": "Specific Devices",
-      "schedule": "Schedule",
-      "immediate": "Immediate",
-      "scheduled": "Scheduled",
-      "scheduleTime": "Schedule Time",
       "estimatedDevices": "Estimated Devices"
     },
     "confirmation": {
-      "title": "Confirm Deployment",
       "message": "Are you sure you want to deploy this package to {{count}} devices?",
       "warning": "This action cannot be undone."
     },
     "submit": "Deploy Now"
   },
-  "deleteDialog": {
-    "title": "Delete Upgrade Package",
-    "description": "Are you sure you want to delete \"{{packageName}}\"?",
-    "warning": "This action cannot be undone."
-  },
   "viewDialog": {
-    "title": "Package Details",
-    "description": "View detailed information about the upgrade package.",
-    "sections": {
-      "basicInfo": "Basic Information",
-      "fileInfo": "File Information",
-      "deploymentStats": "Deployment Statistics",
-      "timestamps": "Timestamps"
-    },
     "fields": {
-      "fileSize": "File Size",
-      "checksum": "Checksum",
-      "fileUrl": "File URL",
-      "targetDeviceCount": "Target Devices",
-      "successCount": "Successes",
-      "failureCount": "Failures",
-      "deploymentProgress": "Progress",
-      "deployedAt": "Deployed At",
-      "createdBy": "Created By"
+      "fileUrl": "File URL"
     }
   },
   "packageDetail": {
     "unknownPackage": "Unknown package",
-    "version": "Version: {{version}}",
     "type": "Type",
-    "lastUpdated": {
-      "label": "Last updated: {{time}}",
-      "justNow": "Just now",
-      "minutesAgo": "{{count}}m ago",
-      "hoursAgo": "{{count}}h ago"
-    },
     "statistics": {
       "targetDevices": "Target Devices",
       "successful": "Successful",
@@ -154,7 +106,6 @@
     },
     "columns": {
       "batchId": "Batch ID",
-      "type": "Type",
       "strategy": "Strategy",
       "devices": "Devices",
       "device": "Device",
@@ -172,10 +123,6 @@
       "failed": "Failed",
       "cancelled": "Cancelled",
       "completed": "Completed"
-    },
-    "batchTypes": {
-      "manual": "Manual",
-      "automatic": "Automatic"
     },
     "strategies": {
       "immediate": "Immediate",
@@ -201,20 +148,14 @@
     "batchUpgrade": {
       "title": "Select Devices to Upgrade",
       "searchDevices": "Search by device name or key",
-      "selectAll": "Select all",
       "selected": "Selected {{count}}",
       "selectAtLeastOne": "Please select at least one device",
-      "confirm": "Start Upgrade",
       "empty": "No devices available",
       "submitting": "Submitting...",
       "success": "Upgrade batch created with {{count}} devices",
       "failed": "Batch upgrade failed"
     },
-    "pagination": "Page {{current}} of {{total}}",
-    "previous": "Previous",
-    "retry": "Retry",
     "sections": {
-      "basicInformation": "Basic Information",
       "fileInformation": "File Information",
       "descriptionAndNotes": "Description"
     },
@@ -268,18 +209,10 @@
       "productName": "Product Name",
       "time": "Time",
       "noData": "No recent activity"
-    },
-    "export": {
-      "exportData": "Export Data",
-      "downloadChart": "Download Chart"
     }
   },
   "notifications": {
-    "packageCreated": "Package created successfully",
-    "packageUpdated": "Package updated successfully",
-    "packageDeleted": "Package deleted successfully",
     "deploymentStarted": "Deployment started successfully",
-    "deploymentCancelled": "Deployment cancelled",
     "error": "An error occurred. Please try again."
   }
 }

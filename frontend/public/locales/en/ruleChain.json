@@ -4,8 +4,6 @@
   "save": "Save rule chain",
   "saving": "Saving…",
   "saved": "Saved",
-  "saveSuccess": "Rule chain saved",
-  "saveError": "Save failed. Try again.",
   "nameLabel": "Rule chain name",
   "descriptionLabel": "Rule chain description",
   "descriptionPlaceholder": "Describe what this chain is for (optional)",
@@ -17,7 +15,6 @@
   },
   "inspector": {
     "title": "Node configuration",
-    "configFields": "Configuration fields",
     "noConfig": "This node has no configuration.",
     "selectHint": "Select a node on the canvas to view its configuration.",
     "deleteNode": "Delete node",
@@ -28,21 +25,12 @@
     "expandPalette": "Expand node library"
   },
   "validation": { "nameRequired": "Enter a rule chain name" },
-  "backToList": "Back to rule chains",
-  "backToDetail": "Back to rule chain details",
-  "back": "Back",
   "list": {
     "title": "Rule chains",
     "search": "Search rule chains...",
     "empty": "No rule chains found.",
     "loadError": "Failed to load rule chains.",
-    "deleteSuccess": "Rule chain deleted",
-    "deleteError": "Failed to delete rule chain.",
-    "deleteConfirm": "Are you sure you want to delete {{name}}? This action cannot be undone.",
     "columns": {
-      "name": "Name",
-      "description": "Description",
-      "status": "Status",
       "version": "Version"
     }
   },

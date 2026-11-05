@@ -250,9 +250,6 @@
         "services": "暂无服务，点击\"添加服务\"开始创建",
         "events": "暂无事件，点击\"添加事件\"开始创建"
       },
-      "deleteDialog": {
-        "title": "删除TSL"
-      },
       "errors": {
         "jsonParse": "JSON解析错误",
         "tslValidation": "TSL验证错误",

@@ -37,21 +37,9 @@
   "appearance": {
     "title": "Appearance",
     "description": "Customize the appearance of the application",
-    "theme": {
-      "title": "Theme",
-      "description": "Select your preferred theme",
-      "light": "Light",
-      "dark": "Dark",
-      "system": "System"
-    },
     "language": {
       "title": "Language",
-      "description": "Select your preferred language",
-      "selectLanguage": "Select a language"
-    },
-    "layout": {
-      "title": "Layout",
-      "description": "Select your preferred layout"
+      "description": "Select your preferred language"
     }
   },
   "notifications": {

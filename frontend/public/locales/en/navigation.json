@@ -8,23 +8,12 @@
     "devices": "Devices",
     "groups": "Groups",
     "ruleEngine": "Rule Engine",
-    "rules": "Rules",
     "ruleChains": "Rule Chains",
     "account": "Account",
     "tasks": "Tasks",
     "settings": "Settings",
     "helpCenter": "Help Center",
-    "logout": "Logout",
     "general": "General",
     "pages": "Pages"
-  },
-  "breadcrumb": {
-    "home": "Home",
-    "dashboard": "Dashboard"
-  },
-  "topNav": {
-    "search": "Search",
-    "notifications": "Notifications",
-    "profile": "Profile"
   }
 }

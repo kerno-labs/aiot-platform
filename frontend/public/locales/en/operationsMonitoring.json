@@ -1,9 +1,7 @@
 {
   "title": "Ops & Monitor",
-  "description": "Monitor and manage your IoT infrastructure operations.",
   "events": {
     "title": "Event Management",
-    "description": "View device-model events reported by all devices.",
     "filters": {
       "keyword": "Search device or event type",
       "eventType": "Event type",
@@ -16,16 +14,11 @@
       "deviceName": "Device",
       "deviceKey": "Device Key"
     },
-    "viewOptions": {
-      "toggleColumns": "Toggle columns"
-    },
     "detail": {
       "title": "Event details"
     },
     "empty": "No device events yet",
     "error": "Failed to load device events. Please try again.",
-    "retry": "Retry",
-    "pagination": "Page {{page}}, {{total}} total",
     "bulkActions": {
       "export": "Export selected",
       "delete": "Delete selected",
