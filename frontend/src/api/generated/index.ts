@@ -51,6 +51,7 @@ import type {
   ApiResponseDeviceEventListDeviceEventsResponse,
   ApiResponseDeviceGetDeviceResponse,
   ApiResponseDeviceGetPushRecordResponse,
+  ApiResponseDeviceInvokeServiceResponse,
   ApiResponseDeviceListDeviceShadowHistoryResponse,
   ApiResponseDeviceListDeviceTagsResponse,
   ApiResponseDeviceListDevicesResponse,
@@ -110,6 +111,7 @@ import type {
   GetOtaPackagesUuidUpgradeStatisticsParams,
   GetProductsParams,
   GetRuleChainsParams,
+  InvokeDeviceServiceRequest,
   MessageParserExecuteProductMessageParserRequest,
   MessageParserUpsertProductMessageParserRequest,
   OtaBatchUpgradeRequest,
@@ -5180,6 +5182,147 @@ export function useGetDevicesDeviceKeyThingModelServiceInvocations<
 
   return withQueryKey(query, queryOptions.queryKey)
 }
+
+/**
+ * Persists a service invocation record and dispatches the RPC command to the device over MQTT.
+ * @summary Invoke thing-model service on a device
+ */
+export const postDevicesDeviceKeyThingModelServicesServiceIdentifierInvoke = (
+  deviceKey: string,
+  serviceIdentifier: string,
+  invokeDeviceServiceRequest: BodyType<InvokeDeviceServiceRequest>,
+  signal?: AbortSignal
+) => {
+  return orvalAxios<ApiResponseDeviceInvokeServiceResponse>({
+    url: `/devices/${deviceKey}/thing-model/services/${serviceIdentifier}/invoke`,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    data: invokeDeviceServiceRequest,
+    signal,
+  })
+}
+
+export const getPostDevicesDeviceKeyThingModelServicesServiceIdentifierInvokeMutationOptions =
+  <TError = ErrorType<unknown>, TContext = unknown>(options?: {
+    mutation?: UseMutationOptions<
+      Awaited<
+        ReturnType<
+          typeof postDevicesDeviceKeyThingModelServicesServiceIdentifierInvoke
+        >
+      >,
+      TError,
+      {
+        deviceKey: string
+        serviceIdentifier: string
+        data: BodyType<InvokeDeviceServiceRequest>
+      },
+      TContext
+    >
+  }): UseMutationOptions<
+    Awaited<
+      ReturnType<
+        typeof postDevicesDeviceKeyThingModelServicesServiceIdentifierInvoke
+      >
+    >,
+    TError,
+    {
+      deviceKey: string
+      serviceIdentifier: string
+      data: BodyType<InvokeDeviceServiceRequest>
+    },
+    TContext
+  > => {
+    const mutationKey = [
+      'postDevicesDeviceKeyThingModelServicesServiceIdentifierInvoke',
+    ]
+    const { mutation: mutationOptions } = options
+      ? options.mutation &&
+        'mutationKey' in options.mutation &&
+        options.mutation.mutationKey
+        ? options
+        : { ...options, mutation: { ...options.mutation, mutationKey } }
+      : { mutation: { mutationKey } }
+
+    const mutationFn: MutationFunction<
+      Awaited<
+        ReturnType<
+          typeof postDevicesDeviceKeyThingModelServicesServiceIdentifierInvoke
+        >
+      >,
+      {
+        deviceKey: string
+        serviceIdentifier: string
+        data: BodyType<InvokeDeviceServiceRequest>
+      }
+    > = (props) => {
+      const { deviceKey, serviceIdentifier, data } = props ?? {}
+
+      return postDevicesDeviceKeyThingModelServicesServiceIdentifierInvoke(
+        deviceKey,
+        serviceIdentifier,
+        data
+      )
+    }
+
+    return { mutationFn, ...mutationOptions }
+  }
+
+export type PostDevicesDeviceKeyThingModelServicesServiceIdentifierInvokeMutationResult =
+  NonNullable<
+    Awaited<
+      ReturnType<
+        typeof postDevicesDeviceKeyThingModelServicesServiceIdentifierInvoke
+      >
+    >
+  >
+export type PostDevicesDeviceKeyThingModelServicesServiceIdentifierInvokeMutationBody =
+  BodyType<InvokeDeviceServiceRequest>
+export type PostDevicesDeviceKeyThingModelServicesServiceIdentifierInvokeMutationError =
+  ErrorType<unknown>
+
+/**
+ * @summary Invoke thing-model service on a device
+ */
+export const usePostDevicesDeviceKeyThingModelServicesServiceIdentifierInvoke =
+  <TError = ErrorType<unknown>, TContext = unknown>(
+    options?: {
+      mutation?: UseMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof postDevicesDeviceKeyThingModelServicesServiceIdentifierInvoke
+          >
+        >,
+        TError,
+        {
+          deviceKey: string
+          serviceIdentifier: string
+          data: BodyType<InvokeDeviceServiceRequest>
+        },
+        TContext
+      >
+    },
+    queryClient?: QueryClient
+  ): UseMutationResult<
+    Awaited<
+      ReturnType<
+        typeof postDevicesDeviceKeyThingModelServicesServiceIdentifierInvoke
+      >
+    >,
+    TError,
+    {
+      deviceKey: string
+      serviceIdentifier: string
+      data: BodyType<InvokeDeviceServiceRequest>
+    },
+    TContext
+  > => {
+    return useMutation(
+      getPostDevicesDeviceKeyThingModelServicesServiceIdentifierInvokeMutationOptions(
+        options
+      ),
+      queryClient
+    )
+  }
 
 /**
  * Uploads OTA update file.

@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { CopyButton } from '@/components/copy-button'
+import { deviceStateKey } from '../../data/data'
+import { DEVICE_STATE } from '../../data/schema'
 import { TagsEditor } from './tags-editor'
 
 interface DeviceInfoTabProps {
@@ -18,15 +20,9 @@ export function DeviceInfoTab({ device }: DeviceInfoTabProps) {
   const { t } = useTranslation(['deviceManagement', 'common'])
   const [logUploadEnabled, setLogUploadEnabled] = useState(false)
 
-  const formatDate = (dateString: string | undefined) => {
-    if (!dateString) return '-'
-    const date = new Date(dateString)
-    return date.toISOString().slice(0, 19).replace('T', ' ')
-  }
-
   const getStatusVariant = () => {
-    if (device.state === 'online') return 'default'
-    if (device.state === 'offline') return 'secondary'
+    if (device.state === DEVICE_STATE.ONLINE) return 'default'
+    if (device.state === DEVICE_STATE.OFFLINE) return 'secondary'
     return 'destructive'
   }
 
@@ -69,7 +65,7 @@ export function DeviceInfoTab({ device }: DeviceInfoTabProps) {
                 <p className='text-sm text-muted-foreground'>
                   {t('common:createdAt')}
                 </p>
-                <p className='font-medium'>{formatDate(device.createdAt)}</p>
+                <p className='font-medium'>{device.createdAt || '-'}</p>
               </div>
 
               <div className='space-y-1'>
@@ -77,9 +73,9 @@ export function DeviceInfoTab({ device }: DeviceInfoTabProps) {
                   {t('deviceDetail.info.fields.currentStatus')}
                 </p>
                 <Badge variant={getStatusVariant()}>
-                  {t(`devices.state.${device.state}`, {
-                    defaultValue: device.state || '-',
-                  })}
+                  {device.state !== undefined
+                    ? t(`devices.state.${deviceStateKey(device.state)}`)
+                    : '-'}
                 </Badge>
               </div>
             </div>
@@ -146,11 +142,7 @@ export function DeviceInfoTab({ device }: DeviceInfoTabProps) {
                 <p className='text-sm text-muted-foreground'>
                   {t('deviceDetail.info.fields.lastOfflineTime')}
                 </p>
-                <p className='font-medium'>
-                  {device.lastOfflineTime
-                    ? formatDate(String(device.lastOfflineTime))
-                    : '-'}
-                </p>
+                <p className='font-medium'>{device.lastOfflineTime ?? '-'}</p>
               </div>
             </div>
 

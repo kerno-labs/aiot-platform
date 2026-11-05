@@ -12,12 +12,12 @@ export interface Device {
   deviceKey?: string
   enabled?: boolean
   id?: number
-  lastOfflineTime?: number
-  lastOnlineTime?: number
+  lastOfflineTime?: string
+  lastOnlineTime?: string
   name?: string
   productId?: number
   productKey?: string
   productName?: string
-  state?: string
+  state?: number
   updatedAt?: string
 }

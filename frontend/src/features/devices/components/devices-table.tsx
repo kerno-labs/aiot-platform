@@ -28,7 +28,7 @@ import {
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
 import { useDevices, deviceKeys } from '../api/queries'
 import { states as stateOptions } from '../data/data'
-import { type Device } from '../data/schema'
+import { DEVICE_STATE, type Device } from '../data/schema'
 import { DataTableBulkActions } from './data-table-bulk-actions'
 import { useDevicesColumns } from './devices-columns'
 
@@ -54,9 +54,10 @@ export function DevicesTable() {
   })
 
   // Extract filter values from appliedFilters (not columnFilters)
-  // Pass as array for standard REST API format: ?states=online&states=offline
-  const states = appliedFilters.find((f) => f.id === 'state')?.value as
+  // Pass as array for standard REST API format: ?states=1&states=0
+  const rawStates = appliedFilters.find((f) => f.id === 'state')?.value as
     string[] | undefined
+  const states = rawStates?.map(Number)
   const searchText = appliedFilters.find((f) => f.id === 'deviceKey')?.value as
     string | undefined
 
@@ -97,7 +98,7 @@ export function DevicesTable() {
       productId: device.productId || '',
       productKey: device.productKey,
       productName: device.productName,
-      state: device.state || '',
+      state: device.state ?? DEVICE_STATE.INACTIVE,
       enabled: device.enabled || false,
       lastOnlineTime: device.lastOnlineTime,
       createdAt: device.createdAt || '',
@@ -182,7 +183,7 @@ export function DevicesTable() {
             columnId: 'state',
             title: t('devices.columns.state'),
             options: stateOptions.map((state) => ({
-              label: t(`devices.state.${state.value}`),
+              label: t(`devices.state.${state.key}`),
               value: state.value,
             })),
           },

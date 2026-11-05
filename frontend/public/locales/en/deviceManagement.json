@@ -451,9 +451,25 @@
       "title": "Service Invocation",
       "description": "View thing-model service invocation records for this device.",
       "filters": { "serviceIdentifier": "Service identifier", "dateRange": "Select time range", "startAt": "Start time", "endAt": "End time", "timePrecision": "Seconds precision" },
-      "columns": { "invokedAt": "Time", "serviceIdentifier": "Identifier", "serviceName": "Service name", "inputParams": "Input parameters", "outputParams": "Output parameters" },
+      "columns": { "invokedAt": "Time", "serviceIdentifier": "Identifier", "serviceName": "Service name", "status": "Status", "inputParams": "Input parameters", "outputParams": "Output parameters" },
+      "status": { "pending": "Pending", "success": "Replied", "failed": "Failed" },
       "empty": "No service invocation records found.",
-      "error": "Failed to load service invocation records."
+      "error": "Failed to load service invocation records.",
+      "invoke": {
+        "button": "Invoke Service",
+        "title": "Invoke Thing Model Service",
+        "description": "Send a thing-model RPC service invocation command to this device.",
+        "serviceIdentifier": "Service Identifier",
+        "serviceIdentifierPlaceholder": "e.g. reboot",
+        "inputParams": "Input Parameters (JSON)",
+        "inputParamsPlaceholder": "{\"delay\": 5}",
+        "submit": "Invoke Now",
+        "submitting": "Invoking...",
+        "success": "Service invocation command dispatched",
+        "error": "Failed to invoke service",
+        "invalidJson": "Input parameters must be a valid JSON object",
+        "identifierRequired": "Please enter a service identifier"
+      }
     },
     "deviceShadowTab": {
       "comingSoon": "Device shadow coming soon"

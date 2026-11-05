@@ -8,5 +8,5 @@
 
 export interface DeviceUpdateDeviceRequest {
   name?: string
-  state?: string
+  state?: number
 }

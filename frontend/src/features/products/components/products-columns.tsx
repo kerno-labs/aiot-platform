@@ -150,9 +150,8 @@ export const productsColumns: ColumnDef<Product>[] = [
       <DataTableColumnHeader column={column} title='Created' />
     ),
     cell: ({ row }) => {
-      const date = new Date(row.getValue('createdAt'))
-      const formatted = date.toISOString().slice(0, 19).replace('T', ' ')
-      return <div className='text-nowrap'>{formatted} UTC</div>
+      const createdAt = row.getValue('createdAt') as string | undefined
+      return <div className='text-nowrap'>{createdAt || '-'}</div>
     },
     enableSorting: false,
   },

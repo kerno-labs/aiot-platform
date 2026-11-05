@@ -1,4 +1,3 @@
-import { format } from 'date-fns'
 import { Route } from '@/routes/_authenticated/device-management/devices/$deviceKey'
 import { Database, Loader2, Radio, RotateCw } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -137,12 +136,8 @@ export function PropertyTab() {
                       </div>
                       <div>
                         {t('deviceDetail.propertyTab.reportedAt')}:{' '}
-                        {prop.reportedAt
-                          ? format(
-                              new Date(prop.reportedAt),
-                              'yyyy-MM-dd HH:mm:ss'
-                            )
-                          : t('deviceDetail.propertyTab.notReported')}
+                        {prop.reportedAt ||
+                          t('deviceDetail.propertyTab.notReported')}
                       </div>
                     </div>
                   </div>

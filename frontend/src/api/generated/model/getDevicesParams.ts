@@ -21,5 +21,5 @@ export type GetDevicesParams = {
   pageSize?: number
   productId?: number
   searchText?: string
-  states?: string[]
+  states?: number[]
 }

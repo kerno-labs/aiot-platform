@@ -1,10 +1,16 @@
 import { z } from 'zod'
 
-// Device state schema
+export const DEVICE_STATE = {
+  OFFLINE: 0,
+  ONLINE: 1,
+  INACTIVE: 2,
+} as const
+
+// Device state schema (0=offline, 1=online, 2=inactive)
 const deviceStateSchema = z.union([
-  z.literal('online'),
-  z.literal('offline'),
-  z.literal('inactive'),
+  z.literal(DEVICE_STATE.OFFLINE),
+  z.literal(DEVICE_STATE.ONLINE),
+  z.literal(DEVICE_STATE.INACTIVE),
 ])
 export type DeviceState = z.infer<typeof deviceStateSchema>
 

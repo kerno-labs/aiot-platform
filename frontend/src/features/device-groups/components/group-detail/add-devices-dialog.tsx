@@ -43,6 +43,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTablePagination } from '@/components/data-table'
+import { deviceStateKey } from '@/features/devices/data/data'
+import { DEVICE_STATE } from '@/features/devices/data/schema'
 
 interface AddDevicesDialogProps {
   open: boolean
@@ -284,11 +286,14 @@ export function AddDevicesDialog({
                       <TableCell>
                         <Badge
                           variant={
-                            device.state === 'online' ? 'default' : 'secondary'
+                            device.state === DEVICE_STATE.ONLINE
+                              ? 'default'
+                              : 'secondary'
                           }
-                          className='capitalize'
                         >
-                          {device.state || 'offline'}
+                          {t(
+                            `deviceManagement:devices.state.${deviceStateKey(device.state)}`
+                          )}
                         </Badge>
                       </TableCell>
                     </TableRow>

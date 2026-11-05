@@ -5,16 +5,21 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { RefreshCw, Search } from 'lucide-react'
+import { Play, RefreshCw, Search } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
@@ -24,6 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Textarea } from '@/components/ui/textarea'
 import { DataTablePagination } from '@/components/data-table'
 import {
   DateTimeRangePicker,
@@ -32,6 +38,7 @@ import {
 import {
   type DeviceServiceInvocation,
   type GetDevicesDeviceKeyThingModelServiceInvocationsParams,
+  useInvokeDeviceService,
   useServiceInvocations,
 } from '../../api/service-invocations'
 
@@ -65,10 +72,16 @@ export function ServiceInvocationsTab({ deviceKey }: { deviceKey: string }) {
     title: string
     value?: string
   } | null>(null)
+  const [invokeOpen, setInvokeOpen] = useState(false)
+  const [invokeIdentifier, setInvokeIdentifier] = useState('')
+  const [invokeParams, setInvokeParams] = useState('{}')
+
   const { data, isLoading, isError, refetch } = useServiceInvocations(
     deviceKey,
     filters
   )
+  const invokeMutation = useInvokeDeviceService(deviceKey)
+
   const table = useReactTable({
     data: data?.invocations || [],
     columns: [],
@@ -104,12 +117,55 @@ export function ServiceInvocationsTab({ deviceKey }: { deviceKey: string }) {
     setRange(nextRange)
     setFilters(toFilters('', nextRange))
   }
+  const handleInvoke = async () => {
+    const trimmedId = invokeIdentifier.trim()
+    if (!trimmedId) {
+      toast.error(
+        t('deviceDetail.serviceInvocations.invoke.identifierRequired')
+      )
+      return
+    }
+    const trimmedParams = invokeParams.trim() || '{}'
+    try {
+      const parsed = JSON.parse(trimmedParams)
+      if (
+        typeof parsed !== 'object' ||
+        parsed === null ||
+        Array.isArray(parsed)
+      ) {
+        toast.error(t('deviceDetail.serviceInvocations.invoke.invalidJson'))
+        return
+      }
+    } catch {
+      toast.error(t('deviceDetail.serviceInvocations.invoke.invalidJson'))
+      return
+    }
+    try {
+      await invokeMutation.mutateAsync({
+        deviceKey,
+        serviceIdentifier: trimmedId,
+        data: { inputParams: trimmedParams },
+      })
+      toast.success(t('deviceDetail.serviceInvocations.invoke.success'))
+      setInvokeOpen(false)
+      setInvokeIdentifier('')
+      setInvokeParams('{}')
+      refetch()
+    } catch {
+      toast.error(t('deviceDetail.serviceInvocations.invoke.error'))
+    }
+  }
+
   return (
     <div className='flex flex-1 flex-col gap-4'>
-      <div>
+      <div className='flex items-center justify-between gap-2'>
         <h2 className='text-2xl font-bold tracking-tight'>
           {t('deviceDetail.serviceInvocations.title')}
         </h2>
+        <Button size='sm' onClick={() => setInvokeOpen(true)}>
+          <Play className='size-4' />
+          {t('deviceDetail.serviceInvocations.invoke.button')}
+        </Button>
       </div>
       <div className='flex flex-wrap items-center gap-2'>
         <Input
@@ -152,6 +208,7 @@ export function ServiceInvocationsTab({ deviceKey }: { deviceKey: string }) {
                 'invokedAt',
                 'serviceIdentifier',
                 'serviceName',
+                'status',
                 'inputParams',
                 'outputParams',
               ].map((key) => (
@@ -165,7 +222,7 @@ export function ServiceInvocationsTab({ deviceKey }: { deviceKey: string }) {
             {isLoading ? (
               Array.from({ length: filters.pageSize || 20 }).map((_, index) => (
                 <TableRow key={index}>
-                  <TableCell colSpan={5}>
+                  <TableCell colSpan={6}>
                     <Skeleton className='h-5 w-full' />
                   </TableCell>
                 </TableRow>
@@ -173,7 +230,7 @@ export function ServiceInvocationsTab({ deviceKey }: { deviceKey: string }) {
             ) : isError ? (
               <TableRow>
                 <TableCell
-                  colSpan={5}
+                  colSpan={6}
                   className='h-24 text-center text-destructive'
                 >
                   {t('deviceDetail.serviceInvocations.error')}
@@ -190,7 +247,7 @@ export function ServiceInvocationsTab({ deviceKey }: { deviceKey: string }) {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={5}
+                  colSpan={6}
                   className='h-24 text-center text-muted-foreground'
                 >
                   {t('deviceDetail.serviceInvocations.empty')}
@@ -214,8 +271,87 @@ export function ServiceInvocationsTab({ deviceKey }: { deviceKey: string }) {
           </pre>
         </DialogContent>
       </Dialog>
+      <Dialog open={invokeOpen} onOpenChange={setInvokeOpen}>
+        <DialogContent className='max-w-lg'>
+          <DialogHeader>
+            <DialogTitle>
+              {t('deviceDetail.serviceInvocations.invoke.title')}
+            </DialogTitle>
+            <DialogDescription>
+              {t('deviceDetail.serviceInvocations.invoke.description')}
+            </DialogDescription>
+          </DialogHeader>
+          <div className='grid gap-4 py-2'>
+            <div className='grid gap-2'>
+              <Label htmlFor='service-identifier'>
+                {t('deviceDetail.serviceInvocations.invoke.serviceIdentifier')}
+              </Label>
+              <Input
+                id='service-identifier'
+                value={invokeIdentifier}
+                onChange={(event) => setInvokeIdentifier(event.target.value)}
+                placeholder={t(
+                  'deviceDetail.serviceInvocations.invoke.serviceIdentifierPlaceholder'
+                )}
+              />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='service-input-params'>
+                {t('deviceDetail.serviceInvocations.invoke.inputParams')}
+              </Label>
+              <Textarea
+                id='service-input-params'
+                value={invokeParams}
+                onChange={(event) => setInvokeParams(event.target.value)}
+                placeholder={t(
+                  'deviceDetail.serviceInvocations.invoke.inputParamsPlaceholder'
+                )}
+                rows={4}
+                className='font-mono text-xs'
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant='outline'
+              onClick={() => setInvokeOpen(false)}
+              disabled={invokeMutation.isPending}
+            >
+              {t('common:cancel')}
+            </Button>
+            <Button onClick={handleInvoke} disabled={invokeMutation.isPending}>
+              {invokeMutation.isPending
+                ? t('deviceDetail.serviceInvocations.invoke.submitting')
+                : t('deviceDetail.serviceInvocations.invoke.submit')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
+}
+
+function deriveInvocationStatus(
+  outputParams?: string
+): 'pending' | 'success' | 'failed' {
+  if (!outputParams || !outputParams.trim()) {
+    return 'pending'
+  }
+  try {
+    const parsed = JSON.parse(outputParams) as { code?: unknown }
+    if (
+      typeof parsed === 'object' &&
+      parsed !== null &&
+      typeof parsed.code === 'number' &&
+      parsed.code !== 0 &&
+      parsed.code !== 200
+    ) {
+      return 'failed'
+    }
+  } catch {
+    // Non-envelope JSON output indicates a replied payload.
+  }
+  return 'success'
 }
 
 function InvocationRow({
@@ -226,6 +362,7 @@ function InvocationRow({
   onView: (value: { title: string; value?: string }) => void
 }) {
   const { t } = useTranslation('deviceManagement')
+  const status = deriveInvocationStatus(item.outputParams)
   const jsonCell = (title: string, value?: string) => (
     <button
       type='button'
@@ -244,6 +381,19 @@ function InvocationRow({
         {item.serviceIdentifier}
       </TableCell>
       <TableCell>{item.serviceName}</TableCell>
+      <TableCell>
+        <Badge
+          variant={
+            status === 'success'
+              ? 'default'
+              : status === 'failed'
+                ? 'destructive'
+                : 'secondary'
+          }
+        >
+          {t(`deviceDetail.serviceInvocations.status.${status}`)}
+        </Badge>
+      </TableCell>
       <TableCell>
         {jsonCell(
           t('deviceDetail.serviceInvocations.columns.inputParams'),

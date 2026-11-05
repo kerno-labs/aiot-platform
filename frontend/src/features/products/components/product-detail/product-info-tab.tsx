@@ -28,12 +28,6 @@ export function ProductInfoTab({ product }: ProductInfoTabProps) {
     return findName(categoryQuery.data || []) || `ID: ${product.categoryId}`
   }
 
-  const formatDate = (dateString: string | undefined) => {
-    if (!dateString) return '-'
-    const date = new Date(dateString)
-    return date.toISOString().slice(0, 19).replace('T', ' ') + ' UTC'
-  }
-
   // Helper to get label for node type
   const getNodeTypeLabel = () => {
     const nodeType = (product as ProductV1Product & { nodeType?: string })
@@ -116,7 +110,7 @@ export function ProductInfoTab({ product }: ProductInfoTabProps) {
               <p className='text-sm text-muted-foreground'>
                 {t('common:createdAt')}
               </p>
-              <p className='font-medium'>{formatDate(product.createdAt)}</p>
+              <p className='font-medium'>{product.createdAt || '-'}</p>
             </div>
 
             <div className='space-y-1 md:col-span-2 lg:col-span-3'>

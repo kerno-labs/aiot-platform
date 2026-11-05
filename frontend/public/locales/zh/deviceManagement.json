@@ -451,9 +451,25 @@
       "title": "服务调用",
       "description": "查看当前设备的物模型服务调用记录。",
       "filters": { "serviceIdentifier": "服务标识符", "dateRange": "选择时间范围", "startAt": "开始时间", "endAt": "结束时间", "timePrecision": "精确到秒" },
-      "columns": { "invokedAt": "时间", "serviceIdentifier": "标识符", "serviceName": "服务名称", "inputParams": "输入参数", "outputParams": "输出参数" },
+      "columns": { "invokedAt": "时间", "serviceIdentifier": "标识符", "serviceName": "服务名称", "status": "状态", "inputParams": "输入参数", "outputParams": "输出参数" },
+      "status": { "pending": "等待回执", "success": "已响应", "failed": "调用失败" },
       "empty": "暂无服务调用记录",
-      "error": "加载服务调用记录失败"
+      "error": "加载服务调用记录失败",
+      "invoke": {
+        "button": "调用服务",
+        "title": "调用物模型服务",
+        "description": "向设备下发物模型服务调用指令（RPC）。",
+        "serviceIdentifier": "服务标识符",
+        "serviceIdentifierPlaceholder": "例如：reboot",
+        "inputParams": "输入参数 (JSON)",
+        "inputParamsPlaceholder": "{\"delay\": 5}",
+        "submit": "立即调用",
+        "submitting": "下发中...",
+        "success": "服务调用指令已下发",
+        "error": "调用服务失败",
+        "invalidJson": "输入参数必须是合法的 JSON 对象",
+        "identifierRequired": "请输入服务标识符"
+      }
     },
     "deviceShadowTab": {
       "comingSoon": "设备影子功能即将推出"

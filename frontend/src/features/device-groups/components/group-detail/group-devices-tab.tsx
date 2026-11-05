@@ -68,8 +68,8 @@ import {
   DataTableViewOptions,
 } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
-import { deviceStateStyles } from '@/features/devices/data/data'
-import { type DeviceState } from '@/features/devices/data/schema'
+import { deviceStateKey, deviceStateStyles } from '@/features/devices/data/data'
+import { DEVICE_STATE, type DeviceState } from '@/features/devices/data/schema'
 import { AddDevicesDialog } from './add-devices-dialog'
 
 interface GroupDevicesTabProps {
@@ -341,11 +341,13 @@ export function GroupDevicesTab({
           />
         ),
         cell: ({ row }) => {
-          const state = (row.getValue('state') || '') as DeviceState
+          const state = (row.getValue('state') ??
+            DEVICE_STATE.INACTIVE) as DeviceState
           const stateStyles = deviceStateStyles.get(state)
+          const stateKey = deviceStateKey(state)
           return (
             <Badge variant='outline' className={cn('capitalize', stateStyles)}>
-              {tDevice(`devices.state.${state}`, { defaultValue: state })}
+              {tDevice(`devices.state.${stateKey}`)}
             </Badge>
           )
         },

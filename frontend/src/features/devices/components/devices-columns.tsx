@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
-import { deviceStateStyles } from '../data/data'
+import { deviceStateKey, deviceStateStyles } from '../data/data'
 import { type Device, type DeviceState } from '../data/schema'
 import { DataTableRowActions } from './data-table-row-actions'
 import { DeviceEnabledSwitch } from './device-enabled-switch'
@@ -124,14 +124,15 @@ export const useDevicesColumns = (): ColumnDef<Device>[] => {
       cell: ({ row }) => {
         const state = row.getValue('state') as DeviceState
         const stateStyles = deviceStateStyles.get(state)
+        const stateKey = deviceStateKey(state)
         return (
           <Badge variant='outline' className={cn('capitalize', stateStyles)}>
-            {t(`devices.state.${state}`, { defaultValue: state })}
+            {t(`devices.state.${stateKey}`)}
           </Badge>
         )
       },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id))
+      filterFn: (row, id, value: string[]) => {
+        return value.includes(String(row.getValue(id)))
       },
       enableSorting: false,
     },
