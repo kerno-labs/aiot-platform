@@ -29,7 +29,7 @@ type DataTableToolbarProps<TData> = {
 
 export function DataTableToolbar<TData>({
   table,
-  searchPlaceholder = 'Filter...',
+  searchPlaceholder,
   searchKey,
   searchValue,
   onSearchChange,
@@ -39,6 +39,7 @@ export function DataTableToolbar<TData>({
   preserveFiltersOnRefresh = false,
 }: DataTableToolbarProps<TData>) {
   const { t } = useTranslation('common')
+  const resolvedSearchPlaceholder = searchPlaceholder ?? t('searchPlaceholder')
   const isFiltered =
     table.getState().columnFilters.length > 0 ||
     table.getState().globalFilter ||
@@ -56,7 +57,7 @@ export function DataTableToolbar<TData>({
       <div className='flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:space-x-2'>
         {onSearchChange ? (
           <Input
-            placeholder={searchPlaceholder}
+            placeholder={resolvedSearchPlaceholder}
             value={searchValue ?? ''}
             onChange={(event) => onSearchChange(event.target.value)}
             onKeyDown={handleSearchKeyDown}
@@ -64,7 +65,7 @@ export function DataTableToolbar<TData>({
           />
         ) : searchKey ? (
           <Input
-            placeholder={searchPlaceholder}
+            placeholder={resolvedSearchPlaceholder}
             value={
               (table.getColumn(searchKey)?.getFilterValue() as string) ?? ''
             }
@@ -76,7 +77,7 @@ export function DataTableToolbar<TData>({
           />
         ) : (
           <Input
-            placeholder={searchPlaceholder}
+            placeholder={resolvedSearchPlaceholder}
             value={table.getState().globalFilter ?? ''}
             onChange={(event) => table.setGlobalFilter(event.target.value)}
             onKeyDown={handleSearchKeyDown}

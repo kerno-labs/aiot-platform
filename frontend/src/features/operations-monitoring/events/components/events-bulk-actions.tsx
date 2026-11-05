@@ -34,7 +34,7 @@ export function EventsBulkActions({ table }: EventsBulkActionsProps) {
   }
 
   return (
-    <DataTableBulkActions table={table} entityName='event'>
+    <DataTableBulkActions table={table}>
       <Tooltip>
         <TooltipTrigger asChild>
           <Button

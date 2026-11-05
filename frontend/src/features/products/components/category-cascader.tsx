@@ -1,4 +1,5 @@
 import { Check, ChevronsUpDown } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -18,7 +19,7 @@ type CategoryCascaderProps = {
   nodes: CategoryNode[]
   value?: string
   onValueChange: (value: string) => void
-  placeholder: string
+  placeholder?: string
   disabled?: boolean
   isLoading?: boolean
 }
@@ -87,6 +88,7 @@ export function CategoryCascader({
   disabled,
   isLoading,
 }: CategoryCascaderProps) {
+  const { t } = useTranslation('common')
   const selectedLabel = findLabel(nodes, value)
   return (
     <DropdownMenu>
@@ -103,7 +105,9 @@ export function CategoryCascader({
               !selectedLabel && 'text-muted-foreground'
             )}
           >
-            {isLoading ? 'Loading...' : selectedLabel || placeholder}
+            {isLoading
+              ? t('loading')
+              : selectedLabel || placeholder || t('select')}
           </span>
           <ChevronsUpDown className='size-4 shrink-0 text-muted-foreground' />
         </Button>

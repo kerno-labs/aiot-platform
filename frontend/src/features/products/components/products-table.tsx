@@ -13,6 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { useTranslation } from 'react-i18next'
 import type { ProductListItem as ProductV1Product } from '@/api/generated/model'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -29,11 +30,13 @@ import { useProducts, productKeys } from '../api/queries'
 import { categories, statuses } from '../data/data'
 import { type Product } from '../data/schema'
 import { DataTableBulkActions } from './data-table-bulk-actions'
-import { productsColumns as columns } from './products-columns'
+import { useProductsColumns } from './products-columns'
 
 export function ProductsTable() {
+  const { t } = useTranslation(['deviceManagement', 'common'])
   // Get query client for manual invalidation
   const queryClient = useQueryClient()
+  const columns = useProductsColumns()
 
   // All states are local (not synced to URL)
   const [rowSelection, setRowSelection] = useState({})
@@ -171,20 +174,19 @@ export function ProductsTable() {
     >
       <DataTableToolbar
         table={table}
-        searchPlaceholder='Filter products...'
         searchKey='productKey'
         filters={[
           {
             columnId: 'status',
-            title: 'Status',
+            title: t('common:status'),
             options: statuses.map((status) => ({
-              label: status.label,
+              label: t(`productDetail.status.${status.value}`),
               value: status.value,
             })),
           },
           {
             columnId: 'categoryId',
-            title: 'Category',
+            title: t('productDetail.info.fields.category'),
             options: categories.map((category) => ({
               label: category.label,
               value: category.value,
@@ -239,7 +241,7 @@ export function ProductsTable() {
                   colSpan={columns.length}
                   className='h-24 text-center text-destructive'
                 >
-                  Error loading products. Please try again.
+                  {t('common:loadError')}
                 </TableCell>
               </TableRow>
             ) : table.getRowModel().rows?.length ? (
@@ -272,7 +274,7 @@ export function ProductsTable() {
                   colSpan={columns.length}
                   className='h-24 text-center'
                 >
-                  No products found.
+                  {t('common:noResults')}
                 </TableCell>
               </TableRow>
             )}

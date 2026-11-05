@@ -36,10 +36,10 @@ import {
   gatewaySubProtocols,
   nodeTypes,
 } from '../data/data'
-import { applicationProtocols, protocolLabels } from '../data/protocols'
+import { applicationProtocols, getProtocolLabel } from '../data/protocols'
 import {
   type Product,
-  productFormSchema,
+  createProductFormSchema,
   type ProductFormData,
 } from '../data/schema'
 import { CategoryCascader } from './category-cascader'
@@ -72,8 +72,10 @@ export function ProductsActionDialog({
     )
   }, [isEdit, productQuery.data])
 
+  const formSchema = React.useMemo(() => createProductFormSchema(t), [t])
+
   const form = useForm<ProductFormData>({
-    resolver: zodResolver(productFormSchema),
+    resolver: zodResolver(formSchema),
     defaultValues: isEdit
       ? {
           name: currentRow.name,
@@ -98,6 +100,15 @@ export function ProductsActionDialog({
           accessProtocol: 'http',
         },
   })
+
+  React.useEffect(() => {
+    const errorFields = Object.keys(
+      form.formState.errors
+    ) as (keyof ProductFormData)[]
+    if (errorFields.length > 0) {
+      void form.trigger(errorFields)
+    }
+  }, [formSchema, form])
 
   // Watch nodeType to control connectivity method field visibility and protocol options
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -159,7 +170,7 @@ export function ProductsActionDialog({
             protocols,
           } as unknown as ProductV1UpdateProductRequest,
         })
-        toast.success('Product updated successfully!')
+        toast.success(t('common:updateSuccess'))
       } else {
         // Create new product
         await createProduct.mutateAsync({
@@ -175,7 +186,7 @@ export function ProductsActionDialog({
           }),
           protocols,
         } as unknown as ProductV1CreateProductRequest)
-        toast.success('Product created successfully!')
+        toast.success(t('common:createSuccess'))
       }
       form.reset()
       onOpenChange(false)
@@ -188,7 +199,7 @@ export function ProductsActionDialog({
         apiError?.response?.data?.message ||
         apiError?.response?.data?.error ||
         apiError?.message ||
-        (isEdit ? 'Failed to update product' : 'Failed to create product')
+        (isEdit ? t('common:updateError') : t('common:createError'))
       toast.error(errorMessage)
     }
   }
@@ -225,7 +236,7 @@ export function ProductsActionDialog({
                   <FormLabel>{t('productDetail.info.fields.name')}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder='Smart Sensor X1'
+                      placeholder={t('productDetail.info.fields.name')}
                       className='w-full'
                       autoComplete='off'
                       {...field}
@@ -246,7 +257,6 @@ export function ProductsActionDialog({
                   <SelectDropdown
                     defaultValue={field.value}
                     onValueChange={field.onChange}
-                    placeholder='Select node type'
                     className='w-full'
                     items={nodeTypes.map(({ value }) => ({
                       label: t(`productDetail.nodeTypes.${value}`),
@@ -269,7 +279,6 @@ export function ProductsActionDialog({
                     <SelectDropdown
                       defaultValue={field.value}
                       onValueChange={field.onChange}
-                      placeholder='Select connectivity method'
                       className='w-full'
                       items={connectivityMethods.map(({ value }) => ({
                         label: t(`productDetail.connectivityMethods.${value}`),
@@ -294,11 +303,9 @@ export function ProductsActionDialog({
                   <SelectDropdown
                     defaultValue={field.value}
                     onValueChange={field.onChange}
-                    placeholder='Select access protocol'
                     className='w-full'
                     items={accessProtocolOptions.map(({ value }) => ({
-                      label:
-                        protocolLabels[value as keyof typeof protocolLabels],
+                      label: getProtocolLabel(value, t),
                       value,
                     }))}
                   />
@@ -314,7 +321,7 @@ export function ProductsActionDialog({
                 isControlled
                 className='w-full'
                 items={applicationProtocols.map((protocol) => ({
-                  label: protocolLabels[protocol],
+                  label: getProtocolLabel(protocol, t),
                   value: protocol,
                 }))}
               />
@@ -331,7 +338,6 @@ export function ProductsActionDialog({
                     nodes={categoryQuery.data ?? []}
                     value={field.value}
                     onValueChange={field.onChange}
-                    placeholder='Select a category'
                     isLoading={categoryQuery.isLoading}
                   />
                   <FormMessage />
@@ -343,12 +349,10 @@ export function ProductsActionDialog({
               name='description'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
-                    {t('productDetail.info.fields.description')}
-                  </FormLabel>
+                  <FormLabel>{t('common:description')}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder='Product description...'
+                      placeholder={t('common:description')}
                       className='w-full resize-none'
                       rows={3}
                       {...field}

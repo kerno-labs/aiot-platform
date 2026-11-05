@@ -23,7 +23,7 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName='package'>
+      <BulkActionsToolbar table={table}>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button

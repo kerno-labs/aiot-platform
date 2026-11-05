@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { AlertTriangle } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
@@ -21,6 +22,7 @@ export function ProductsDeleteDialog({
   onOpenChange,
   currentRow,
 }: ProductDeleteDialogProps) {
+  const { t } = useTranslation(['deviceManagement', 'common'])
   const [value, setValue] = useState('')
   const deleteProduct = useDeleteProduct()
 
@@ -29,7 +31,7 @@ export function ProductsDeleteDialog({
 
     try {
       await deleteProduct.mutateAsync(currentRow.productKey)
-      toast.success('Product deleted successfully!')
+      toast.success(t('common:deleteSuccess'))
       setValue('')
       onOpenChange(false)
     } catch (error) {
@@ -43,7 +45,7 @@ export function ProductsDeleteDialog({
         apiError?.response?.data?.message ||
         apiError?.response?.data?.error ||
         apiError?.message ||
-        'Failed to delete product'
+        t('common:deleteError')
       toast.error(errorMessage)
     }
   }
@@ -64,41 +66,36 @@ export function ProductsDeleteDialog({
             className='me-1 inline-block stroke-destructive'
             size={18}
           />{' '}
-          Delete Product
+          {t('common:delete')}
         </span>
       }
       desc={
         <div className='space-y-4'>
           <p className='mb-2'>
-            Are you sure you want to delete{' '}
-            <span className='font-bold'>{currentRow.name}</span>?
-            <br />
-            This action will permanently remove the product with key{' '}
-            <span className='font-mono font-bold'>
-              {currentRow.productKey}
-            </span>{' '}
-            from the system. This cannot be undone.
+            <span className='font-bold'>{currentRow.name}</span> (
+            <span className='font-mono font-bold'>{currentRow.productKey}</span>
+            ) — {t('common:deleteConfirm')}
           </p>
 
           <Label className='my-2'>
-            Product Key:
+            {t('productDetail.header.productKey')}:
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder='Enter product key to confirm deletion.'
+              placeholder={t('common:typeToConfirm', {
+                word: currentRow.productKey,
+              })}
               className='font-mono'
             />
           </Label>
 
           <Alert variant='destructive'>
-            <AlertTitle>Warning!</AlertTitle>
-            <AlertDescription>
-              Please be careful, this operation can not be rolled back.
-            </AlertDescription>
+            <AlertTitle>{t('common:warning')}</AlertTitle>
+            <AlertDescription>{t('common:cannotBeUndone')}</AlertDescription>
           </Alert>
         </div>
       }
-      confirmText='Delete'
+      confirmText={t('common:delete')}
       destructive
     />
   )

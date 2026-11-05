@@ -640,7 +640,7 @@ export function GroupDevicesTab({
 
       {group.type !== 'dynamic' && (
         <>
-          <BulkActionsToolbar table={table} entityName='device'>
+          <BulkActionsToolbar table={table}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button

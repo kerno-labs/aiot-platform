@@ -51,7 +51,7 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName='user'>
+      <BulkActionsToolbar table={table}>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button

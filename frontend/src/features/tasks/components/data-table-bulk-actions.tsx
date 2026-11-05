@@ -71,7 +71,7 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName='task'>
+      <BulkActionsToolbar table={table}>
         <DropdownMenu>
           <Tooltip>
             <TooltipTrigger asChild>

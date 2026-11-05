@@ -21,7 +21,7 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName='device'>
+      <BulkActionsToolbar table={table}>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button

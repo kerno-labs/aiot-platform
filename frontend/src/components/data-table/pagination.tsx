@@ -5,6 +5,7 @@ import {
   DoubleArrowRightIcon,
 } from '@radix-ui/react-icons'
 import { type Table } from '@tanstack/react-table'
+import { useTranslation } from 'react-i18next'
 import { cn, getPageNumbers } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -26,13 +27,14 @@ export function DataTablePagination<TData>({
   className,
   hasNext,
 }: DataTablePaginationProps<TData>) {
+  const { t } = useTranslation('common')
   const currentPage = table.getState().pagination.pageIndex + 1
   const totalPages = table.getPageCount()
   const pageNumbers = getPageNumbers(currentPage, totalPages)
   const pageLabel =
     hasNext === undefined
-      ? `Page ${currentPage} of ${totalPages}`
-      : `Page ${currentPage}`
+      ? t('pagination.pageOf', { page: currentPage, total: totalPages })
+      : t('pagination.page', { page: currentPage })
 
   return (
     <div
@@ -65,7 +67,9 @@ export function DataTablePagination<TData>({
               ))}
             </SelectContent>
           </Select>
-          <p className='hidden text-sm font-medium sm:block'>Rows per page</p>
+          <p className='hidden text-sm font-medium sm:block'>
+            {t('pagination.rowsPerPage')}
+          </p>
         </div>
       </div>
 
@@ -81,7 +85,7 @@ export function DataTablePagination<TData>({
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
             >
-              <span className='sr-only'>Go to first page</span>
+              <span className='sr-only'>{t('pagination.firstPage')}</span>
               <DoubleArrowLeftIcon className='h-4 w-4' />
             </Button>
           )}
@@ -91,7 +95,7 @@ export function DataTablePagination<TData>({
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            <span className='sr-only'>Go to previous page</span>
+            <span className='sr-only'>{t('pagination.previousPage')}</span>
             <ChevronLeftIcon className='h-4 w-4' />
           </Button>
 
@@ -111,7 +115,9 @@ export function DataTablePagination<TData>({
                       table.setPageIndex((pageNumber as number) - 1)
                     }
                   >
-                    <span className='sr-only'>Go to page {pageNumber}</span>
+                    <span className='sr-only'>
+                      {t('pagination.goToPage', { page: pageNumber })}
+                    </span>
                     {pageNumber}
                   </Button>
                 )}
@@ -126,7 +132,7 @@ export function DataTablePagination<TData>({
               hasNext === undefined ? !table.getCanNextPage() : !hasNext
             }
           >
-            <span className='sr-only'>Go to next page</span>
+            <span className='sr-only'>{t('pagination.nextPage')}</span>
             <ChevronRightIcon className='h-4 w-4' />
           </Button>
           {hasNext === undefined && (
@@ -136,7 +142,7 @@ export function DataTablePagination<TData>({
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
             >
-              <span className='sr-only'>Go to last page</span>
+              <span className='sr-only'>{t('pagination.lastPage')}</span>
               <DoubleArrowRightIcon className='h-4 w-4' />
             </Button>
           )}
