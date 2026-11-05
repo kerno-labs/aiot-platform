@@ -335,10 +335,7 @@ export function GroupDevicesTab({
       {
         accessorKey: 'state',
         header: ({ column }) => (
-          <DataTableColumnHeader
-            column={column}
-            title={tDevice('devices.columns.state')}
-          />
+          <DataTableColumnHeader column={column} title={tCommon('status')} />
         ),
         cell: ({ row }) => {
           const state = (row.getValue('state') ??
@@ -380,11 +377,7 @@ export function GroupDevicesTab({
     if (isManual) {
       cols.push({
         id: 'actions',
-        header: () => (
-          <div className='text-center'>
-            {tDevice('devices.columns.actions')}
-          </div>
-        ),
+        header: () => <div className='text-center'>{tCommon('actions')}</div>,
         cell: ({ row }) => {
           const device = row.original
           return (

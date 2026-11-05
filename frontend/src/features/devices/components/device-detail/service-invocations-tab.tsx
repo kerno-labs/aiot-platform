@@ -64,7 +64,7 @@ const toFilters = (
 })
 
 export function ServiceInvocationsTab({ deviceKey }: { deviceKey: string }) {
-  const { t } = useTranslation('deviceManagement')
+  const { t } = useTranslation(['deviceManagement', 'common'])
   const [identifier, setIdentifier] = useState('')
   const [range, setRange] = useState<TimeRange>(defaultRange)
   const [filters, setFilters] = useState(() => toFilters())
@@ -160,7 +160,7 @@ export function ServiceInvocationsTab({ deviceKey }: { deviceKey: string }) {
     <div className='flex flex-1 flex-col gap-4'>
       <div className='flex items-center justify-between gap-2'>
         <h2 className='text-2xl font-bold tracking-tight'>
-          {t('deviceDetail.serviceInvocations.title')}
+          {t('deviceDetail.thingModelDataTab.serviceInvocation')}
         </h2>
         <Button size='sm' onClick={() => setInvokeOpen(true)}>
           <Play className='size-4' />
@@ -213,7 +213,9 @@ export function ServiceInvocationsTab({ deviceKey }: { deviceKey: string }) {
                 'outputParams',
               ].map((key) => (
                 <TableHead key={key}>
-                  {t(`deviceDetail.serviceInvocations.columns.${key}`)}
+                  {key === 'status'
+                    ? t('common:status')
+                    : t(`deviceDetail.serviceInvocations.columns.${key}`)}
                 </TableHead>
               ))}
             </TableRow>
@@ -233,7 +235,7 @@ export function ServiceInvocationsTab({ deviceKey }: { deviceKey: string }) {
                   colSpan={6}
                   className='h-24 text-center text-destructive'
                 >
-                  {t('deviceDetail.serviceInvocations.error')}
+                  {t('common:loadError')}
                 </TableCell>
               </TableRow>
             ) : (data?.invocations || []).length ? (
@@ -284,7 +286,7 @@ export function ServiceInvocationsTab({ deviceKey }: { deviceKey: string }) {
           <div className='grid gap-4 py-2'>
             <div className='grid gap-2'>
               <Label htmlFor='service-identifier'>
-                {t('deviceDetail.serviceInvocations.invoke.serviceIdentifier')}
+                {t('deviceDetail.serviceInvocations.filters.serviceIdentifier')}
               </Label>
               <Input
                 id='service-identifier'

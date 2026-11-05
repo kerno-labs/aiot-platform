@@ -146,7 +146,7 @@ export function DevicesActionDialog({
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
                     <FormLabel className='col-span-2 text-end'>
-                      {t('dialog.form.name')}
+                      {t('devices.columns.name')}
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -166,7 +166,7 @@ export function DevicesActionDialog({
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
                     <FormLabel className='col-span-2 text-end'>
-                      {t('dialog.form.product')}
+                      {t('devices.columns.product')}
                     </FormLabel>
                     {isEdit ? (
                       <FormControl>
@@ -184,9 +184,7 @@ export function DevicesActionDialog({
                       >
                         <FormControl>
                           <SelectTrigger className='col-span-4'>
-                            <SelectValue
-                              placeholder={t('dialog.form.placeholder.product')}
-                            />
+                            <SelectValue placeholder={t('common:select')} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>

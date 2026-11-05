@@ -32,9 +32,7 @@ export function DeleteTslDialog({
           <DialogTitle>
             {t('productDetail.featureDefinition.deleteDialog.title')}
           </DialogTitle>
-          <DialogDescription>
-            {t('productDetail.featureDefinition.deleteDialog.description')}
-          </DialogDescription>
+          <DialogDescription>{t('common:deleteConfirm')}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button

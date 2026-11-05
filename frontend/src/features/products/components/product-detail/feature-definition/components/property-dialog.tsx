@@ -52,7 +52,7 @@ export function PropertyDialog({
       setFormData(cloned)
       const currentUnit = cloned.dataType?.specs?.unit
       const isInList = COMMON_UNITS.some(
-        (u) => u.value === currentUnit || (u.value === 'none' && !currentUnit)
+        (u) => u === currentUnit || (u === 'none' && !currentUnit)
       )
       setIsCustomUnit(Boolean(currentUnit && !isInList))
     }
@@ -77,8 +77,8 @@ export function PropertyDialog({
         <DialogHeader className='pb-1'>
           <DialogTitle className='text-base font-semibold'>
             {isEdit
-              ? t('productDetail.featureDefinition.propertyDialog.editTitle')
-              : t('productDetail.featureDefinition.propertyDialog.addTitle')}
+              ? t('productDetail.featureDefinition.dialog.editTitle')
+              : t('productDetail.featureDefinition.dialog.addTitle')}
           </DialogTitle>
         </DialogHeader>
 
@@ -88,9 +88,7 @@ export function PropertyDialog({
             <div className='flex items-center gap-1.5'>
               <Label className='flex items-center gap-1 text-xs font-medium'>
                 <span className='text-destructive'>*</span>
-                {t(
-                  'productDetail.featureDefinition.propertyDialog.featureType'
-                )}
+                {t('productDetail.featureDefinition.dialog.featureType')}
               </Label>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -99,7 +97,7 @@ export function PropertyDialog({
                 <TooltipContent side='top'>
                   <span>
                     {t(
-                      'productDetail.featureDefinition.propertyDialog.featureTypeTooltip'
+                      'productDetail.featureDefinition.dialog.featureTypeTooltip'
                     )}
                   </span>
                 </TooltipContent>
@@ -134,7 +132,7 @@ export function PropertyDialog({
             <div className='flex items-center gap-1.5'>
               <Label className='flex items-center gap-1 text-xs font-medium'>
                 <span className='text-destructive'>*</span>
-                {t('productDetail.featureDefinition.propertyDialog.name')}
+                {t('productDetail.featureDefinition.dialog.name')}
               </Label>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -166,7 +164,7 @@ export function PropertyDialog({
             <div className='flex items-center gap-1.5'>
               <Label className='flex items-center gap-1 text-xs font-medium'>
                 <span className='text-destructive'>*</span>
-                {t('productDetail.featureDefinition.propertyDialog.identifier')}
+                {t('productDetail.featureDefinition.dialog.identifier')}
               </Label>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -347,8 +345,12 @@ export function PropertyDialog({
                   </SelectTrigger>
                   <SelectContent className='max-h-56'>
                     {COMMON_UNITS.map((unit) => (
-                      <SelectItem key={unit.value} value={unit.value}>
-                        {unit.label}
+                      <SelectItem key={unit} value={unit}>
+                        {unit === 'none'
+                          ? '-'
+                          : unit === 'custom'
+                            ? t('common:custom')
+                            : unit}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -525,9 +527,7 @@ export function PropertyDialog({
           {/* 描述 */}
           <div className='space-y-1.5'>
             <Label className='text-xs font-medium'>
-              {t(
-                'productDetail.featureDefinition.propertyDialog.descriptionLabel'
-              )}
+              {t('common:description')}
             </Label>
             <div className='relative'>
               <Textarea

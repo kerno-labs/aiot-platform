@@ -63,7 +63,7 @@ export function PropertyHistoryChart({
   deviceKey,
   availableProperties,
 }: PropertyHistoryChartProps) {
-  const { t } = useTranslation('deviceManagement')
+  const { t } = useTranslation(['deviceManagement', 'common'])
   const [selectedProperties, setSelectedProperties] = useState<string[] | null>(
     null
   )
@@ -236,7 +236,7 @@ export function PropertyHistoryChart({
                       setHistoryEndTime(Date.now())
                     }}
                   >
-                    {t('deviceDetail.propertyTab.selectAll')}
+                    {t('common:selectAll')}
                   </button>
                 </div>
                 {availableProperties.map((property) => (
@@ -272,7 +272,9 @@ export function PropertyHistoryChart({
             >
               <SelectTrigger
                 className='w-[160px] rounded-lg'
-                aria-label={t('deviceDetail.propertyTab.timeRange')}
+                aria-label={t(
+                  'deviceDetail.serviceInvocations.filters.dateRange'
+                )}
               >
                 <SelectValue />
               </SelectTrigger>

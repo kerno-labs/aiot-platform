@@ -1,14 +1,7 @@
 {
-  "title": "设备管理",
-  "description": "从集中式仪表板管理您的产品和设备。",
   "tabs": {
     "products": "产品",
     "devices": "设备"
-  },
-  "pages": {
-    "devices": {
-      "description": "监控和管理您的联网设备。"
-    }
   },
   "productDetail": {
     "actions": {
@@ -32,9 +25,7 @@
       "development": "设备开发",
       "upload": "文件上传配置"
     },
-    "loading": "加载产品详情中...",
     "notFound": "产品未找到",
-    "backButton": "返回产品列表",
     "info": {
       "title": "产品信息",
       "fields": {
@@ -43,25 +34,11 @@
         "nodeType": "节点类型",
         "connectivityMethod": "连网方式",
         "accessProtocol": "接入协议",
-        "gatewayAccessProtocol": "接入网关协议",
-        "dataFormat": "数据格式",
-        "dataFormatValue": "ICA 标准数据格式",
-        "authMethod": "认证方式",
-        "authMethodValue": "设备密码",
-        "dataValidationLevel": "数据校验级别",
-        "dataValidationValue": "弱校验",
-        "description": "产品描述",
-        "metadata": "元数据"
+        "gatewayAccessProtocol": "接入网关协议"
       },
       "labels": {
-        "title": "标签信息",
         "empty": "无标签信息"
       }
-    },
-    "nodeTypes": {
-      "direct": "直连设备",
-      "gateway": "网关设备",
-      "gateway-sub": "网关子设备"
     },
     "connectivityMethods": {
       "wifi": "Wi-Fi",
@@ -84,8 +61,7 @@
       "table": {
         "function": "功能",
         "topicClass": "Topic类",
-        "permission": "操作权限",
-        "description": "描述"
+        "permission": "操作权限"
       },
       "permissions": {
         "publish": "发布",
@@ -129,208 +105,176 @@
         "eventPostReply": "云端响应事件上报",
         "serviceCall": "设备服务调用",
         "serviceCallReply": "设备端响应服务调用"
+      },
+      "custom": {
+        "description": "支持用户自定义 Topic 类、权限配置和广播功能"
+      }
     },
-    "custom": {
-      "placeholder": "自定义 Topic 功能开发中",
-      "description": "支持用户自定义 Topic 类、权限配置和广播功能"
-    }
-  },
-  "messageParsing": {
-    "title": "消息解析",
-    "description": "为当前产品配置唯一的 JavaScript ES5 解析脚本。",
-    "editor": {
-      "title": "编辑脚本",
-      "description": "脚本将用于转换设备自定义数据与平台标准消息。"
-    },
-    "language": "脚本语言",
-    "script": "解析脚本",
-    "save": "保存",
-    "saveSuccess": "消息解析脚本已保存",
-    "saveError": "保存失败：{{error}}",
-    "loadErrorTitle": "无法加载消息解析器",
-    "modes": {
-      "deviceReport": "设备上报数据",
-      "deviceReceive": "设备接收数据",
-      "custom": "自定义"
-    },
-    "simulator": {
-      "input": "模拟输入",
-      "result": "运行结果",
-      "mode": "模拟类型",
-      "topic": "Topic",
-      "topicPlaceholder": "请输入设备上报消息的 Topic",
-      "hex": "十六进制数据",
+    "messageParsing": {
+      "editor": {
+        "title": "编辑脚本",
+        "description": "脚本将用于转换设备自定义数据与平台标准消息。"
+      },
+      "language": "脚本语言",
+      "saveError": "保存失败：{{error}}",
+      "loadErrorTitle": "无法加载消息解析器",
+      "modes": {
+        "deviceReport": "设备上报数据",
+        "deviceReceive": "设备接收数据"
+      },
+      "simulator": {
+        "input": "模拟输入",
+        "result": "运行结果",
+        "mode": "模拟类型",
+        "topic": "Topic",
+        "topicPlaceholder": "请输入设备上报消息的 Topic",
         "hexPlaceholder": "二进制数据以0x开头的十六进制输入",
-      "alinkJson": "Alink JSON",
-      "execute": "执行",
-      "executionError": "执行失败",
-      "emptyResult": "运行结果会显示在这里"
-    }
-  },
-  "featureDefinition": {
-    "templates": {
-      "label": "快速模板：",
-      "empty": "空模板",
-      "sensor": "传感器模板",
-      "switch": "开关模板",
-      "advanced": "高级示例"
+        "execute": "执行",
+        "executionError": "执行失败",
+        "emptyResult": "运行结果会显示在这里"
+      }
     },
-    "title": "Thing Specification Language (TSL)",
-    "description": "TSL是描述物联网设备功能的JSON格式语言，包含属性、事件和服务三大核心要素。",
-    "badge": {
-      "jsonFormat": "JSON格式",
-      "realtimeValidation": "实时验证",
-      "standardized": "标准化"
-    },
-    "buttons": {
-      "format": "格式化",
-      "addProperty": "添加属性",
-      "addService": "添加服务",
-      "addEvent": "添加事件"
-    },
-    "status": {
-      "propertyAdded": "属性添加成功",
-      "propertyUpdated": "属性更新成功",
-      "propertyDeleted": "属性删除成功",
-      "serviceAdded": "服务添加成功",
-      "serviceUpdated": "服务更新成功",
-      "serviceDeleted": "服务删除成功",
-      "eventAdded": "事件添加成功",
-      "eventUpdated": "事件更新成功",
-      "eventDeleted": "事件删除成功",
-      "templateLoaded": "已加载模板：{{name}}",
-      "jsonFormatted": "JSON格式化成功",
-      "validationFailed": "验证失败",
-      "saveSuccess": "TSL保存成功",
-      "deleteSuccess": "TSL删除成功"
-    },
-    "editMode": {
-      "visual": "可视化编辑",
-      "json": "JSON编辑"
-    },
-    "sections": {
-      "properties": "属性 (Properties)",
-      "services": "服务 (Services)",
-      "events": "事件 (Events)",
-      "propertiesOnly": "属性",
-      "servicesOnly": "服务",
-      "eventsOnly": "事件"
-    },
-    "propertyDialog": {
-      "title": "{{isEdit}}属性",
-      "addTitle": "添加自定义功能",
-      "editTitle": "编辑自定义功能",
-      "featureType": "功能类型",
-      "featureTypeTooltip": "支持属性、服务、事件三种物模型功能类型",
-      "nameTooltip": "功能展示名称，支持中英文、数字和下划线",
-      "identifierTooltip": "属性唯一标识符，英文、数字和下划线，首字符为英文字母",
-      "range": "取值范围",
-      "descriptionLabel": "描述",
-      "add": "添加",
-      "edit": "编辑",
-      "identifier": "标识符",
-      "name": "功能名称",
-      "accessMode": "读写类型",
-      "dataType": "数据类型",
-      "min": "最小值",
-      "max": "最大值",
-      "step": "步长",
-      "unit": "单位",
-      "enumValues": "枚举项",
-      "structDef": "结构体定义",
-      "arrayElemType": "数组元素类型",
-      "arrayElemDesc": "定义数组元素的类型和大小限制",
-      "structDefDesc": "定义结构体的字段，每个字段包含 type 等属性"
-    },
-    "serviceDialog": {
-      "title": "{{isEdit}}服务",
-      "addTitle": "添加自定义功能",
-      "editTitle": "编辑自定义功能",
-      "add": "添加",
-      "edit": "编辑",
-      "description": "配置设备服务的基本信息和输入输出参数",
-      "identifier": "标识符",
-      "identifierTooltip": "服务唯一标识符，英文、数字和下划线，首字符为英文字母",
-      "name": "功能名称",
-      "nameTooltip": "服务展示名称，支持中英文、数字和下划线",
-      "callType": "调用方式",
-      "async": "异步",
-      "sync": "同步",
-      "inputParams": "输入参数",
-      "inputParamsTooltip": "服务输入参数（JSON数组格式）",
-      "outputParams": "输出参数",
-      "outputParamsTooltip": "服务输出参数（JSON数组格式）"
-    },
-    "eventDialog": {
-      "title": "{{isEdit}}事件",
-      "addTitle": "添加自定义功能",
-      "editTitle": "编辑自定义功能",
-      "add": "添加",
-      "edit": "编辑",
-      "description": "配置设备事件的基本信息和输出数据",
-      "identifier": "标识符",
-      "identifierTooltip": "事件唯一标识符，英文、数字和下划线，首字符为英文字母",
-      "name": "功能名称",
-      "nameTooltip": "事件展示名称，支持中英文、数字和下划线",
-      "eventType": "事件类型",
-      "outputData": "输出参数",
-      "outputDataTooltip": "事件输出参数（JSON数组格式）"
-    },
-    "placeholders": {
-      "propertyId": "请输入您的标识符",
-      "propertyName": "请输入您的功能名称",
-      "serviceId": "例如: setMotor",
-      "serviceName": "例如: 设置电机速度",
-      "eventId": "例如: lowBattery",
-      "eventName": "例如: 低电量告警",
-      "step": "请输入步长",
-      "unit": "请选择单位",
-      "customUnit": "请输入自定义单位",
-      "desc": "请输入描述"
-    },
-    "instructions": {
-      "title": "使用说明",
-      "properties": "properties：设备属性（只读/读写），如传感器数据、开关状态",
-      "events": "events：设备事件，如报警、通知等上行消息",
-      "services": "services：设备服务，如控制指令等下行调用",
-      "dualMode": "支持可视化编辑和JSON编辑两种模式，数据实时同步",
-      "visualMode": "可视化模式下可通过表单快速添加和编辑功能定义"
-    },
-    "accessMode": {
-      "r": "只读 (r)",
-      "rw": "读写 (rw)"
-    },
-    "eventTypes": {
-      "info": "信息 (info)",
-      "alert": "告警 (alert)",
-      "error": "错误 (error)"
-    },
-    "statusBadge": {
-      "input": "入参",
-      "output": "输出",
-      "valid": "有效",
-      "invalid": "无效",
-      "unknown": "未验证"
-    },
-    "empty": {
-      "properties": "暂无属性，点击\"添加属性\"开始创建",
-      "services": "暂无服务，点击\"添加服务\"开始创建",
-      "events": "暂无事件，点击\"添加事件\"开始创建"
-    },
-    "deleteDialog": {
-      "title": "删除TSL",
-      "description": "确定要删除此TSL吗？此操作无法撤销。"
-    },
-    "errors": {
-        "loadFailed": "加载功能定义失败，请稍后重试",
+    "featureDefinition": {
+      "templates": {
+        "label": "快速模板：",
+        "empty": "空模板",
+        "sensor": "传感器模板",
+        "switch": "开关模板",
+        "advanced": "高级示例"
+      },
+      "title": "Thing Specification Language (TSL)",
+      "description": "TSL是描述物联网设备功能的JSON格式语言，包含属性、事件和服务三大核心要素。",
+      "badge": {
+        "jsonFormat": "JSON格式",
+        "realtimeValidation": "实时验证",
+        "standardized": "标准化"
+      },
+      "buttons": {
+        "format": "格式化",
+        "addProperty": "添加属性",
+        "addService": "添加服务",
+        "addEvent": "添加事件"
+      },
+      "status": {
+        "propertyAdded": "属性添加成功",
+        "propertyUpdated": "属性更新成功",
+        "propertyDeleted": "属性删除成功",
+        "serviceAdded": "服务添加成功",
+        "serviceUpdated": "服务更新成功",
+        "serviceDeleted": "服务删除成功",
+        "eventAdded": "事件添加成功",
+        "eventUpdated": "事件更新成功",
+        "eventDeleted": "事件删除成功",
+        "templateLoaded": "已加载模板：{{name}}",
+        "jsonFormatted": "JSON格式化成功",
+        "validationFailed": "验证失败"
+      },
+      "editMode": {
+        "visual": "可视化编辑",
+        "json": "JSON编辑"
+      },
+      "sections": {
+        "properties": "属性 (Properties)",
+        "services": "服务 (Services)",
+        "events": "事件 (Events)",
+        "propertiesOnly": "属性",
+        "servicesOnly": "服务",
+        "eventsOnly": "事件"
+      },
+      "propertyDialog": {
+        "nameTooltip": "功能展示名称，支持中英文、数字和下划线",
+        "identifierTooltip": "属性唯一标识符，英文、数字和下划线，首字符为英文字母",
+        "range": "取值范围",
+        "accessMode": "读写类型",
+        "dataType": "数据类型",
+        "min": "最小值",
+        "max": "最大值",
+        "step": "步长",
+        "unit": "单位",
+        "enumValues": "枚举项",
+        "structDef": "结构体定义",
+        "arrayElemType": "数组元素类型",
+        "arrayElemDesc": "定义数组元素的类型和大小限制",
+        "structDefDesc": "定义结构体的字段，每个字段包含 type 等属性"
+      },
+      "serviceDialog": {
+        "identifierTooltip": "服务唯一标识符，英文、数字和下划线，首字符为英文字母",
+        "nameTooltip": "服务展示名称，支持中英文、数字和下划线",
+        "callType": "调用方式",
+        "async": "异步",
+        "sync": "同步",
+        "inputParams": "输入参数",
+        "inputParamsTooltip": "服务输入参数（JSON数组格式）",
+        "outputParamsTooltip": "服务输出参数（JSON数组格式）"
+      },
+      "eventDialog": {
+        "identifierTooltip": "事件唯一标识符，英文、数字和下划线，首字符为英文字母",
+        "nameTooltip": "事件展示名称，支持中英文、数字和下划线",
+        "eventType": "事件类型",
+        "outputDataTooltip": "事件输出参数（JSON数组格式）"
+      },
+      "placeholders": {
+        "propertyId": "请输入您的标识符",
+        "propertyName": "请输入您的功能名称",
+        "serviceId": "例如: setMotor",
+        "serviceName": "例如: 设置电机速度",
+        "eventId": "例如: lowBattery",
+        "eventName": "例如: 低电量告警",
+        "step": "请输入步长",
+        "unit": "请选择单位",
+        "customUnit": "请输入自定义单位",
+        "desc": "请输入描述"
+      },
+      "instructions": {
+        "title": "使用说明",
+        "properties": "properties：设备属性（只读/读写），如传感器数据、开关状态",
+        "events": "events：设备事件，如报警、通知等上行消息",
+        "services": "services：设备服务，如控制指令等下行调用",
+        "dualMode": "支持可视化编辑和JSON编辑两种模式，数据实时同步",
+        "visualMode": "可视化模式下可通过表单快速添加和编辑功能定义"
+      },
+      "accessMode": {
+        "r": "只读 (r)",
+        "rw": "读写 (rw)"
+      },
+      "eventTypes": {
+        "info": "信息 (info)",
+        "alert": "告警 (alert)",
+        "error": "错误 (error)"
+      },
+      "statusBadge": {
+        "input": "入参",
+        "output": "输出",
+        "valid": "有效",
+        "invalid": "无效",
+        "unknown": "未验证"
+      },
+      "empty": {
+        "properties": "暂无属性，点击\"添加属性\"开始创建",
+        "services": "暂无服务，点击\"添加服务\"开始创建",
+        "events": "暂无事件，点击\"添加事件\"开始创建"
+      },
+      "deleteDialog": {
+        "title": "删除TSL"
+      },
+      "errors": {
         "jsonParse": "JSON解析错误",
-      "tslValidation": "TSL验证错误",
-      "jsonSyntax": "JSON语法错误",
-      "identifierRequired": "identifier 不能为空",
-      "nameRequired": "name 不能为空",
-      "productKeyRequired": "productKey 不能为空"
-    }
-  },
+        "tslValidation": "TSL验证错误",
+        "jsonSyntax": "JSON语法错误",
+        "identifierRequired": "identifier 不能为空",
+        "nameRequired": "name 不能为空",
+        "productKeyRequired": "productKey 不能为空"
+      },
+      "dialog": {
+        "addTitle": "添加自定义功能",
+        "editTitle": "编辑自定义功能",
+        "featureType": "功能类型",
+        "featureTypeTooltip": "选择要定义的功能类型：属性、服务或事件",
+        "name": "功能名称",
+        "identifier": "标识符",
+        "outputParams": "输出参数"
+      }
+    },
     "deviceDevelopment": {
       "title": "设备开发流程",
       "currentStep": "第 {{step}} 步",
@@ -396,11 +340,14 @@
         "title": "4. 设备量产",
         "description": "完成设备开发和测试后，可以进行批量生产",
         "batchTitle": "批量注册设备",
-        "batchDescription": "支持通过 API 或批量导入的方式快速注册大量设备",
-        "certTitle": "设备证书管理",
-        "certDescription": "为每个设备生成唯一的证书，确保设备接入的安全性"
+        "batchDescription": "支持通过 API 或批量导入的方式快速注册大量设备"
       },
       "prevButton": "上一步"
+    },
+    "nodeTypes": {
+      "direct": "直连设备",
+      "gateway": "网关设备",
+      "gateway-sub": "网关子设备"
     }
   },
   "deviceDetail": {
@@ -414,52 +361,47 @@
       "password": "密码"
     },
     "header": {
-      "backToList": "返回设备列表",
-      "unnamedDevice": "未命名设备",
       "product": "所属产品",
       "deviceKey": "DeviceKey",
-      "productKey": "ProductKey",
-      "view": "查看",
-      "viewProduct": "查看产品详情",
-      "copy": "复制"
+      "viewProduct": "查看产品详情"
     },
     "tabs": {
       "info": "设备信息",
       "connection": "连接信息",
-      "topics": "Topic 列表",
       "thingModel": "物模型数据",
-      "shadow": "设备影子",
-      "telemetry": "最新遥测",
-      "files": "文件管理",
-      "logs": "日志服务",
       "debug": "在线调试",
-      "groups": "分组",
       "tasks": "任务"
     },
-    "topicListTab": {
-      "comingSoon": "Topic 列表功能即将推出"
-    },
     "thingModelDataTab": {
-      "comingSoon": "物模型数据功能即将推出",
       "properties": "属性",
       "eventManagement": "事件管理",
-      "serviceInvocation": "服务调用",
-      "eventManagementComingSoon": "设备事件数据功能即将推出",
-      "serviceInvocationComingSoon": "设备服务调用功能即将推出"
+      "serviceInvocation": "服务调用"
     },
     "serviceInvocations": {
-      "title": "服务调用",
-      "description": "查看当前设备的物模型服务调用记录。",
-      "filters": { "serviceIdentifier": "服务标识符", "dateRange": "选择时间范围", "startAt": "开始时间", "endAt": "结束时间", "timePrecision": "精确到秒" },
-      "columns": { "invokedAt": "时间", "serviceIdentifier": "标识符", "serviceName": "服务名称", "status": "状态", "inputParams": "输入参数", "outputParams": "输出参数" },
-      "status": { "pending": "等待回执", "success": "已响应", "failed": "调用失败" },
+      "filters": {
+        "serviceIdentifier": "服务标识符",
+        "dateRange": "选择时间范围",
+        "startAt": "开始时间",
+        "endAt": "结束时间",
+        "timePrecision": "精确到秒"
+      },
+      "columns": {
+        "invokedAt": "时间",
+        "serviceIdentifier": "标识符",
+        "serviceName": "服务名称",
+        "inputParams": "输入参数",
+        "outputParams": "输出参数"
+      },
+      "status": {
+        "pending": "等待回执",
+        "success": "已响应",
+        "failed": "调用失败"
+      },
       "empty": "暂无服务调用记录",
-      "error": "加载服务调用记录失败",
       "invoke": {
         "button": "调用服务",
         "title": "调用物模型服务",
         "description": "向设备下发物模型服务调用指令（RPC）。",
-        "serviceIdentifier": "服务标识符",
         "serviceIdentifierPlaceholder": "例如：reboot",
         "inputParams": "输入参数 (JSON)",
         "inputParamsPlaceholder": "{\"delay\": 5}",
@@ -471,26 +413,21 @@
         "identifierRequired": "请输入服务标识符"
       }
     },
-    "deviceShadowTab": {
-      "comingSoon": "设备影子功能即将推出"
-    },
     "propertyTab": {
-      "title": "设备属性",
       "noData": "暂无设备属性数据",
-      "error": "获取设备属性失败",
       "snapshotTitle": "设备属性当前值",
       "snapshotDescription": "以产品物模型定义为基准展示每项属性的最后上报值。",
-      "refresh": "刷新属性",
-      "dataType": "数据类型",
-      "unit": "单位",
       "accessMode": "读写方式",
       "reportedAt": "最后上报",
       "notReported": "暂未上报",
-      "accessModes": { "r": "只读", "rw": "读写", "w": "只写" },
+      "accessModes": {
+        "r": "只读",
+        "rw": "读写",
+        "w": "只写"
+      },
       "historyTitle": "属性历史",
       "selectProperties": "选择属性",
       "selectedProperties": "已选 {{count}} 项属性",
-      "selectAll": "全选",
       "noPropertiesSelected": "请至少选择一个物模型属性",
       "timeRanges": {
         "1h": "最近 1 小时",
@@ -507,14 +444,7 @@
       "noHistoryData": "该时间范围内暂无历史时序数据",
       "noHistoryDataDescription": "可通过设备上报或在线调试工具推送时序点。"
     },
-    "fileManagementTab": {
-      "comingSoon": "文件管理功能即将推出"
-    },
-    "logServiceTab": {
-      "comingSoon": "日志服务功能即将推出"
-    },
     "onlineDebugTab": {
-      "comingSoon": "在线调试功能即将推出",
       "title": "在线调试与远程控制",
       "description": "支持模拟设备上行遥测上报与云端下发 MQTT/HTTP 控制命令。",
       "telemetryPayload": "上报 JSON 负载（Payload）",
@@ -542,46 +472,20 @@
       "commandFailureTitle": "下发控制指令（失败）",
       "commandFailure": "指令下发失败：{{error}}"
     },
-    "groupsTab": {
-      "loading": "加载分组中...",
-      "empty": "该设备暂未加入分组",
-      "manual": "手动分组",
-      "dynamic": "动态分组"
-    },
-    "tasksTab": {
-      "comingSoon": "任务功能即将推出"
-    },
-    "loading": "加载设备详情中...",
     "notFound": "设备未找到",
-    "backButton": "返回设备列表",
-    "activationStatus": {
-      "not_activated": "未激活",
-      "activated": "已激活",
-      "disabled": "已禁用",
-      "unknown": "未知"
-    },
     "info": {
       "title": "设备信息",
-      "edit": "编辑",
-      "viewProduct": "查看产品详情",
       "test": "测试",
       "testingLatency": "正在测试延迟...",
       "latencyResult": "延迟: {{latency}}",
       "logUploadEnabled": "设备日志上报已启用",
       "logUploadDisabled": "设备日志上报已禁用",
       "fields": {
-        "productName": "产品名称",
-        "productKey": "ProductKey",
-        "deviceKey": "DeviceKey",
-        "nodeType": "节点类型",
-        "currentStatus": "当前状态",
         "ipAddress": "IP地址",
         "activationTime": "激活时间",
         "realTimeLatency": "实时延迟",
         "lastOfflineTime": "最后离线时间",
-        "region": "地域",
         "authMethod": "认证方式",
-        "authMethodValue": "设备密码",
         "firmwareVersion": "固件版本",
         "lastOnlineTime": "最后上线时间",
         "deviceLogUpload": "设备本地日志上报"
@@ -603,7 +507,6 @@
       "keyPlaceholder": "键",
       "valuePlaceholder": "值",
       "add": "添加",
-      "loading": "加载中…",
       "invalidKey": "键不能为纯数字"
     }
   },
@@ -616,7 +519,6 @@
       "deviceKey": "设备标识",
       "name": "设备名称",
       "product": "产品",
-      "state": "状态",
       "enabled": "启用",
       "lastOnline": "最后在线"
     },
@@ -624,10 +526,6 @@
       "online": "在线",
       "offline": "离线",
       "inactive": "未激活"
-    },
-    "enabled": {
-      "yes": "是",
-      "no": "否"
     },
     "unknown": "未知",
     "never": "从未"
@@ -642,14 +540,8 @@
       "description": "在此更新设备详情。完成后点击保存。"
     },
     "form": {
-      "deviceKey": "设备标识",
-      "name": "设备名称",
-      "product": "产品",
       "placeholder": {
-        "deviceKey": "device-001",
-        "name": "我的设备 #1",
-        "product": "选择产品",
-        "productLoading": "加载产品中..."
+        "name": "我的设备 #1"
       }
     },
     "batchUpload": {

@@ -15,7 +15,7 @@ export const useDevicesColumns = (): ColumnDef<Device>[] => {
   const { t } = useTranslation(['deviceManagement', 'common'])
   const nameLabel = t('devices.columns.name')
   const productLabel = t('devices.columns.product')
-  const stateLabel = t('devices.columns.state')
+  const stateLabel = t('common:status')
   const enabledLabel = t('devices.columns.enabled')
   const lastOnlineLabel = t('devices.columns.lastOnline')
 

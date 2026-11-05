@@ -59,8 +59,8 @@ export function ServiceDialog({
         <DialogHeader className='pb-1'>
           <DialogTitle className='text-base font-semibold'>
             {isEdit
-              ? t('productDetail.featureDefinition.serviceDialog.editTitle')
-              : t('productDetail.featureDefinition.serviceDialog.addTitle')}
+              ? t('productDetail.featureDefinition.dialog.editTitle')
+              : t('productDetail.featureDefinition.dialog.addTitle')}
           </DialogTitle>
         </DialogHeader>
 
@@ -70,9 +70,7 @@ export function ServiceDialog({
             <div className='flex items-center gap-1.5'>
               <Label className='flex items-center gap-1 text-xs font-medium'>
                 <span className='text-destructive'>*</span>
-                {t(
-                  'productDetail.featureDefinition.propertyDialog.featureType'
-                )}
+                {t('productDetail.featureDefinition.dialog.featureType')}
               </Label>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -81,7 +79,7 @@ export function ServiceDialog({
                 <TooltipContent side='top'>
                   <span>
                     {t(
-                      'productDetail.featureDefinition.propertyDialog.featureTypeTooltip'
+                      'productDetail.featureDefinition.dialog.featureTypeTooltip'
                     )}
                   </span>
                 </TooltipContent>
@@ -116,7 +114,7 @@ export function ServiceDialog({
             <div className='flex items-center gap-1.5'>
               <Label className='flex items-center gap-1 text-xs font-medium'>
                 <span className='text-destructive'>*</span>
-                {t('productDetail.featureDefinition.serviceDialog.name')}
+                {t('productDetail.featureDefinition.dialog.name')}
               </Label>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -148,7 +146,7 @@ export function ServiceDialog({
             <div className='flex items-center gap-1.5'>
               <Label className='flex items-center gap-1 text-xs font-medium'>
                 <span className='text-destructive'>*</span>
-                {t('productDetail.featureDefinition.serviceDialog.identifier')}
+                {t('productDetail.featureDefinition.dialog.identifier')}
               </Label>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -247,9 +245,7 @@ export function ServiceDialog({
           <div className='space-y-1.5'>
             <div className='flex items-center gap-1.5'>
               <Label className='text-xs font-medium'>
-                {t(
-                  'productDetail.featureDefinition.serviceDialog.outputParams'
-                )}
+                {t('productDetail.featureDefinition.dialog.outputParams')}
               </Label>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -282,9 +278,7 @@ export function ServiceDialog({
           {/* 描述 */}
           <div className='space-y-1.5'>
             <Label className='text-xs font-medium'>
-              {t(
-                'productDetail.featureDefinition.propertyDialog.descriptionLabel'
-              )}
+              {t('common:description')}
             </Label>
             <div className='relative'>
               <Textarea

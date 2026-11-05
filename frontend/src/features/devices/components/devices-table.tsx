@@ -180,7 +180,7 @@ export function DevicesTable() {
         filters={[
           {
             columnId: 'state',
-            title: t('devices.columns.state'),
+            title: t('common:status'),
             options: stateOptions.map((state) => ({
               label: t(`devices.state.${state.key}`),
               value: state.value,

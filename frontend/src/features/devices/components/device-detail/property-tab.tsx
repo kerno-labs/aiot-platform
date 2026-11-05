@@ -16,7 +16,7 @@ import { PropertyHistoryChart } from './properties/property-history-chart'
 
 export function PropertyTab() {
   const { deviceKey } = Route.useParams()
-  const { t } = useTranslation('deviceManagement')
+  const { t } = useTranslation(['deviceManagement', 'common'])
 
   const {
     data: properties,
@@ -53,7 +53,7 @@ export function PropertyTab() {
                 onClick={() => refetch()}
                 disabled={isPropertiesLoading || isRefetching}
                 className='size-8'
-                aria-label={t('deviceDetail.propertyTab.refresh')}
+                aria-label={t('common:refresh')}
               >
                 <RotateCw
                   className={`size-3.5 ${isRefetching ? 'animate-spin' : ''}`}
@@ -91,8 +91,10 @@ export function PropertyTab() {
                       <div>
                         <div className='text-sm font-medium'>{prop.name}</div>
                         <div className='mt-0.5 text-[11px] text-muted-foreground'>
-                          {t('deviceDetail.propertyTab.dataType')}:{' '}
-                          {prop.dataType}
+                          {t(
+                            'productDetail.featureDefinition.propertyDialog.dataType'
+                          )}
+                          : {prop.dataType}
                         </div>
                       </div>
                       <Badge
@@ -128,8 +130,11 @@ export function PropertyTab() {
 
                     <div className='space-y-1 text-[11px] text-muted-foreground'>
                       <div>
-                        {t('deviceDetail.propertyTab.unit')}: {prop.unit || '-'}{' '}
-                        · {t('deviceDetail.propertyTab.accessMode')}:{' '}
+                        {t(
+                          'productDetail.featureDefinition.propertyDialog.unit'
+                        )}
+                        : {prop.unit || '-'} ·{' '}
+                        {t('deviceDetail.propertyTab.accessMode')}:{' '}
                         {t(
                           `deviceDetail.propertyTab.accessModes.${prop.accessMode || 'r'}`
                         )}

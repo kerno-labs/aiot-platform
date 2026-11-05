@@ -115,7 +115,7 @@ export function ProductInfoTab({ product }: ProductInfoTabProps) {
 
             <div className='space-y-1 md:col-span-2 lg:col-span-3'>
               <p className='text-sm text-muted-foreground'>
-                {t('productDetail.info.fields.description')}
+                {t('common:description')}
               </p>
               <p className='font-medium'>{product.description || '-'}</p>
             </div>
@@ -125,7 +125,7 @@ export function ProductInfoTab({ product }: ProductInfoTabProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle>{t('productDetail.info.labels.title')}</CardTitle>
+          <CardTitle>{t('deviceDetail.tags.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className='text-sm text-muted-foreground'>

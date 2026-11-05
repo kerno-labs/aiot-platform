@@ -1,14 +1,7 @@
 {
-  "title": "Device Management",
-  "description": "Manage your products and devices from this centralized dashboard.",
   "tabs": {
     "products": "Products",
     "devices": "Devices"
-  },
-  "pages": {
-    "devices": {
-      "description": "Monitor and manage your connected devices."
-    }
   },
   "productDetail": {
     "actions": {
@@ -32,9 +25,7 @@
       "development": "Device Development",
       "upload": "File Upload Config"
     },
-    "loading": "Loading product details...",
     "notFound": "Product not found",
-    "backButton": "Return to Products",
     "info": {
       "title": "Product Information",
       "fields": {
@@ -43,25 +34,11 @@
         "nodeType": "Node Type",
         "connectivityMethod": "Connectivity Method",
         "accessProtocol": "Access Protocol",
-        "gatewayAccessProtocol": "Gateway Access Protocol",
-        "dataFormat": "Data Format",
-        "dataFormatValue": "ICA Standard Data Format",
-        "authMethod": "Authentication Method",
-        "authMethodValue": "Device Password",
-        "dataValidationLevel": "Data Validation Level",
-        "dataValidationValue": "Weak Validation",
-        "description": "Description",
-        "metadata": "Metadata"
+        "gatewayAccessProtocol": "Gateway Access Protocol"
       },
       "labels": {
-        "title": "Label Information",
         "empty": "No label information"
       }
-    },
-    "nodeTypes": {
-      "direct": "Direct Device",
-      "gateway": "Gateway Device",
-      "gateway-sub": "Gateway Sub-device"
     },
     "connectivityMethods": {
       "wifi": "Wi-Fi",
@@ -84,8 +61,7 @@
       "table": {
         "function": "Function",
         "topicClass": "Topic Class",
-        "permission": "Permission",
-        "description": "Description"
+        "permission": "Permission"
       },
       "permissions": {
         "publish": "Publish",
@@ -131,27 +107,20 @@
         "serviceCallReply": "Device responds to service call"
       },
       "custom": {
-        "placeholder": "Custom Topic feature in development",
         "description": "Support custom Topic classes, permission configuration, and broadcast functions"
       }
     },
     "messageParsing": {
-      "title": "Message Parsing",
-      "description": "Configure the single JavaScript ES5 parser script for this product.",
       "editor": {
         "title": "Edit Script",
         "description": "Use the script to convert device-specific data and platform messages."
       },
       "language": "Script Language",
-      "script": "Parser Script",
-      "save": "Save",
-      "saveSuccess": "Message parser script saved",
       "saveError": "Save failed: {{error}}",
       "loadErrorTitle": "Unable to load message parser",
       "modes": {
         "deviceReport": "Device Report Data",
-        "deviceReceive": "Device Receive Data",
-        "custom": "Custom"
+        "deviceReceive": "Device Receive Data"
       },
       "simulator": {
         "input": "Simulation Input",
@@ -159,9 +128,7 @@
         "mode": "Simulation Type",
         "topic": "Topic",
         "topicPlaceholder": "Enter the device report topic",
-        "hex": "Hexadecimal Data",
         "hexPlaceholder": "Binary data in hexadecimal starting with 0x",
-        "alinkJson": "Alink JSON",
         "execute": "Run",
         "executionError": "Execution Failed",
         "emptyResult": "The result will appear here"
@@ -200,9 +167,7 @@
         "eventDeleted": "Event deleted successfully",
         "templateLoaded": "Template loaded: {{name}}",
         "jsonFormatted": "JSON formatted successfully",
-        "validationFailed": "Validation failed",
-        "saveSuccess": "TSL saved successfully",
-        "deleteSuccess": "TSL deleted successfully"
+        "validationFailed": "Validation failed"
       },
       "editMode": {
         "visual": "Visual Edit",
@@ -217,19 +182,9 @@
         "eventsOnly": "Event"
       },
       "propertyDialog": {
-        "title": "{{isEdit}} Property",
-        "addTitle": "Add Custom Feature",
-        "editTitle": "Edit Custom Feature",
-        "featureType": "Feature Type",
-        "featureTypeTooltip": "Supports Property, Service, and Event feature types",
         "nameTooltip": "Feature display name, supports Chinese, English, numbers and underscores",
         "identifierTooltip": "Unique identifier, letters, numbers, and underscores starting with a letter",
         "range": "Value Range",
-        "descriptionLabel": "Description",
-        "add": "Add",
-        "edit": "Edit",
-        "identifier": "Identifier",
-        "name": "Feature Name",
         "accessMode": "Access Mode",
         "dataType": "Data Type",
         "min": "Min",
@@ -243,37 +198,19 @@
         "structDefDesc": "Define struct fields, each containing type and other attributes"
       },
       "serviceDialog": {
-        "title": "{{isEdit}} Service",
-        "addTitle": "Add Custom Feature",
-        "editTitle": "Edit Custom Feature",
-        "add": "Add",
-        "edit": "Edit",
-        "description": "Configure device service basic information and input/output parameters",
-        "identifier": "Identifier",
         "identifierTooltip": "Unique service identifier, letters, numbers, and underscores, starting with a letter",
-        "name": "Feature Name",
         "nameTooltip": "Service display name, supporting Chinese, English, numbers and underscores",
         "callType": "Call Type",
         "async": "Async",
         "sync": "Sync",
         "inputParams": "Input Parameters",
         "inputParamsTooltip": "Service input parameters (JSON array format)",
-        "outputParams": "Output Parameters",
         "outputParamsTooltip": "Service output parameters (JSON array format)"
       },
       "eventDialog": {
-        "title": "{{isEdit}} Event",
-        "addTitle": "Add Custom Feature",
-        "editTitle": "Edit Custom Feature",
-        "add": "Add",
-        "edit": "Edit",
-        "description": "Configure device event basic information and output data",
-        "identifier": "Identifier",
         "identifierTooltip": "Unique event identifier, letters, numbers, and underscores, starting with a letter",
-        "name": "Feature Name",
         "nameTooltip": "Event display name, supporting Chinese, English, numbers and underscores",
         "eventType": "Event Type",
-        "outputData": "Output Parameters",
         "outputDataTooltip": "Event output parameters (JSON array format)"
       },
       "placeholders": {
@@ -318,17 +255,24 @@
         "events": "No events yet, click \"Add Event\" to start creating"
       },
       "deleteDialog": {
-        "title": "Delete TSL",
-        "description": "Are you sure you want to delete this TSL? This action cannot be undone."
+        "title": "Delete TSL"
       },
       "errors": {
-        "loadFailed": "Failed to load the feature definition. Please try again.",
         "jsonParse": "JSON parse error",
         "tslValidation": "TSL validation error",
         "jsonSyntax": "JSON syntax error",
         "identifierRequired": "identifier cannot be empty",
         "nameRequired": "name cannot be empty",
         "productKeyRequired": "productKey cannot be empty"
+      },
+      "dialog": {
+        "addTitle": "Add Custom Feature",
+        "editTitle": "Edit Custom Feature",
+        "featureType": "Feature Type",
+        "featureTypeTooltip": "Select the feature type to define: Property, Service, or Event",
+        "name": "Feature Name",
+        "identifier": "Identifier",
+        "outputParams": "Output Parameters"
       }
     },
     "deviceDevelopment": {
@@ -396,11 +340,14 @@
         "title": "4. Device Production",
         "description": "After completing device development and testing, you can proceed with batch production",
         "batchTitle": "Batch Device Registration",
-        "batchDescription": "Support batch registration of devices through API or batch import",
-        "certTitle": "Device Certificate Management",
-        "certDescription": "Generate unique certificates for each device to ensure secure device access"
+        "batchDescription": "Support batch registration of devices through API or batch import"
       },
       "prevButton": "Previous"
+    },
+    "nodeTypes": {
+      "direct": "Direct Device",
+      "gateway": "Gateway Device",
+      "gateway-sub": "Gateway Sub-device"
     }
   },
   "deviceDetail": {
@@ -414,52 +361,47 @@
       "password": "Password"
     },
     "header": {
-      "backToList": "Back to device list",
-      "unnamedDevice": "Unnamed Device",
       "product": "Product",
       "deviceKey": "DeviceKey",
-      "productKey": "ProductKey",
-      "view": "View",
-      "viewProduct": "View product details",
-      "copy": "Copy"
+      "viewProduct": "View product details"
     },
     "tabs": {
       "info": "Device Info",
       "connection": "Connection",
-      "topics": "Topic List",
       "thingModel": "Thing Model Data",
-      "shadow": "Device Shadow",
-      "telemetry": "Last Telemetry",
-      "files": "File Management",
-      "logs": "Log Service",
       "debug": "Online Debug",
-      "groups": "Groups",
       "tasks": "Tasks"
     },
-    "topicListTab": {
-      "comingSoon": "Topic list coming soon"
-    },
     "thingModelDataTab": {
-      "comingSoon": "Thing model data coming soon",
       "properties": "Properties",
       "eventManagement": "Event Management",
-      "serviceInvocation": "Service Invocation",
-      "eventManagementComingSoon": "Device event data coming soon",
-      "serviceInvocationComingSoon": "Device service invocation coming soon"
+      "serviceInvocation": "Service Invocation"
     },
     "serviceInvocations": {
-      "title": "Service Invocation",
-      "description": "View thing-model service invocation records for this device.",
-      "filters": { "serviceIdentifier": "Service identifier", "dateRange": "Select time range", "startAt": "Start time", "endAt": "End time", "timePrecision": "Seconds precision" },
-      "columns": { "invokedAt": "Time", "serviceIdentifier": "Identifier", "serviceName": "Service name", "status": "Status", "inputParams": "Input parameters", "outputParams": "Output parameters" },
-      "status": { "pending": "Pending", "success": "Replied", "failed": "Failed" },
+      "filters": {
+        "serviceIdentifier": "Service identifier",
+        "dateRange": "Select time range",
+        "startAt": "Start time",
+        "endAt": "End time",
+        "timePrecision": "Seconds precision"
+      },
+      "columns": {
+        "invokedAt": "Time",
+        "serviceIdentifier": "Identifier",
+        "serviceName": "Service name",
+        "inputParams": "Input parameters",
+        "outputParams": "Output parameters"
+      },
+      "status": {
+        "pending": "Pending",
+        "success": "Replied",
+        "failed": "Failed"
+      },
       "empty": "No service invocation records found.",
-      "error": "Failed to load service invocation records.",
       "invoke": {
         "button": "Invoke Service",
         "title": "Invoke Thing Model Service",
         "description": "Send a thing-model RPC service invocation command to this device.",
-        "serviceIdentifier": "Service Identifier",
         "serviceIdentifierPlaceholder": "e.g. reboot",
         "inputParams": "Input Parameters (JSON)",
         "inputParamsPlaceholder": "{\"delay\": 5}",
@@ -471,26 +413,21 @@
         "identifierRequired": "Please enter a service identifier"
       }
     },
-    "deviceShadowTab": {
-      "comingSoon": "Device shadow coming soon"
-    },
     "propertyTab": {
-      "title": "Device Properties",
       "noData": "No device property data available",
-      "error": "Failed to fetch device properties",
       "snapshotTitle": "Current Property Values",
       "snapshotDescription": "Shows the latest reported value for every property defined by the product thing model.",
-      "refresh": "Refresh properties",
-      "dataType": "Data type",
-      "unit": "Unit",
       "accessMode": "Access mode",
       "reportedAt": "Last reported",
       "notReported": "Not reported",
-      "accessModes": { "r": "Read only", "rw": "Read/write", "w": "Write only" },
+      "accessModes": {
+        "r": "Read only",
+        "rw": "Read/write",
+        "w": "Write only"
+      },
       "historyTitle": "Property history",
       "selectProperties": "Select properties",
       "selectedProperties": "{{count}} properties selected",
-      "selectAll": "Select all",
       "noPropertiesSelected": "Select at least one thing model property",
       "timeRanges": {
         "1h": "Last hour",
@@ -507,14 +444,7 @@
       "noHistoryData": "No historical time-series data in this range",
       "noHistoryDataDescription": "Send telemetry through the device or online debug tool to create time-series points."
     },
-    "fileManagementTab": {
-      "comingSoon": "File management coming soon"
-    },
-    "logServiceTab": {
-      "comingSoon": "Log service coming soon"
-    },
     "onlineDebugTab": {
-      "comingSoon": "Online debugging coming soon",
       "title": "Online Debug and Remote Control",
       "description": "Simulate device telemetry uploads and send MQTT/HTTP control commands from the cloud.",
       "telemetryPayload": "Telemetry JSON payload",
@@ -542,46 +472,20 @@
       "commandFailureTitle": "Remote control command (failed)",
       "commandFailure": "Command failed: {{error}}"
     },
-    "groupsTab": {
-      "loading": "Loading groups...",
-      "empty": "This device is not in any group",
-      "manual": "Manual groups",
-      "dynamic": "Dynamic groups"
-    },
-    "tasksTab": {
-      "comingSoon": "Tasks coming soon"
-    },
-    "loading": "Loading device details...",
     "notFound": "Device not found",
-    "backButton": "Return to Devices",
-    "activationStatus": {
-      "not_activated": "Not Activated",
-      "activated": "Activated",
-      "disabled": "Disabled",
-      "unknown": "Unknown"
-    },
     "info": {
       "title": "Device Information",
-      "edit": "Edit",
-      "viewProduct": "View product details",
       "test": "Test",
       "testingLatency": "Testing latency...",
       "latencyResult": "Latency: {{latency}}",
       "logUploadEnabled": "Device log upload enabled",
       "logUploadDisabled": "Device log upload disabled",
       "fields": {
-        "productName": "Product Name",
-        "productKey": "ProductKey",
-        "deviceKey": "DeviceKey",
-        "nodeType": "Node Type",
-        "currentStatus": "Current Status",
         "ipAddress": "IP Address",
         "activationTime": "Activation Time",
         "realTimeLatency": "Real-time Latency",
         "lastOfflineTime": "Last Offline Time",
-        "region": "Region",
         "authMethod": "Authentication Method",
-        "authMethodValue": "Device Password",
         "firmwareVersion": "Firmware Version",
         "lastOnlineTime": "Last Online Time",
         "deviceLogUpload": "Device Log Upload"
@@ -603,7 +507,6 @@
       "keyPlaceholder": "key",
       "valuePlaceholder": "value",
       "add": "Add",
-      "loading": "Loading…",
       "invalidKey": "Key cannot be purely numeric"
     }
   },
@@ -616,7 +519,6 @@
       "deviceKey": "Device Key",
       "name": "Name",
       "product": "Product",
-      "state": "State",
       "enabled": "Enabled",
       "lastOnline": "Last Online"
     },
@@ -624,10 +526,6 @@
       "online": "Online",
       "offline": "Offline",
       "inactive": "Inactive"
-    },
-    "enabled": {
-      "yes": "Yes",
-      "no": "No"
     },
     "unknown": "Unknown",
     "never": "Never"
@@ -642,14 +540,8 @@
       "description": "Update the device details here. Click save when you're done."
     },
     "form": {
-      "deviceKey": "Device Key",
-      "name": "Name",
-      "product": "Product",
       "placeholder": {
-        "deviceKey": "device-001",
-        "name": "My Device #1",
-        "product": "Select product",
-        "productLoading": "Loading products..."
+        "name": "My Device #1"
       }
     },
     "batchUpload": {

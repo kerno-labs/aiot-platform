@@ -14,7 +14,7 @@ import {
 type Props = { deviceKey: string }
 
 export function TagsEditor({ deviceKey }: Props) {
-  const { t } = useTranslation('deviceManagement')
+  const { t } = useTranslation(['deviceManagement', 'common'])
   const { data: tags = [], isLoading } = useDeviceTags(deviceKey)
   const add = useAddTags(deviceKey)
   const remove = useRemoveTags(deviceKey)
@@ -42,7 +42,7 @@ export function TagsEditor({ deviceKey }: Props) {
       <div className='flex flex-wrap gap-2'>
         {isLoading ? (
           <span className='text-sm text-muted-foreground'>
-            {t('deviceDetail.tags.loading')}
+            {t('common:loading')}
           </span>
         ) : tags.length === 0 ? (
           <span className='text-sm text-muted-foreground italic'>

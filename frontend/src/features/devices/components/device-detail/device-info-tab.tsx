@@ -56,7 +56,7 @@ export function DeviceInfoTab({ device }: DeviceInfoTabProps) {
             <div className='space-y-4'>
               <div className='space-y-1'>
                 <p className='text-sm text-muted-foreground'>
-                  {t('deviceDetail.info.fields.productName')}
+                  {t('productDetail.info.fields.name')}
                 </p>
                 <p className='font-medium'>{device.productName || '-'}</p>
               </div>
@@ -70,7 +70,7 @@ export function DeviceInfoTab({ device }: DeviceInfoTabProps) {
 
               <div className='space-y-1'>
                 <p className='text-sm text-muted-foreground'>
-                  {t('deviceDetail.info.fields.currentStatus')}
+                  {t('common:status')}
                 </p>
                 <Badge variant={getStatusVariant()}>
                   {device.state !== undefined
@@ -84,14 +84,14 @@ export function DeviceInfoTab({ device }: DeviceInfoTabProps) {
             <div className='space-y-4'>
               <div className='space-y-1'>
                 <p className='text-sm text-muted-foreground'>
-                  {t('deviceDetail.info.fields.productKey')}
+                  {t('productDetail.header.productKey')}
                 </p>
                 <div className='flex items-center gap-2'>
                   {device.productKey ? (
                     <Link
                       to='/device-management/products/$productKey'
                       params={{ productKey: device.productKey }}
-                      aria-label={t('deviceDetail.info.viewProduct')}
+                      aria-label={t('deviceDetail.header.viewProduct')}
                       className='font-mono text-sm text-primary underline-offset-4 hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none'
                     >
                       {device.productKey}
@@ -107,7 +107,7 @@ export function DeviceInfoTab({ device }: DeviceInfoTabProps) {
 
               <div className='space-y-1'>
                 <p className='text-sm text-muted-foreground'>
-                  {t('deviceDetail.info.fields.deviceKey')}
+                  {t('deviceDetail.header.deviceKey')}
                 </p>
                 <div className='flex items-center gap-2'>
                   <p className='font-mono text-sm'>{device.deviceKey || '-'}</p>

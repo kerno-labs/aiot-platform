@@ -11,7 +11,7 @@ interface DeviceHeaderProps {
 }
 
 export function DeviceHeader({ device, onBack }: DeviceHeaderProps) {
-  const { t } = useTranslation('deviceManagement')
+  const { t } = useTranslation(['deviceManagement', 'common'])
 
   return (
     <div className='mb-6 space-y-4'>
@@ -20,13 +20,11 @@ export function DeviceHeader({ device, onBack }: DeviceHeaderProps) {
           variant='ghost'
           size='icon'
           onClick={onBack}
-          aria-label={t('deviceDetail.header.backToList')}
+          aria-label={t('common:back')}
         >
           <ArrowLeft className='h-4 w-4' />
         </Button>
-        <h1 className='text-2xl font-bold'>
-          {device.name || t('deviceDetail.header.unnamedDevice')}
-        </h1>
+        <h1 className='text-2xl font-bold'>{device.name || '-'}</h1>
       </div>
 
       <div className='flex flex-wrap items-center gap-4 text-sm'>
@@ -39,7 +37,7 @@ export function DeviceHeader({ device, onBack }: DeviceHeaderProps) {
 
         <div className='flex items-center gap-2'>
           <span className='text-muted-foreground'>
-            {t('deviceDetail.header.productKey')}:
+            {t('productDetail.header.productKey')}:
           </span>
           {device.productKey ? (
             <Link

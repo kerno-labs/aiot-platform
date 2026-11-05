@@ -15,7 +15,7 @@ import { TasksTab } from './tasks-tab'
 import { ThingModelDataTab } from './thing-model-data-tab'
 
 export function DeviceDetailPage() {
-  const { t } = useTranslation('deviceManagement')
+  const { t } = useTranslation(['deviceManagement', 'common'])
   const { deviceKey } = Route.useParams()
   const navigate = useNavigate()
   const { data: deviceResponse, isLoading, error } = useDeviceByKey(deviceKey)
@@ -45,7 +45,7 @@ export function DeviceDetailPage() {
           <p className='text-lg text-muted-foreground'>
             {t('deviceDetail.notFound')}
           </p>
-          <Button onClick={handleBack}>{t('deviceDetail.backButton')}</Button>
+          <Button onClick={handleBack}>{t('common:back')}</Button>
         </div>
       </Main>
     )
