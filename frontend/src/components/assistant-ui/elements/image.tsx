@@ -417,6 +417,7 @@ function RegenerateButton({
         try {
           await onRegenerate()
         } catch {
+          // Regeneration errors are surfaced by the caller; only reset the busy state here.
         } finally {
           setIsRegenerating(false)
         }

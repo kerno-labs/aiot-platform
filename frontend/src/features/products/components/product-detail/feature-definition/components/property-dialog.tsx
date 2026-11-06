@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { HelpCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
@@ -45,8 +45,13 @@ export function PropertyDialog({
   const [formData, setFormData] = useState<Property | null>(null)
   const [isCustomUnit, setIsCustomUnit] = useState(false)
 
-  // 只在对话框打开时初始化表单数据
-  useEffect(() => {
+  // Re-initialize the form only when the dialog opens or the target changes.
+  const [prevInput, setPrevInput] = useState({
+    open: false,
+    property: null as Property | null,
+  })
+  if (prevInput.open !== open || prevInput.property !== property) {
+    setPrevInput({ open, property })
     if (open && property) {
       const cloned = JSON.parse(JSON.stringify(property))
       setFormData(cloned)
@@ -56,7 +61,7 @@ export function PropertyDialog({
       )
       setIsCustomUnit(Boolean(currentUnit && !isInList))
     }
-  }, [open, property])
+  }
 
   const handleSave = () => {
     if (formData && formData.identifier && formData.name) {

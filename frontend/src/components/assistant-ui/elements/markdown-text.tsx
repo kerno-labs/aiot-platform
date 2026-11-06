@@ -1,6 +1,6 @@
 'use client'
 
-import { type FC, memo, useMemo, useRef } from 'react'
+import { type FC, memo, useMemo, useState } from 'react'
 import type { TextMessagePartProps } from '@assistant-ui/react'
 import {
   type CodeHeaderProps,
@@ -22,17 +22,16 @@ type MarkdownTextProps = Partial<TextMessagePartProps> & {
 const useShallowStable = <T extends Record<string, unknown> | undefined>(
   value: T
 ): T => {
-  const ref = useRef(value)
-  if (value !== ref.current) {
-    const prev = ref.current
-    const stable =
+  const [stable, setStable] = useState(value)
+  if (value !== stable) {
+    const same =
       value !== undefined &&
-      prev !== undefined &&
-      Object.keys(prev).length === Object.keys(value).length &&
-      Object.keys(value).every((key) => prev[key] === value[key])
-    if (!stable) ref.current = value
+      stable !== undefined &&
+      Object.keys(stable).length === Object.keys(value).length &&
+      Object.keys(value).every((key) => stable[key] === value[key])
+    if (!same) setStable(value)
   }
-  return ref.current
+  return stable
 }
 
 const MarkdownTextImpl: FC<MarkdownTextProps> = ({ components }) => {

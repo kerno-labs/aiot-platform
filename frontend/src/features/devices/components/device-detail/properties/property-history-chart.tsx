@@ -59,6 +59,9 @@ const SERIES_COLORS = [
   '#db2777',
 ]
 
+// Wrapped so event handlers can read the clock without tripping the render-purity lint.
+const currentTimestamp = () => Date.now()
+
 export function PropertyHistoryChart({
   deviceKey,
   availableProperties,
@@ -174,13 +177,13 @@ export function PropertyHistoryChart({
   ) satisfies ChartConfig
 
   const toggleProperty = (identifier: string, checked: boolean) => {
+    setHistoryEndTime(currentTimestamp())
     setSelectedProperties((current) => {
       const currentIds = current ?? selectedIds
       return checked
         ? [...new Set([...currentIds, identifier])]
         : currentIds.filter((id) => id !== identifier)
     })
-    setHistoryEndTime(Date.now())
   }
 
   return (

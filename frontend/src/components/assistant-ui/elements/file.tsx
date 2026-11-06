@@ -116,21 +116,32 @@ type FileIconDisplayProps = React.ComponentProps<'span'> & {
   mimeType?: string
 }
 
+function MimeTypeIcon({
+  mimeType,
+  className,
+}: {
+  mimeType?: string
+  className?: string
+}) {
+  const Icon = mimeType ? getMimeTypeIcon(mimeType) : FileIcon
+  // Icons are static module-level components, not created during render.
+  // eslint-disable-next-line react-hooks/static-components
+  return <Icon className={className} />
+}
+
 function FileIconDisplay({
   mimeType,
   className,
   children,
   ...props
 }: FileIconDisplayProps) {
-  const IconComponent = mimeType ? getMimeTypeIcon(mimeType) : FileIcon
-
   return (
     <span
       data-slot='file-icon'
       className={cn('shrink-0 text-muted-foreground', className)}
       {...props}
     >
-      {children ?? <IconComponent className='size-5' />}
+      {children ?? <MimeTypeIcon mimeType={mimeType} className='size-5' />}
     </span>
   )
 }

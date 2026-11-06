@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { HelpCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
@@ -36,12 +36,15 @@ export function EventDialog({
   const { t } = useTranslation(['deviceManagement', 'common'])
   const [formData, setFormData] = useState<Event | null>(null)
 
-  // 只在对话框打开时初始化表单数据
-  useEffect(() => {
-    if (open && event) {
-      setFormData(JSON.parse(JSON.stringify(event)))
-    }
-  }, [open, event])
+  // Re-initialize the form only when the dialog opens or the target changes.
+  const [prevInput, setPrevInput] = useState({
+    open: false,
+    event: null as Event | null,
+  })
+  if (prevInput.open !== open || prevInput.event !== event) {
+    setPrevInput({ open, event })
+    if (open && event) setFormData(JSON.parse(JSON.stringify(event)))
+  }
 
   const handleSave = () => {
     if (formData && formData.identifier && formData.name) {

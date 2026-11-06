@@ -66,18 +66,24 @@ function RuleChainCanvasInner({ initialUuid = '' }: RuleChainCanvasInnerProps) {
   const savedQuery = useGetRuleChainsUuid(uuid, { query: { enabled: !!uuid } })
   const [nodes, setNodes, onNodesChange] = useNodesState<RuleFlowNode>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
-  const [selectedId, setSelectedId] = useState('entry')
+  const [selectedId, setSelectedId] = useState<string | null>(null)
   const [paletteOpen, setPaletteOpen] = useState(true)
   const [inspectorOpen, setInspectorOpen] = useState(true)
   const [search, setSearch] = useState('')
-  const [name, setName] = useState(() => t('title'))
-  const [description, setDescription] = useState('')
+  const [nameDraft, setName] = useState<string | null>(null)
+  const [descriptionDraft, setDescription] = useState<string | null>(null)
   const { screenToFlowPosition } = useReactFlow()
   const definitions = useMemo(
     () => catalog.data?.map(toDefinition) ?? [],
     [catalog.data]
   )
-  const selected = nodes.find((node) => node.id === selectedId)
+  // Fall back to the first node until the user picks one explicitly.
+  const activeId = selectedId ?? nodes[0]?.id
+  const selected = nodes.find((node) => node.id === activeId)
+  // Drafts override the saved values only after the user edits them.
+  const saved = savedQuery.data?.data?.ruleChain
+  const name = nameDraft ?? (saved?.name || t('title'))
+  const description = descriptionDraft ?? (saved?.description || '')
   const create = usePostRuleChains()
   const update = usePutRuleChainsUuid()
   const saving = create.isPending || update.isPending
@@ -119,11 +125,7 @@ function RuleChainCanvasInner({ initialUuid = '' }: RuleChainCanvasInnerProps) {
     if (loaded.length) {
       setNodes(loaded)
       setEdges(Array.isArray(graph.edges) ? (graph.edges as Edge[]) : [])
-      setSelectedId(loaded[0].id)
     }
-    const saved = savedQuery.data?.data?.ruleChain
-    if (saved?.name) setName(saved.name)
-    if (saved?.description) setDescription(saved.description)
   }, [definitions, savedQuery.data, setEdges, setNodes])
 
   const groups = useMemo(
@@ -184,7 +186,7 @@ function RuleChainCanvasInner({ initialUuid = '' }: RuleChainCanvasInnerProps) {
     (key: string, value: unknown) =>
       setNodes((current) =>
         current.map((node) =>
-          node.id === selectedId
+          node.id === activeId
             ? {
                 ...node,
                 data: {
@@ -195,7 +197,7 @@ function RuleChainCanvasInner({ initialUuid = '' }: RuleChainCanvasInnerProps) {
             : node
         )
       ),
-    [selectedId, setNodes]
+    [activeId, setNodes]
   )
 
   const deleteNode = useCallback(
