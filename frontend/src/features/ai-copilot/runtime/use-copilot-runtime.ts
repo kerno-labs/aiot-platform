@@ -1,44 +1,50 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import {
   AssistantChatTransport,
   useChatRuntime,
 } from '@assistant-ui/react-ai-sdk'
 import { getAuthToken } from '@/api/clients'
 
-export function useCopilotRuntime() {
-  const [sessionKey, setSessionKey] = useState(0)
-
+function createTransport() {
   const gatewayUrl = import.meta.env.VITE_AI_GATEWAY_URL || ''
+  const apiEndpoint = gatewayUrl
+    ? `${gatewayUrl.replace(/\/$/, '')}/v1/ai/chat`
+    : '/v1/ai/chat'
 
-  const transport = useMemo(() => {
-    const apiEndpoint = gatewayUrl
-      ? `${gatewayUrl.replace(/\/$/, '')}/v1/ai/chat`
-      : '/v1/ai/chat'
+  return new AssistantChatTransport({
+    api: apiEndpoint,
+    headers: () => {
+      const token = getAuthToken()
+      const headers: Record<string, string> = {}
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+      }
+      return headers
+    },
+  })
+}
 
-    return new AssistantChatTransport({
-      api: apiEndpoint,
-      headers: () => {
-        const token = getAuthToken()
-        const headers: Record<string, string> = {}
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`
-        }
-        return headers
-      },
-    })
-  }, [gatewayUrl, sessionKey])
+export function useCopilotRuntime() {
+  const [session, setSession] = useState(() => ({
+    key: 0,
+    transport: createTransport(),
+  }))
 
   const runtime = useChatRuntime({
-    transport,
+    transport: session.transport,
   })
 
   const resetSession = () => {
-    setSessionKey((prev) => prev + 1)
+    // Reset the transport and session identity together without a synthetic memo dependency.
+    setSession((current) => ({
+      key: current.key + 1,
+      transport: createTransport(),
+    }))
   }
 
   return {
     runtime,
     resetSession,
-    sessionKey,
+    sessionKey: session.key,
   }
 }

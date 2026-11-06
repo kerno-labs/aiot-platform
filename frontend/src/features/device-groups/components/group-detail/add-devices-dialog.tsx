@@ -59,6 +59,8 @@ export function AddDevicesDialog({
   groupUuid,
   existingDeviceKeys,
 }: AddDevicesDialogProps) {
+  'use no memo'
+
   const { t } = useTranslation('deviceGroup')
   const queryClient = useQueryClient()
   const [selectedProduct, setSelectedProduct] = useState<string>('all')
@@ -115,6 +117,8 @@ export function AddDevicesDialog({
     })
   }, [allDevices, existingDeviceKeys, selectedProduct, search, products])
 
+  // TanStack Table's mutable instance must stay outside compiler memoization.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const paginationTable = useReactTable({
     data: availableDevices,
     columns: [],

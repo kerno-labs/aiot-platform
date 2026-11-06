@@ -63,6 +63,8 @@ const toFilters = (
 })
 
 export function ServiceInvocationsTab({ deviceKey }: { deviceKey: string }) {
+  'use no memo'
+
   const { t } = useTranslation(['deviceManagement', 'common'])
   const [identifier, setIdentifier] = useState('')
   const [range, setRange] = useState<TimeRange>(defaultRange)
@@ -81,6 +83,8 @@ export function ServiceInvocationsTab({ deviceKey }: { deviceKey: string }) {
   )
   const invokeMutation = useInvokeDeviceService(deviceKey)
 
+  // TanStack Table's mutable instance must stay outside compiler memoization.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: data?.invocations || [],
     columns: [],

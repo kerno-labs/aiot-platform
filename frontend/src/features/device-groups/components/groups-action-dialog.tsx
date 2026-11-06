@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
@@ -129,7 +129,7 @@ export function GroupsActionDialog({
   }
 
   const isLoading = createMutation.isPending || updateMutation.isPending
-  const currentType = form.watch('type')
+  const currentType = useWatch({ control: form.control, name: 'type' })
 
   return (
     <Dialog

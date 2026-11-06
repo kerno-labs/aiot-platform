@@ -523,5 +523,4 @@ export {
   ImageActions,
   ImageGenerating,
   ImageContentFilterError,
-  imageVariants,
 }

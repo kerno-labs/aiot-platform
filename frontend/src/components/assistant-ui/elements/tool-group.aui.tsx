@@ -221,10 +221,4 @@ ToolGroup.Root = ToolGroupRoot
 ToolGroup.Trigger = ToolGroupTrigger
 ToolGroup.Content = ToolGroupContent
 
-export {
-  ToolGroup,
-  ToolGroupRoot,
-  ToolGroupTrigger,
-  ToolGroupContent,
-  toolGroupVariants,
-}
+export { ToolGroup, ToolGroupRoot, ToolGroupTrigger, ToolGroupContent }

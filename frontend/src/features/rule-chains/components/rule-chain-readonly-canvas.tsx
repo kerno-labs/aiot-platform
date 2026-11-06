@@ -14,7 +14,7 @@ import { useGetRuleNodeDefinitions } from '@/api/generated'
 import { useTheme } from '@/context/theme-provider'
 import { defaultConfig, toDefinition } from '../data/rule-chain-definitions'
 import type { RuleFlowNode } from '../types/rule-chain-types'
-import { nodeTypes } from './rule-chain-node'
+import { nodeTypes } from './rule-chain-node-types'
 
 interface RuleChainReadonlyCanvasProps {
   graph?: Record<string, unknown>

@@ -36,7 +36,7 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { RuleChainInspector } from './components/rule-chain-inspector'
-import { nodeTypes } from './components/rule-chain-node'
+import { nodeTypes } from './components/rule-chain-node-types'
 import { RuleChainPalette } from './components/rule-chain-palette'
 import {
   defaultConfig,

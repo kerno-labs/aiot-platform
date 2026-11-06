@@ -15,7 +15,6 @@ import {
   ReasoningContent,
   ReasoningText,
   ReasoningFade,
-  reasoningVariants,
   type ReasoningRootProps,
 } from './reasoning'
 
@@ -116,5 +115,4 @@ export {
   ReasoningContent,
   ReasoningText,
   ReasoningFade,
-  reasoningVariants,
 }

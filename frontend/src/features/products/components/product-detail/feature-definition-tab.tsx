@@ -730,5 +730,3 @@ export function FeatureDefinitionTab({
     </div>
   )
 }
-
-export * from './feature-definition'

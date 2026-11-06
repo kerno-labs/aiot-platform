@@ -54,5 +54,3 @@ export function RuleChainNode({ data, selected }: NodeProps<RuleFlowNode>) {
     </div>
   )
 }
-
-export const nodeTypes = { ruleNode: RuleChainNode }

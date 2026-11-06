@@ -40,12 +40,11 @@ export function Users() {
   const { data: membersResponse } = membersQuery
   const { data: invitationsResponse, isLoading: invitationsLoading } =
     useOrganizationInvitations({ page, pageSize })
-  const rawMembers = membersResponse?.items ?? []
   const invitations = invitationsResponse?.items ?? []
 
   const actualUsers: User[] = useMemo(() => {
     const selectedStatuses = search.status as string[] | undefined
-    return rawMembers
+    return (membersResponse?.items ?? [])
       .map(mapMemberToUser)
       .filter(
         (user) =>
@@ -53,7 +52,7 @@ export function Users() {
           !selectedStatuses ||
           selectedStatuses.includes(user.status)
       )
-  }, [rawMembers, search.status])
+  }, [membersResponse?.items, search.status])
 
   const pendingInvitationsCount = invitationsResponse?.pendingCount ?? 0
 

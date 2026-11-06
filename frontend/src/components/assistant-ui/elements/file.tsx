@@ -261,16 +261,4 @@ File.Name = FileName
 File.Size = FileSize
 File.Download = FileDownload
 
-export {
-  File,
-  FileRoot,
-  FileIconDisplay,
-  FileName,
-  FileSize,
-  FileDownload,
-  fileVariants,
-  getMimeTypeIcon,
-  getFileDataKind,
-  getBase64Size,
-  formatFileSize,
-}
+export { File, FileRoot, FileIconDisplay, FileName, FileSize, FileDownload }
