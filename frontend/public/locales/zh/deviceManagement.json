@@ -139,31 +139,21 @@
         "advanced": "高级示例"
       },
       "title": "Thing Specification Language (TSL)",
-      "description": "TSL是描述物联网设备功能的JSON格式语言，包含属性、事件和服务三大核心要素。",
-      "badge": {
-        "jsonFormat": "JSON格式",
-        "realtimeValidation": "实时验证",
-        "standardized": "标准化"
-      },
       "buttons": {
         "format": "格式化",
         "addProperty": "添加属性",
         "addService": "添加服务",
-        "addEvent": "添加事件"
+        "addEvent": "添加事件",
+        "discard": "撤销修改",
+        "more": "更多",
+        "undo": "撤销"
       },
       "status": {
-        "propertyAdded": "属性添加成功",
-        "propertyUpdated": "属性更新成功",
         "propertyDeleted": "属性删除成功",
-        "serviceAdded": "服务添加成功",
-        "serviceUpdated": "服务更新成功",
         "serviceDeleted": "服务删除成功",
-        "eventAdded": "事件添加成功",
-        "eventUpdated": "事件更新成功",
         "eventDeleted": "事件删除成功",
         "templateLoaded": "已加载模板：{{name}}",
-        "jsonFormatted": "JSON格式化成功",
-        "validationFailed": "验证失败"
+        "jsonFormatted": "JSON格式化成功"
       },
       "editMode": {
         "visual": "可视化编辑",
@@ -221,14 +211,6 @@
         "customUnit": "请输入自定义单位",
         "desc": "请输入描述"
       },
-      "instructions": {
-        "title": "使用说明",
-        "properties": "properties：设备属性（只读/读写），如传感器数据、开关状态",
-        "events": "events：设备事件，如报警、通知等上行消息",
-        "services": "services：设备服务，如控制指令等下行调用",
-        "dualMode": "支持可视化编辑和JSON编辑两种模式，数据实时同步",
-        "visualMode": "可视化模式下可通过表单快速添加和编辑功能定义"
-      },
       "accessMode": {
         "r": "只读 (r)",
         "rw": "读写 (rw)"
@@ -243,7 +225,9 @@
         "output": "输出",
         "valid": "有效",
         "invalid": "无效",
-        "unknown": "未验证"
+        "unknown": "未验证",
+        "saved": "已保存",
+        "dirty": "有未保存修改"
       },
       "empty": {
         "properties": "暂无属性，点击\"添加属性\"开始创建",
@@ -251,12 +235,12 @@
         "events": "暂无事件，点击\"添加事件\"开始创建"
       },
       "errors": {
-        "jsonParse": "JSON解析错误",
         "tslValidation": "TSL验证错误",
         "jsonSyntax": "JSON语法错误",
         "identifierRequired": "identifier 不能为空",
         "nameRequired": "name 不能为空",
-        "productKeyRequired": "productKey 不能为空"
+        "productKeyRequired": "productKey 不能为空",
+        "identifierDuplicate": "标识符重复"
       },
       "dialog": {
         "featureType": "功能类型",
@@ -264,6 +248,20 @@
         "name": "功能名称",
         "identifier": "标识符",
         "outputParams": "输出参数"
+      },
+      "columns": {
+        "identifier": "标识符",
+        "name": "名称"
+      },
+      "confirm": {
+        "replaceTitle": "覆盖当前内容",
+        "replaceDesc": "此操作会替换当前编辑中的内容，未保存的修改将丢失。是否继续？"
+      },
+      "unsaved": {
+        "title": "有未保存的修改",
+        "desc": "离开后这些修改将丢失，确定要离开吗？",
+        "leave": "离开",
+        "stay": "留在此页"
       }
     },
     "deviceDevelopment": {

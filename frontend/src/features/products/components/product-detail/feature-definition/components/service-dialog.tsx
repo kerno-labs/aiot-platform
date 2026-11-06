@@ -25,6 +25,8 @@ interface ServiceDialogProps {
   onOpenChange: (open: boolean) => void
   service: Service | null
   onSave: (service: Service) => void
+  // Identifiers already used by other items in the same list.
+  takenIdentifiers?: string[]
 }
 
 export function ServiceDialog({
@@ -32,6 +34,7 @@ export function ServiceDialog({
   onOpenChange,
   service,
   onSave,
+  takenIdentifiers = [],
 }: ServiceDialogProps) {
   const { t } = useTranslation(['deviceManagement', 'common'])
   const [formData, setFormData] = useState<Service | null>(null)
@@ -47,12 +50,19 @@ export function ServiceDialog({
   }
 
   const handleSave = () => {
-    if (formData && formData.identifier && formData.name) {
+    if (
+      formData &&
+      formData.identifier &&
+      formData.name &&
+      !takenIdentifiers.includes(formData.identifier)
+    ) {
       onSave(formData)
     }
   }
 
   if (!formData) return null
+
+  const isDuplicate = takenIdentifiers.includes(formData.identifier)
 
   const isEdit = Boolean(service && service.identifier)
 
@@ -172,6 +182,13 @@ export function ServiceDialog({
                 'productDetail.featureDefinition.placeholders.serviceId'
               )}
             />
+            {isDuplicate && (
+              <p className='text-xs text-destructive'>
+                {t(
+                  'productDetail.featureDefinition.errors.identifierDuplicate'
+                )}
+              </p>
+            )}
           </div>
 
           {/* 调用方式 */}
@@ -306,7 +323,12 @@ export function ServiceDialog({
         </div>
 
         <DialogFooter className='flex justify-end gap-2 pt-1'>
-          <Button size='sm' onClick={handleSave} className='h-8 text-xs'>
+          <Button
+            size='sm'
+            onClick={handleSave}
+            disabled={isDuplicate}
+            className='h-8 text-xs'
+          >
             {t('common:confirm')}
           </Button>
           <Button

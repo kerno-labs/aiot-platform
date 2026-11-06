@@ -25,6 +25,8 @@ interface EventDialogProps {
   onOpenChange: (open: boolean) => void
   event: Event | null
   onSave: (event: Event) => void
+  // Identifiers already used by other items in the same list.
+  takenIdentifiers?: string[]
 }
 
 export function EventDialog({
@@ -32,6 +34,7 @@ export function EventDialog({
   onOpenChange,
   event,
   onSave,
+  takenIdentifiers = [],
 }: EventDialogProps) {
   const { t } = useTranslation(['deviceManagement', 'common'])
   const [formData, setFormData] = useState<Event | null>(null)
@@ -47,12 +50,19 @@ export function EventDialog({
   }
 
   const handleSave = () => {
-    if (formData && formData.identifier && formData.name) {
+    if (
+      formData &&
+      formData.identifier &&
+      formData.name &&
+      !takenIdentifiers.includes(formData.identifier)
+    ) {
       onSave(formData)
     }
   }
 
   if (!formData) return null
+
+  const isDuplicate = takenIdentifiers.includes(formData.identifier)
 
   const isEdit = Boolean(event && event.identifier)
 
@@ -172,6 +182,13 @@ export function EventDialog({
                 'productDetail.featureDefinition.placeholders.eventId'
               )}
             />
+            {isDuplicate && (
+              <p className='text-xs text-destructive'>
+                {t(
+                  'productDetail.featureDefinition.errors.identifierDuplicate'
+                )}
+              </p>
+            )}
           </div>
 
           {/* 事件类型 */}
@@ -281,7 +298,12 @@ export function EventDialog({
         </div>
 
         <DialogFooter className='flex justify-end gap-2 pt-1'>
-          <Button size='sm' onClick={handleSave} className='h-8 text-xs'>
+          <Button
+            size='sm'
+            onClick={handleSave}
+            disabled={isDuplicate}
+            className='h-8 text-xs'
+          >
             {t('common:confirm')}
           </Button>
           <Button

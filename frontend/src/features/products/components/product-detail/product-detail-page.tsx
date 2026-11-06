@@ -26,8 +26,8 @@ export function ProductDetailPage() {
 
   if (isLoading) {
     return (
-      <Main fixed>
-        <div className='flex h-full flex-col'>
+      <Main className='flex flex-1 flex-col'>
+        <div className='flex flex-1 flex-col'>
           <div className='animate-pulse space-y-4'>
             <div className='h-8 w-48 rounded bg-muted'></div>
             <div className='h-16 rounded bg-muted'></div>
@@ -40,8 +40,8 @@ export function ProductDetailPage() {
 
   if (error || !productResponse?.product) {
     return (
-      <Main fixed>
-        <div className='flex h-full flex-col items-center justify-center space-y-4'>
+      <Main className='flex flex-1 flex-col'>
+        <div className='flex flex-1 flex-col items-center justify-center space-y-4'>
           <p className='text-lg text-muted-foreground'>
             {t('productDetail.notFound')}
           </p>
@@ -54,8 +54,8 @@ export function ProductDetailPage() {
   const product = productResponse.product
 
   return (
-    <Main fixed>
-      <div className='flex h-full min-w-0 flex-col'>
+    <Main className='flex flex-1 flex-col'>
+      <div className='flex min-w-0 flex-1 flex-col'>
         <ProductHeader product={product} onBack={handleBack} />
 
         <Tabs defaultValue='info' className='flex min-w-0 flex-1 flex-col'>
@@ -83,7 +83,7 @@ export function ProductDetailPage() {
             </TabsTrigger>
           </TabsList>
 
-          <div className='min-w-0 flex-1 overflow-x-hidden overflow-y-auto'>
+          <div className='min-w-0 flex-1'>
             <TabsContent value='info' className='mt-0'>
               <ProductInfoTab product={product} />
             </TabsContent>
@@ -92,7 +92,11 @@ export function ProductDetailPage() {
               <TopicListTab />
             </TabsContent>
 
-            <TabsContent value='features' className='mt-0'>
+            <TabsContent
+              value='features'
+              forceMount
+              className='mt-0 data-[state=inactive]:hidden'
+            >
               <FeatureDefinitionTab productKey={productKey} />
             </TabsContent>
 

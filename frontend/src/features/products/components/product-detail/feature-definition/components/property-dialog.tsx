@@ -33,6 +33,8 @@ interface PropertyDialogProps {
   onOpenChange: (open: boolean) => void
   property: Property | null
   onSave: (property: Property) => void
+  // Identifiers already used by other items in the same list.
+  takenIdentifiers?: string[]
 }
 
 export function PropertyDialog({
@@ -40,6 +42,7 @@ export function PropertyDialog({
   onOpenChange,
   property,
   onSave,
+  takenIdentifiers = [],
 }: PropertyDialogProps) {
   const { t } = useTranslation(['deviceManagement', 'common'])
   const [formData, setFormData] = useState<Property | null>(null)
@@ -64,12 +67,19 @@ export function PropertyDialog({
   }
 
   const handleSave = () => {
-    if (formData && formData.identifier && formData.name) {
+    if (
+      formData &&
+      formData.identifier &&
+      formData.name &&
+      !takenIdentifiers.includes(formData.identifier)
+    ) {
       onSave(formData)
     }
   }
 
   if (!formData) return null
+
+  const isDuplicate = takenIdentifiers.includes(formData.identifier)
 
   const isEdit = Boolean(property && property.identifier)
   const currentUnitValue = isCustomUnit
@@ -192,6 +202,13 @@ export function PropertyDialog({
                 'productDetail.featureDefinition.placeholders.propertyId'
               )}
             />
+            {isDuplicate && (
+              <p className='text-xs text-destructive'>
+                {t(
+                  'productDetail.featureDefinition.errors.identifierDuplicate'
+                )}
+              </p>
+            )}
           </div>
 
           {/* 数据类型 */}
@@ -557,7 +574,12 @@ export function PropertyDialog({
         </div>
 
         <DialogFooter className='flex justify-end gap-2 pt-1'>
-          <Button size='sm' onClick={handleSave} className='h-8 text-xs'>
+          <Button
+            size='sm'
+            onClick={handleSave}
+            disabled={isDuplicate}
+            className='h-8 text-xs'
+          >
             {t('common:confirm')}
           </Button>
           <Button

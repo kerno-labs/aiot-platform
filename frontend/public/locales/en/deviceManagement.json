@@ -139,31 +139,21 @@
         "advanced": "Advanced Example"
       },
       "title": "Thing Specification Language (TSL)",
-      "description": "TSL is a JSON format language for describing IoT device capabilities, including three core elements: properties, events, and services.",
-      "badge": {
-        "jsonFormat": "JSON Format",
-        "realtimeValidation": "Real-time Validation",
-        "standardized": "Standardized"
-      },
       "buttons": {
         "format": "Format",
         "addProperty": "Add Property",
         "addService": "Add Service",
-        "addEvent": "Add Event"
+        "addEvent": "Add Event",
+        "discard": "Discard changes",
+        "more": "More",
+        "undo": "Undo"
       },
       "status": {
-        "propertyAdded": "Property added successfully",
-        "propertyUpdated": "Property updated successfully",
         "propertyDeleted": "Property deleted successfully",
-        "serviceAdded": "Service added successfully",
-        "serviceUpdated": "Service updated successfully",
         "serviceDeleted": "Service deleted successfully",
-        "eventAdded": "Event added successfully",
-        "eventUpdated": "Event updated successfully",
         "eventDeleted": "Event deleted successfully",
         "templateLoaded": "Template loaded: {{name}}",
-        "jsonFormatted": "JSON formatted successfully",
-        "validationFailed": "Validation failed"
+        "jsonFormatted": "JSON formatted successfully"
       },
       "editMode": {
         "visual": "Visual Edit",
@@ -221,14 +211,6 @@
         "customUnit": "Please enter custom unit",
         "desc": "Please enter description"
       },
-      "instructions": {
-        "title": "Instructions",
-        "properties": "properties: Device properties (read-only/read-write), such as sensor data, switch status",
-        "events": "events: Device events, such as alarms, notifications and other upstream messages",
-        "services": "services: Device services, such as control commands and other downstream calls",
-        "dualMode": "Support both visual editing and JSON editing modes with real-time data synchronization",
-        "visualMode": "In visual mode, you can quickly add and edit function definitions through forms"
-      },
       "accessMode": {
         "r": "Read-only (r)",
         "rw": "Read-write (rw)"
@@ -243,7 +225,9 @@
         "output": "Output",
         "valid": "Valid",
         "invalid": "Invalid",
-        "unknown": "Unknown"
+        "unknown": "Unknown",
+        "saved": "Saved",
+        "dirty": "Unsaved changes"
       },
       "empty": {
         "properties": "No properties yet, click \"Add Property\" to start creating",
@@ -251,12 +235,12 @@
         "events": "No events yet, click \"Add Event\" to start creating"
       },
       "errors": {
-        "jsonParse": "JSON parse error",
         "tslValidation": "TSL validation error",
         "jsonSyntax": "JSON syntax error",
         "identifierRequired": "identifier cannot be empty",
         "nameRequired": "name cannot be empty",
-        "productKeyRequired": "productKey cannot be empty"
+        "productKeyRequired": "productKey cannot be empty",
+        "identifierDuplicate": "Duplicate identifier"
       },
       "dialog": {
         "featureType": "Feature Type",
@@ -264,6 +248,20 @@
         "name": "Feature Name",
         "identifier": "Identifier",
         "outputParams": "Output Parameters"
+      },
+      "columns": {
+        "identifier": "Identifier",
+        "name": "Name"
+      },
+      "confirm": {
+        "replaceTitle": "Replace current content",
+        "replaceDesc": "This replaces what you are editing, and unsaved changes will be lost. Continue?"
+      },
+      "unsaved": {
+        "title": "You have unsaved changes",
+        "desc": "These changes will be lost if you leave. Leave anyway?",
+        "leave": "Leave",
+        "stay": "Stay on page"
       }
     },
     "deviceDevelopment": {
